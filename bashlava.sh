@@ -125,12 +125,11 @@ function master-nosq {
 # next step is: release
 }
 
-function tag {
-  App_Is_master
+function tag { #core> .... "tag" use release version as the tag version + push the tag + open the release page
   App_Are_files_existing
   App_Is_required_apps_installed
 
-  App_Get_var_from_dockerfile
+  App_Get_var_from_dockerfilebashlava.sh help
 
   git tag ${app_release} && git push --tags && echo
 
@@ -272,7 +271,7 @@ function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new
 function v { #core> ...... "version" update your app | usage: v 1.50.1
   version
 }
-function m { #core> ...... "master" (with squash) rebase + merge + update CHANGELOG | usage: m "UPDATE chap 32 + FIX typo"
+function m { #core> ...... "master" git pull + show logs"
   master
 }
 function m- { #core> ..... "master-" like m but with (no squash) | (no attr)
@@ -527,7 +526,7 @@ function test-bashlava {
   banner
 }
 
-function tag-read {
+function tag-read { 
   latest_tag="$(git describe --tags --abbrev=0)"
   my_message="${latest_tag} < tag version found on master branch" App_Blue
 }
