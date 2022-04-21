@@ -125,6 +125,21 @@ function master-nosq {
 # next step is: release
 }
 
+function tag {
+  App_Is_master
+  App_Are_files_existing
+  App_Is_required_apps_installed
+
+  App_Get_var_from_dockerfile
+
+  git tag ${app_release} && git push --tags && echo
+
+# We use the github release GUI to create a release
+  url_to_release="https://github.com/firepress-org/ghostfire/releases/new"
+  my_message="Go to: ${url_to_release} to publish release." App_Blue
+  open ${url_to_release}
+}
+
 function release {
 # at this point or changelog is clean.
   App_Is_master
