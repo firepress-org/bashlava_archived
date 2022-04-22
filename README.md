@@ -24,15 +24,6 @@ In other word, the the **agile release cycle** should be something you master. B
 
 Videos WIP
 
-When starting with BashLava, I recommend to use these four commands:
-
-```
-c "UPDATE: that feat that does X"
-v 3.5.1
-m-
-r
-```
-
 **It also allows you**:
 
 - quickly set your custom scripts (Videos WIP)
@@ -59,10 +50,9 @@ Assuming your $path is `/usr/local/bin`
 
 ## Requirements
 
-- A Mac. I didn't test BashLaVa on other systems. _Let's me know if you want to help for this :)_
+- A Mac OS: I didn't test BashLaVa on other systems. _Let's me know if you want to help for this :)_
 - [Docker](https://docs.docker.com/install/): (needed for markdown viewer, password generator, lint checker, etc.)
 - [Hub](https://github.com/github/hub#installation): needed to push release to Github.
-- nano (brew install nano): needed to edit your changelog when the system prompt.
 
 ## How To, Examples & Quick wins
 
