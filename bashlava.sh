@@ -95,13 +95,9 @@ function pr {
   pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
   gh pr create --fill --title "${pr_title}" --base "${default_branch}"
 
-  #pr_title=$(git log -n 2 | tail -n1 | awk '{print $2}')
-
  # if the upstream is wrong, we can reset it:
  # https://github.com/cli/cli/issues/2300
  # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
-
-  echo "wip 0o0o 2022-04-22_16h00"
 }
 
 #
