@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-gh pr create \
-  --fill \
-  --base "master" --head "edge"
+gh pr create --fill --base "master" -H "edge"
 
 ###
 
