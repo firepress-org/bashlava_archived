@@ -4,8 +4,8 @@
 ###################################
 
 ARG APP_NAME="bashlava"
-ARG VERSION="1.1.0"
-ARG RELEASE="1.1.0"
+ARG VERSION="1.2.0"
+ARG RELEASE="1.2.0"
 ARG GITHUB_USER="firepress-org"
 ARG DEFAULT_BRANCH="master"
 ARG GITHUB_ORG="firepress-org"
