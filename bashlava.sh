@@ -79,14 +79,29 @@ function mainbranch {
 
 function tag {
   App_Are_files_existing
-  App_Is_required_apps_installed
-
   App_Get_var_from_dockerfile
 
   git tag ${app_release} && git push --tags && echo
 
   my_message="Next, publish release over: ${url_to_release}" App_Blue
   open ${url_to_release}
+}
+
+function pr {
+  App_Is_edge
+  App_Is_commit_unpushed
+  App_Get_var_from_dockerfile
+
+  pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
+  gh pr create --fill --title "${pr_title}" --base "${default_branch}"
+
+  #pr_title=$(git log -n 2 | tail -n1 | awk '{print $2}')
+
+ # if the upstream is wrong, we can reset it:
+ # https://github.com/cli/cli/issues/2300
+ # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
+
+  echo "wip 0o0o 2022-04-22_16h00"
 }
 
 #
@@ -452,29 +467,6 @@ function rebase-theme {
 # Once all conflicts are resolved
   bashlava.sh c "Fixed conflicts / merged from 'nurui-from-vendor'"
 }
-
-function wip-pr {
-# tk work in progress
-# we can reuse much of the work from m
-# hub pull-request
-
-  git checkout ghostv3-staging && git pull ghostv3-staging
-  # hub sync
-  git checkout -b mrg-dev-to-staging
-  git merge --no-ff origin/ghostv3-dev # no fast forward
-  git push -u origin mrg-dev-to-staging
-
-  hub pull-request -b "${submit_pr_to}" -h "${submit_pr_from}" -m "${hub_message}"
-
-# Something went wrong?
-# Reset to Upstream. This will delete all your local changes to mainbranch
-  #git reset --hard upstream/${default_branch}
-
-# take care, this will delete all your changes on your forked mainbranch
-  #git push origin ${default_branch} --force
-}
-
-
 
 #
   #
