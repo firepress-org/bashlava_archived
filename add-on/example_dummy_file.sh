@@ -2,8 +2,7 @@
 
 gh pr create \
   --fill \
-  --base master --head pascalandy:edge
-
+  --base "master" --head "edge"
 
 ###
 
