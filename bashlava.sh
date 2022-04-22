@@ -15,7 +15,6 @@ function commit {
 function version {
 # The version is tracked in a Dockerfile (it's cool if your project don't use docker)
 # For BashLaVa, this Dockerfile is just a config-env file
-  App_Is_edge
   App_Is_commit_unpushed
   App_Are_files_existing
 
