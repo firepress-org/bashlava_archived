@@ -51,12 +51,10 @@ function version {
   App_Get_var_from_dockerfile
   git add . &&\
   git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile" &&\
-  git push origin edge
-
-  echo && my_message="run ci to check status of your built on Github Actions (if any)" App_Blue
+  git push
 
   log
-# next step is to: 'm' or 'm-'
+  # next step: tag
 }
 
 function mainbranch {
