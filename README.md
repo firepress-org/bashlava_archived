@@ -52,7 +52,7 @@ Assuming your $path is `/usr/local/bin`
 
 - A Mac OS: I didn't test BashLaVa on other systems. _Let's me know if you want to help for this :)_
 - [Docker](https://docs.docker.com/install/): (needed for markdown viewer, password generator, lint checker, etc.)
-- [Hub](https://github.com/github/hub#installation): needed to push release to Github.
+- [gh (github cli)](https://cli.github.com/): needed to create PR on GitHub
 
 ## How To, Examples & Quick wins
 
