@@ -731,8 +731,7 @@ function App_Is_required_apps_installed {
   if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; then
     my_message="gh is installed." App_Blue
   elif [[ $(gh auth status | grep -c "Logged in to github.com as") != "1" ]]; then
-    echo && my_message="gh is not installed. See requirements https://git.io/bashlava" App_Pink &&\
-    open https://git.io/bashlava
+    echo && my_message="gh is not installed. See requirements https://git.io/bashlava" App_Pink
   else
     my_message="FATAL: Please open an issue for this behavior (err_f26)" App_Pink && App_Stop
   fi
