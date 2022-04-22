@@ -2,8 +2,7 @@
 
 gh pr create \
   --fill \
-  --assignee "@me" \
-  --base firepress-org/bashlava
+  --base master --head pascalandy:edge
 
 
 ###
@@ -16,4 +15,4 @@ git remote -v
   upstream        https://github.com/ralish/bash-script-template.git (push)
 
 git remote set-url upstream git@github.com:firepress-org/bashlava.git
-
+git remote -v
