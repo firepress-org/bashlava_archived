@@ -88,6 +88,7 @@ function pr {
   App_Is_edge
   App_Is_commit_unpushed
   App_Get_var_from_dockerfile
+  App_Is_required_apps_installed
 
   pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
   gh pr create --fill --title "${pr_title}" --base "${default_branch}"
@@ -716,15 +717,7 @@ function App_Are_files_existing {
 }
 
 function App_Is_required_apps_installed {
-# hub
-  if [[ $(hub version | grep -c "hub version") == "1" ]]; then
-    my_message="Hub is installed." App_Blue
-  elif [[ $(hub version | grep -c "hub version") != "1" ]]; then
-    echo && my_message="Hub is not installed. See requirements https://git.io/bashlava" App_Pink &&\
-    open https://git.io/bashlava
-  else
-    my_message="FATAL: Please open an issue for this behavior (err_f26)" App_Pink && App_Stop
-  fi
+
 # docker
   if [[ $(docker version | grep -c "Docker Engine - Community") == "1" ]]; then
     my_message="$(docker --version) is installed." App_Blue
@@ -733,6 +726,16 @@ function App_Is_required_apps_installed {
   else
     my_message="FATAL: Please open an issue for this behavior (err_f27)" App_Pink && App_Stop
   fi
+
+# gh (github cli)
+# does not work, see https://github.com/firepress-org/bashlava/issues/31
+#  if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; then
+#    my_message="gh is installed." App_Blue
+#  elif [[ $(gh auth status | grep -c "Logged in to github.com as") != "1" ]]; then
+#    echo && my_message="gh is not installed. See requirements https://git.io/bashlava" App_Pink
+#  else
+#    my_message="FATAL: Please open an issue for this behavior (err_f26)" App_Pink && App_Stop
+#  fi
 }
 
 function App_release_check_vars {
