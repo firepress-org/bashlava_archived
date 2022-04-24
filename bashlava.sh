@@ -728,13 +728,14 @@ function App_Is_required_apps_installed {
   fi
 
 # gh (github cli)
-  if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; then
-    my_message="gh is installed." App_Blue
-  elif [[ $(gh auth status | grep -c "Logged in to github.com as") != "1" ]]; then
-    echo && my_message="gh is not installed. See requirements https://git.io/bashlava" App_Pink
-  else
-    my_message="FATAL: Please open an issue for this behavior (err_f26)" App_Pink && App_Stop
-  fi
+# does not work, see https://github.com/firepress-org/bashlava/issues/31
+#  if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; then
+#    my_message="gh is installed." App_Blue
+#  elif [[ $(gh auth status | grep -c "Logged in to github.com as") != "1" ]]; then
+#    echo && my_message="gh is not installed. See requirements https://git.io/bashlava" App_Pink
+#  else
+#    my_message="FATAL: Please open an issue for this behavior (err_f26)" App_Pink && App_Stop
+#  fi
 }
 
 function App_release_check_vars {
