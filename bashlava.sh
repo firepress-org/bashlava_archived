@@ -585,16 +585,19 @@ function App_Is_mainbranch {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "${default_branch}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
+  elif [[ "${currentBranch}" != "${default_branch}" ]]; then
+    my_message="You must be on branch ${default_branch} to perform this action (ERR5682)" App_Pink && App_Stop
   else
-    my_message="You must be on <${default_branch}> branch to perform this action (ERR5681)" App_Pink
+    my_message="FATAL: Please open an issue for this behavior (err_f15)" App_Pink && App_Stop
   fi
 }
+
 function App_Is_edge {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${currentBranch}" != "edge" ]]; then
-    my_message="You must be on <edge> branch to perform this action (ERR5682)" App_Pink && App_Stop
+    my_message="You must be on branch edge to perform this action (ERR5682)" App_Pink && App_Stop
   else
     my_message="FATAL: Please open an issue for this behavior (err_f15)" App_Pink && App_Stop
   fi
