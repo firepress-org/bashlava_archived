@@ -712,11 +712,12 @@ function App_Are_files_existing {
 }
 
 function App_Is_required_apps_installed {
+# check if these app are running
 
 # docker
-  if [[ $(docker version | grep -c "Docker Engine - Community") == "1" ]]; then
+  if [[ $(docker version | grep -c "Server: Docker Desktop") == "1" ]]; then
     my_message="$(docker --version) is installed." App_Blue
-  elif [[ $(docker version | grep -c "Docker Engine - Community") != "1" ]]; then
+  elif [[ $(docker version | grep -c "Server: Docker Desktop") != "1" ]]; then
     my_message="Docker is not running. https://github.com/firepress-org/bash-script-template#requirements" App_Warning
   else
     my_message="FATAL: Please open an issue for this behavior (err_f27)" App_Pink && App_Stop
