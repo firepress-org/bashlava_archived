@@ -91,7 +91,8 @@ function pr {
   App_Is_required_apps_installed
 
   pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
-  gh pr create --fill --title "${pr_title}" --base "${default_branch}"
+  gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
+  gh pr view --web
 
  # if the upstream is wrong, we can reset it:
  # https://github.com/cli/cli/issues/2300
@@ -359,7 +360,13 @@ function help {
 }
 
 function continuous-integration-status {
-  gh run watch
+  gh run list
+
+  sleep 2
+  run_id=$(gh run list | head -1 | awk '{print $12}')
+  open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
+
+  #gh run watch
 }
 
 function release-read {
