@@ -74,16 +74,6 @@ function mainbranch {
 # next step is to: tag and release
 }
 
-function tag {
-  App_Are_files_existing
-  App_Get_var_from_dockerfile
-
-  git tag ${app_release} && git push --tags && echo
-
-  my_message="Next, publish release over: ${url_to_release}" App_Blue
-  open ${url_to_release}
-}
-
 function pr {
   App_Is_edge
   App_Is_commit_unpushed
@@ -106,6 +96,16 @@ function mrg {
 
   gh pr merge
 }
+
+function tag {
+  App_Are_files_existing
+  App_Get_var_from_dockerfile
+
+  git tag ${app_release} && git push --tags && echo
+  my_message="Next, prepare release" App_Blue && echo
+  gh release create
+}
+
 #
   #
     #
@@ -348,6 +348,7 @@ function tag-read {
   my_message="${latest_tag} < tag version found on mainbranch" App_Blue
 }
 function status {
+  gh status &&\
   git status
 }
 
