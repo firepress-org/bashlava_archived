@@ -359,12 +359,7 @@ function help {
 }
 
 function continuous-integration-status {
-# Valid for Github Actions CI. Usually the CI build our Dockerfiles
-# while loop for 8 min
-  MIN="1" MAX="300"
-  for action in $(seq ${MIN} ${MAX}); do
-    hub ci-status -v $(git rev-parse HEAD) && echo && sleep 5;
-  done
+  gh run watch
 }
 
 function release-read {
