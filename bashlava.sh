@@ -98,6 +98,7 @@ function mrg {
 }
 
 function tag {
+  App_Is_mainbranch
   App_Are_files_existing
   App_Get_var_from_dockerfile
 
