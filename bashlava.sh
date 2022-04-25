@@ -582,6 +582,8 @@ function App_RemoveTmpFiles {
 }
 
 function App_Is_mainbranch {
+  App_Get_var_from_dockerfile
+
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "${default_branch}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
@@ -593,13 +595,15 @@ function App_Is_mainbranch {
 }
 
 function App_Is_edge {
+  App_Get_var_from_dockerfile
+  
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${currentBranch}" != "edge" ]]; then
-    my_message="You must be on branch edge to perform this action (ERR5682)" App_Pink && App_Stop
+    my_message="You must be on branch edge to perform this action (ERR5683)" App_Pink && App_Stop
   else
-    my_message="FATAL: Please open an issue for this behavior (err_f15)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (err_f16)" App_Pink && App_Stop
   fi
 }
 
