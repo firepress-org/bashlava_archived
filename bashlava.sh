@@ -106,6 +106,7 @@ function tag {
   echo && sleep 1 &&\
 
   my_message="Next, prepare release" App_Blue &&\
+  my_message="To quit the release notes: type ':qa + enter'" App_Blue &&\
   echo && sleep 1 &&\
 
   gh release create
@@ -596,7 +597,7 @@ function App_Is_mainbranch {
 
 function App_Is_edge {
   App_Get_var_from_dockerfile
-  
+
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
