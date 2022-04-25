@@ -101,8 +101,12 @@ function tag {
   App_Are_files_existing
   App_Get_var_from_dockerfile
 
-  git tag ${app_release} && git push --tags && echo
-  my_message="Next, prepare release" App_Blue && echo
+  git tag ${app_release} && git push --tags &&\
+  echo && sleep 1 &&\
+
+  my_message="Next, prepare release" App_Blue &&\
+  echo && sleep 1 &&\
+
   gh release create
 }
 
