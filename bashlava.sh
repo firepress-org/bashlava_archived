@@ -99,6 +99,13 @@ function pr {
  # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
 }
 
+function mrg {
+  App_Is_edge
+  App_Is_commit_unpushed
+  App_Get_var_from_dockerfile
+
+  gh pr merge
+}
 #
   #
     #
