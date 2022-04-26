@@ -342,7 +342,7 @@ function version-read-from-dockerfile {
 }
 function help {
 
-  input_2="help.md" && App_glow
+  input_2="./docs/help.md" && App_glow
 
   ### old code that could be useful in the future
   ### list tag #util> within the code
