@@ -5,24 +5,6 @@ function banner {
   App_figlet
 }
 
-function init_changelog {
-cat << EOF > CHANGELOG_template.md
-This **CHANGELOG** should make it easy for you to see what is happening with this project. Each release automatically generates/formats/updates this changeling thanks to [BashLaVa](https://github.com/firepress-org/bashlava). It uses the same « Agile Deployment Lifecycle » we use at FirePress. See our [blog post](https://firepress.org/en/how-do-we-update-hundreds-of-ghosts-websites-on-docker-swarm/) about it. It follows the [keep a changelog](https://keepachangelog.com/en/1.0.0/) spirit and adheres to [semantic versioning](https://semver.org/spec/v2.0.0.html).
-
-Status template:
-| ⚡️ Updates | 🚀 Added | ⚠️ Changed |
-🐛 Fixed | 🛑 Removed | 🔑 Security |
-🙈 Oops | 🎨 Design | 🎉 happy | 🙌 blessed
-
-# Releases
-
-## 0.0.0
-### ⚡️ Updates
-- Init changelog
-EOF
-my_message="File created: ${local_bashlava_path}/CHANGELOG_template.md" App_Green
-}
-
 function init_dockerfile {
 cat << EOF > Dockerfile_template
 ###################################
