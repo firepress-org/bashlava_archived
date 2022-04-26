@@ -663,14 +663,7 @@ function App_Is_version_syntax_valid {
 }
 
 function App_Are_files_existing {
-# --- 1)
-  if [ -f CHANGELOG.md ] || [ -f CHANGELOG_template.md ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [ ! -f CHANGELOG.md ] || [ ! -f CHANGELOG_template.md ]; then
-    my_message="CHANGELOG.md file does not exit (WAR5684). Let's generate one:" App_Warning && init_changelog && App_Stop && echo
-  else
-    my_message="FATAL: Please open an issue for this behavior (err_f20)" App_Pink && App_Stop
-  fi
+
 # --- 2)
   if [ -f Dockerfile ] || [ -f Dockerfile_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
