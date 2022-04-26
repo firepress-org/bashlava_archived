@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# author: https://github.com/ralish/bash-script-template/blob/main/source.sh
+
 # A best practices Bash script template with many useful functions. This file
 # is suitable for sourcing into other scripts and so only contains functions
 # which are unlikely to need modification. It omits the following functions:
@@ -43,6 +45,7 @@ function script_trap_err() {
         # failed before we even called cron_init(). This can happen if bad
         # parameters were passed to the script so we bailed out very early.
         if [[ -n ${script_output-} ]]; then
+            # shellcheck disable=SC2312
             printf 'Script Output:\n\n%s' "$(cat "$script_output")"
         else
             printf 'Script Output:          None (failed before log init)\n'
@@ -52,7 +55,6 @@ function script_trap_err() {
     # Exit with failure status
     exit "$exit_code"
 }
-
 
 # DESC: Handler for exiting the script
 # ARGS: None
@@ -74,11 +76,14 @@ function script_trap_exit() {
     printf '%b' "$ta_none"
 }
 
-
 # DESC: Exit script with the given message
 # ARGS: $1 (required): Message to print on exit
 #       $2 (optional): Exit code (defaults to 0)
 # OUTS: None
+# NOTE: The convention used in this script for exit codes is:
+#       0: Normal exit
+#       1: Abnormal exit due to external error
+#       2: Abnormal exit due to script error
 function script_exit() {
     if [[ $# -eq 1 ]]; then
         printf '%s\n' "$1"
@@ -98,7 +103,6 @@ function script_exit() {
     script_exit 'Missing required argument to script_exit()!' 2
 }
 
-
 # DESC: Generic script initialisation
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: $orig_cwd: The current working directory when the script was run
@@ -111,23 +115,28 @@ function script_exit() {
 #       and will not resolve any symlinks which may be present in the path.
 #       You can use a tool like realpath to obtain the "true" path. The same
 #       caveat applies to both the $script_dir and $script_name variables.
+# shellcheck disable=SC2034
 function script_init() {
-    # Useful paths
+    # Useful variables
     readonly orig_cwd="$PWD"
-    readonly script_path="${BASH_SOURCE[1]}"
-    readonly script_dir="$(dirname "$script_path")"
-    readonly script_name="$(basename "$script_path")"
     readonly script_params="$*"
+    readonly script_path="${BASH_SOURCE[1]}"
+    script_dir="$(dirname "$script_path")"
+    script_name="$(basename "$script_path")"
+    readonly script_dir script_name
 
     # Important to always set as we use it in the exit handler
+    # shellcheck disable=SC2155
     readonly ta_none="$(tput sgr0 2> /dev/null || true)"
 }
-
 
 # DESC: Initialise colour variables
 # ARGS: None
 # OUTS: Read-only variables with ANSI control codes
-# NOTE: If --no-colour was set the variables will be empty
+# NOTE: If --no-colour was set the variables will be empty. The output of the
+#       $ta_none variable after each tput is redundant during normal execution,
+#       but ensures the terminal output isn't mangled when running with xtrace.
+# shellcheck disable=SC2034,SC2155
 function colour_init() {
     if [[ -z ${no_colour-} ]]; then
         # Text attributes
@@ -207,18 +216,17 @@ function colour_init() {
     fi
 }
 
-
 # DESC: Initialise Cron mode
 # ARGS: None
 # OUTS: $script_output: Path to the file stdout & stderr was redirected to
 function cron_init() {
     if [[ -n ${cron-} ]]; then
         # Redirect all output to a temporary file
-        readonly script_output="$(mktemp --tmpdir "$script_name".XXXXX)"
-        exec 3>&1 4>&2 1>"$script_output" 2>&1
+        script_output="$(mktemp --tmpdir "$script_name".XXXXX)"
+        readonly script_output
+        exec 3>&1 4>&2 1> "$script_output" 2>&1
     fi
 }
-
 
 # DESC: Acquire script lock
 # ARGS: $1 (optional): Scope of script execution lock (system or user)
@@ -241,10 +249,9 @@ function lock_init() {
         readonly script_lock="$lock_dir"
         verbose_print "Acquired script lock: $script_lock"
     else
-        script_exit "Unable to acquire script lock: $lock_dir" 2
+        script_exit "Unable to acquire script lock: $lock_dir" 1
     fi
 }
-
 
 # DESC: Pretty print the provided string
 # ARGS: $1 (required): Message to print (defaults to a green foreground)
@@ -273,7 +280,6 @@ function pretty_print() {
     fi
 }
 
-
 # DESC: Only pretty_print() the provided string if verbose mode is enabled
 # ARGS: $@ (required): Passed through to pretty_print() function
 # OUTS: None
@@ -282,7 +288,6 @@ function verbose_print() {
         pretty_print "$@"
     fi
 }
-
 
 # DESC: Combines two path variables and removes any duplicates
 # ARGS: $1 (required): Path(s) to join with the second argument
@@ -306,8 +311,9 @@ function build_path() {
         path_entry="${temp_path%%:*}"
         case "$new_path:" in
             *:"$path_entry":*) ;;
-                            *) new_path="$new_path:$path_entry"
-                               ;;
+            *)
+                new_path="$new_path:$path_entry"
+                ;;
         esac
         temp_path="${temp_path#*:}"
     done
@@ -315,7 +321,6 @@ function build_path() {
     # shellcheck disable=SC2034
     build_path="${new_path#:}"
 }
-
 
 # DESC: Check a binary exists in the search path
 # ARGS: $1 (required): Name of the binary to test for existence
@@ -339,21 +344,22 @@ function check_binary() {
     return 0
 }
 
-
 # DESC: Validate we have superuser access as root (via sudo if requested)
 # ARGS: $1 (optional): Set to any value to not attempt root access via sudo
 # OUTS: None
 function check_superuser() {
-    local superuser test_euid
+    local superuser
     if [[ $EUID -eq 0 ]]; then
         superuser=true
     elif [[ -z ${1-} ]]; then
+        # shellcheck disable=SC2310
         if check_binary sudo; then
-            pretty_print 'Sudo: Updating cached credentials ...'
+            verbose_print 'Sudo: Updating cached credentials ...'
             if ! sudo -v; then
                 verbose_print "Sudo: Couldn't acquire credentials ..." \
-                              "${fg_red-}"
+                    "${fg_red-}"
             else
+                local test_euid
                 test_euid="$(sudo -H -- "$BASH" -c 'printf "%s" "$EUID"')"
                 if [[ $test_euid -eq 0 ]]; then
                     superuser=true
@@ -371,7 +377,6 @@ function check_superuser() {
     return 0
 }
 
-
 # DESC: Run the requested command as root (via sudo if requested)
 # ARGS: $1 (optional): Set to zero to not attempt execution via sudo
 #       $@ (required): Passed through for execution as root user
@@ -381,15 +386,14 @@ function run_as_root() {
         script_exit 'Missing required argument to run_as_root()!' 2
     fi
 
-    local try_sudo
     if [[ ${1-} =~ ^0$ ]]; then
-        try_sudo=true
+        local skip_sudo=true
         shift
     fi
 
     if [[ $EUID -eq 0 ]]; then
         "$@"
-    elif [[ -z ${try_sudo-} ]]; then
+    elif [[ -z ${skip_sudo-} ]]; then
         sudo -H -- "$@"
     else
         script_exit "Unable to run requested command as root: $*" 1
