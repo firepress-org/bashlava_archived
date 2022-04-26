@@ -21,3 +21,46 @@ function lint_hado {
   echo && \
   docker run -v `pwd`/Dockerfile:/Dockerfile replicated/dockerfilelint /Dockerfile
 }
+
+function example_array {
+  arr=( "hello" "world" "three" )
+  
+  for i in "${arr[@]}"; do
+    echo ${i}
+  done
+}
+
+function case_demo {
+printf 'Select your demo: (ex1 to ex4): '
+read DISTR
+
+case $DISTR in
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+ex1)
+clear
+echo "ex1"
+
+;;
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+ex2)
+clear
+
+echo "ex2"
+
+;;
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+ex3)
+clear
+
+echo "ex3"
+
+;;
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
+*)
+clear
+
+echo "Selection does not exist."
+
+;;
+esac
+}

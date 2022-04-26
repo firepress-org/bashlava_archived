@@ -167,7 +167,7 @@ function init_license {
 # project URL
 # URL to LICENSE.md (you should fork it)
 cat << EOF > LICENSE_template
-Copyright (C) 2020
+Copyright (C) 2022
 by Pascal Andy | https://pascalandy.com/blog/now/
 
 Project:

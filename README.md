@@ -46,90 +46,15 @@ ln -s /Volumes/myuser/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin
 
 Assuming your $path is `/usr/local/bin`
 
-- 3. **Test your installation**. run: `bashlava.sh test`
+- 4. Create a file named `/add-on/_entrypoint.sh`. [Here is how to use it.](https://github.com/firepress-org/bashlava/issues/50)
+
+- 4. **Test your installation**. run: `bashlava.sh test`
 
 ## Requirements
 
 - A Mac OS: I didn't test BashLaVa on other systems. _Let's me know if you want to help for this :)_
 - [Docker](https://docs.docker.com/install/): (needed for markdown viewer, password generator, lint checker, etc.)
 - [gh (github cli)](https://cli.github.com/): needed to create PR on GitHub
-
-## How To, Examples & Quick wins
-
-<details><summary>Click to expand this section.</summary>
-<p>
-
-You should use an alias like: `alias uu=bashlava.sh ` (with a space at the end) to really benefit from this app.
-
-**Example**: test
-
-```
-$1 value is: test
-$2 value is: not-set
-$3 value is: not-set
-
-——> Date is: 2020-02-14_10H49s21
-——> Run on Darwin (Mac).
-
-——> Hub is installed.
-——> Docker version 19.03.5, build 633a0ea is installed.
-```
-
-**Example**: push commit
-
-```
-bashlava.sh c "README / Add requirement section"
-
-——> ERROR: You must provide a Git message.
-```
-
-**Example**: list available functions
-
-```
-bashlava.sh list
-
-   Core functions
-
- c   ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch
- v   ...... "version" update your app | usage: v 1.50.1
- m   ...... "master" git pull + show logs
- t   ...... "tag" it uses release version as the tag version + push the tag + open the release page
-
-
-   Utilities functions
-
- ci   ..... "continous integration" CI status from Github Actions (no attr)
- cr   ..... "changelog read" (no attr)
- diff   ... "diff" show me diff in my code (no attr)
- e   ...... "edge" recrete a fresh edge branch from master (no attr)
- gitio   .. "git.io shortner" work only with GitHub repos | usage: shorturl firepress-org ghostfire (opt attr)
- h   ...... "help" alias are also set to: -h, --help, help (no attr)
- hash   ... "hash" Show me the latest hash commit (no attr)
- l   ...... "log" show me the latest commits (no attr)
- list   ... "list" all core functions (no attr)
- log   .... "log" Show me the lastest commits (no attr)
- m-m   .... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo
- mdv   .... "markdown viewer" | usage: mdv README.md
- oe   ..... "out edge" Basic git checkout (no attr)
- om   ..... "out master" Basic git checkout (no attr)
- rr   ..... "release read" Show release from Github (attr is opt)
- s   ...... "status" show me if there is something to commit (no attr)
- sq   ..... "squash" commits | usage: sq 3 "Add fct xyz
- test   ... "test" test if requirements for bashLaVa are meet (no attr)
- tr   ..... "tag read" tag on master branch (no attr)
- vr   ..... "version read" show app's version from Dockerfile (no attr)
-
-
-   Accronyms
-
- attr ==> attribute(s)
- opt ===> optional
- m =====> master branch
- e =====> edge branch (DEV branch if you prefer)
-```
-
-</p>
-</details>
 
 ## Website hosting
 
