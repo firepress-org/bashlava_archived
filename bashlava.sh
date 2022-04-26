@@ -102,8 +102,8 @@ function tag {
   App_Are_files_existing
   App_Get_var_from_dockerfile
 
-  git tag ${app_release} && git push --tags &&\
-  echo && sleep 1 &&\
+  git tag ${app_release} && git push --tags && echo &&\
+  version-read && sleep 1 && echo &&\
 
   my_message="Next, prepare release" App_Blue &&\
   my_message="To quit the release notes: type ':qa + enter'" App_Blue &&\
