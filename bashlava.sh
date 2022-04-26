@@ -1,5 +1,38 @@
 #!/usr/bin/env bash
 
+
+function mainbranch {
+  App_Is_edge
+  App_Is_commit_unpushed
+  App_Are_files_existing
+  App_Is_required_apps_installed
+  App_Get_var_from_dockerfile
+
+  App_Show_version_from_three_sources
+
+# Update our local state
+  git checkout ${default_branch} &&\
+  git pull origin ${default_branch} &&\
+  log
+
+# next step is to: tag and release
+}
+
+function edge {
+# it assumes there will be no conflict with anybody else
+# as I'm the only person using 'edge'.
+  App_Is_commit_unpushed
+
+  # delete branch
+  git branch -d edge || true &&\
+  # delete branch so there is no need to use the github GUI to delete it
+  git push origin --delete edge || true &&\
+
+  git checkout -b edge &&\
+  git push --set-upstream origin edge -f &&\
+  my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
+}
+
 function commit {
 # if no attribute were past, well... let's see what changed:
   if [[ "${input_2}" == "not-set" ]]; then
@@ -10,6 +43,31 @@ function commit {
   git status && git add -A &&\
   git commit -m "${input_2}" && clear && git push  &&\
   version-read-from-dockerfile
+}
+
+function pr {
+  App_Is_edge
+  App_Is_commit_unpushed
+  App_Get_var_from_dockerfile
+  App_Is_required_apps_installed
+
+  pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
+  gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
+  gh pr view --web
+
+ # if the upstream is wrong, we can reset it:
+ # https://github.com/cli/cli/issues/2300
+ # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
+}
+
+# TODO add fct ci here 0o0o
+
+function mrg {
+  App_Is_edge
+  App_Is_commit_unpushed
+  App_Get_var_from_dockerfile
+
+  gh pr merge
 }
 
 function version {
@@ -51,50 +109,11 @@ function version {
   App_Get_var_from_dockerfile
   git add . &&\
   git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile" &&\
-  git push
+  git push && echo &&\
+
+  version-read && sleep 1 && echo &&\
 
   log
-  # next step: tag
-}
-
-function mainbranch {
-  App_Is_edge
-  App_Is_commit_unpushed
-  App_Are_files_existing
-  App_Is_required_apps_installed
-  App_Get_var_from_dockerfile
-
-  App_Show_version_from_three_sources
-
-# Update our local state
-  git checkout ${default_branch} &&\
-  git pull origin ${default_branch} &&\
-  log
-
-# next step is to: tag and release
-}
-
-function pr {
-  App_Is_edge
-  App_Is_commit_unpushed
-  App_Get_var_from_dockerfile
-  App_Is_required_apps_installed
-
-  pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
-  gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
-  gh pr view --web
-
- # if the upstream is wrong, we can reset it:
- # https://github.com/cli/cli/issues/2300
- # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
-}
-
-function mrg {
-  App_Is_edge
-  App_Is_commit_unpushed
-  App_Get_var_from_dockerfile
-
-  gh pr merge
 }
 
 function tag {
@@ -218,21 +237,6 @@ function gitio {
     #
   #
 #
-
-function edge {
-# it assumes there will be no conflict with anybody else
-# as I'm the only person using 'edge'.
-  App_Is_commit_unpushed
-
-  # delete branch
-  git branch -d edge || true &&\
-  # delete branch so there is no need to use the github GUI to delete it
-  git push origin --delete edge || true &&\
-
-  git checkout -b edge &&\
-  git push --set-upstream origin edge -f &&\
-  my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
-}
 
 function squash {
   App_Is_commit_unpushed
