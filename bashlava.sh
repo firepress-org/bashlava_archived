@@ -913,10 +913,9 @@ function App_DefineVariables {
 
 # every scripts that are not under the main bashLaVa app, should be threated as an add-on.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
-# public: load your custom script
+
+# public: load scripts outside bashlava
   source "${local_bashlava_addon_path}/_entrypoint.sh"
-# private: load your custom script
-  #source "${local_bashlava_addon_path}/private/_entrypoint.sh"
 
 # Set defaults for flags
   _flag_bypass_changelog_prompt="false"
@@ -1007,7 +1006,7 @@ function main() {
 ### optionnal Trace the execution of the script to debug (if needed)
   # set -o xtrace
 
-# ToDo: Add logic to confirm the function exist or not | tk
+# ToDo: Add logic to confirm the function exist or not 0o0o
   clear
   $1
 }
