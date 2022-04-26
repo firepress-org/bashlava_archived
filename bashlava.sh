@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 function mainbranch {
   App_Is_edge
   App_Is_commit_unpushed
@@ -400,63 +399,6 @@ function release-read {
     #
   #
 #
-
-# see also:
-#Duplicating a repository To duplicate a repository without forking it, 
-# you can run a special clone command, then mirror-push to the new repository.
-# https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/duplicating-a-repository
-
-function rebase-theme {
-# Syncing a fork, update from a forked
-# wip-sync-origin-from-upstream
-
-# CONTEXT
-# In my case, it's useful as I paid for some Ghost templates.
-# When a venfor updates his project, all I have is a zip file
-# with the new code.
-#
-# TWO GIT REPOS
-# Your fork is "origin". The repo you forked from is "upstream".
-# 1) I maintain a themeX-from-vendor "origin" repo where I commit the code from the zip file.
-# 2) I maintain a themeX-on-firepress "upstream" repo where I maintain the custom code.
-
-### ### ### ### ### ### ### ### ###
-# STEP #1
-### ### ### ### ### ### ### ### ###
-# go to edge branch
-  git checkout edge &&\
-# Add the remote, call it "upstream" (We do this only one time)
-  git remote add upstream git@github.com:pascalandy/shoji-from-vendor.git &&\
-  git remote -v &&\
-# Fetch all the branches of that remote into remote-tracking branches,
-# such as upstream/edge:
-# pulls all new commits made to upstream/edge
-  git fetch upstream &&\
-  git pull upstream edge --allow-unrelated-histories &&\
-# There are good chances that conflict might occur
-  git diff --name-only --diff-filter=U
-
-### ### ### ### ### ### ### ### ###
-# STEP #2
-### ### ### ### ### ### ### ### ###
-# first, update these two
-  git add CHANGELOG.md  # edit
-  git add Dockerfile    # edit and dont update it from upstream!
-
-# fix one file at a time
-  git add fileYXZ   # optional, using add help us to know which files have been resolved
-  git add fileYXZ   # optional, using add help us to know which files have been resolved
-  git add fileYXZ   # optional, using add help us to know which files have been resolved
-
-### ### ### ### ### ### ### ### ###
-# STEP #3
-### ### ### ### ### ### ### ### ###
-# remove upstream as it will conflict with 'm,r'
-  git remote remove upstream && git remote -v &&\
-
-# Once all conflicts are resolved
-  bashlava.sh c "Fixed conflicts / merged from 'nurui-from-vendor'"
-}
 
 #
   #
@@ -1003,7 +945,7 @@ function main() {
 ### optionnal Trace the execution of the script to debug (if needed)
   # set -o xtrace
 
-# ToDo: Add logic to confirm the function exist or not 0o0o
+# TODO Add logic to confirm the function exist or not 0o0o
   clear
   $1
 }
