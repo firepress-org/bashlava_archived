@@ -134,78 +134,71 @@ function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new
   #core>
   commit
 }
-function v { #core> ...... "version" update your app | usage: v 1.50.1
+function v {
   version
 }
-function m { #core> ...... "mainbranch or main" branch git pull + show logs
+function m { 
   mainbranch
 }
-function rr { #util> ..... "release read" Show release from Github (attr is opt)
+function rr {
   release-read
 }
-function tr { #util> ..... "tag read" tag on mainbranch (no attr)
+function tr { 
   App_Is_input_2_empty_as_it_should
   tag-read
 }
-function mdv { #util> .... "markdown viewer" | usage: mdv README.md
+function mdv {
   clear
   App_Is_input_2
   App_glow
 }
-function ci { #util> ..... "continous integration" CI status from Github Actions (no attr)
+function ci {
   App_Is_input_2_empty_as_it_should
   continuous-integration-status
 }
-function om { #util> ..... "out to mainbranch Basic git checkout (no attr)
+function om {
   App_Get_var_from_dockerfile
   git checkout ${default_branch}
 }
-function oe { #util> ..... "out edge" Basic git checkout (no attr)
+function oe {
   git checkout edge
 }
-function l { #util> ...... "log" show me the latest commits (no attr)
+function l {
   log
 }
-function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz
+function sq { 
   squash
 }
-function t { #core> ...... "tag" it uses release version as the tag version + push the tag + open the release page
+function t { 
   tag
 }
-function e { #util> ...... "edge" recrete a fresh edge branch from mainbranch (no attr)
+function e {
   edge
 }
-function s { #util> ...... "status" show me if there is something to commit (no attr)
+function s {
   status
 }
-function cr { #util> ..... "changelog read" (no attr)
-  App_Is_input_2_empty_as_it_should
-  changelog-read
-}
-function h { #util> ...... "help" alias are also set to: -h, --help, help (no attr)
+function h {
   help
 }
-function log { #util> .... "log" Show me the lastest commits (no attr)
+function log {
   git log --all --decorate --oneline --graph --pretty=oneline | head -n 6
 }
-function hash { #util> ... "hash" Show me the latest hash commit (no attr)
+function hash {
   git rev-parse HEAD && git rev-parse --short HEAD
 }
-function diff { #util> ... "diff" show me diff in my code (no attr)
+function diff {
   git diff
 }
-function vr { #util> ..... "version read" show app's version from Dockerfile (no attr)
+function vr { 
   App_Is_input_2_empty_as_it_should
   version-read
 }
-function test { #util> ... "test" test if requirements for bashLaVa are meet (no attr)
+function test { 
   test-bashlava
 }
-function gitio { #util> .. "git.io shortner" work only with GitHub repos | usage: shorturl firepress-org ghostfire (opt attr)
+function gitio {
   shortner-url
-}
-function list { #util> ... "list" all core functions (no attr)
-  list-functions
 }
 
 #
@@ -225,14 +218,6 @@ function list { #util> ... "list" all core functions (no attr)
     #
   #
 #
-
-function changelog-read {
-  input_2="CHANGELOG.md"
-  App_Is_input_2
-  App_glow50
-
-# if needed, you can specify the file using fct 'mdv'
-}
 
 function edge {
 # it assumes there will be no conflict with anybody else
@@ -267,18 +252,6 @@ function squash {
   git push;
 
   log
-}
-
-function list-functions {
-
-  title-core &&\
-  cat ${my_path}/${bashlava_executable} | awk '/#core> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
-
-  title-utilities &&\
-  cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
-
-  #cat ${my_path}/${bashlava_executable} | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
-  #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
 }
 
 function shortner-url {
@@ -368,9 +341,12 @@ function version-read-from-dockerfile {
   my_message="${app_release} < RELEASE found in Dockerfile" App_Blue
 }
 function help {
-  figlet_message="bashLaVa" App_figlet
-  help-main
-  list
+
+  input_2="help.md" && App_glow
+
+  ### old code that could be useful in the future
+  ### list tag #util> within the code
+  # cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 }
 
 function continuous-integration-status {
@@ -916,12 +892,12 @@ function App_Reset_Custom_path {
 
 function App_DefineVariables {
 # Hardcoded VAR
+
 # Default var & path. Customize if need. Usefull if you want
 # to have multiple instance of bashLaVa on your machine
   bashlava_executable="bashlava.sh"
   my_path="/usr/local/bin"
 
-# Hardcoded VAR
 # Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
 # When buidling docker images it better to not have rc in the version as breaks the pattern.
 # When not working with a docker build, feel free to put this flag as true.
@@ -937,14 +913,10 @@ function App_DefineVariables {
 
 # every scripts that are not under the main bashLaVa app, should be threated as an add-on.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
-  source "${local_bashlava_addon_path}/help.sh"
-  source "${local_bashlava_addon_path}/alias.sh"
-  source "${local_bashlava_addon_path}/examples.sh"
-  source "${local_bashlava_addon_path}/templates.sh"
-  source "${local_bashlava_addon_path}/utilities.sh"
-
-# load your custom script in there:
-  source "${local_bashlava_addon_path}/custom_scripts_entrypoint.sh"
+# public: load your custom script
+  source "${local_bashlava_addon_path}/_entrypoint.sh"
+# private: load your custom script
+  #source "${local_bashlava_addon_path}/private/_entrypoint.sh"
 
 # Set defaults for flags
   _flag_bypass_changelog_prompt="false"
@@ -953,7 +925,7 @@ function App_DefineVariables {
 
 #	docker images
   docker_img_figlet="devmtl/figlet:1.1"
-  docker_img_glow="devmtl/glow:0.3.0"
+  docker_img_glow="devmtl/glow:1.4.1"
 
 #	Define color for echo prompts:
   export col_std="\e[39m——>\e[39m"

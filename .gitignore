@@ -1,5 +1,6 @@
 # .gitignore
 ############
+private
 custom_*.sh
 env_local_path.sh
 .env
