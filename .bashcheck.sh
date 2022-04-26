@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# author: https://github.com/ralish/bash-script-template/blob/main/source.sh
+# from fork: https://github.com/ralish/bash-script-template/blob/main/source.sh
 
 # A best practices Bash script template with many useful functions. This file
 # is suitable for sourcing into other scripts and so only contains functions

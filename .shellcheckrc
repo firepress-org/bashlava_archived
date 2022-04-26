@@ -1,0 +1,12 @@
+# from fork https://github.com/ralish/bash-script-template/blob/main/.shellcheckrc
+
+# Add the script directory to the search path for source statements
+source-path=SCRIPTDIR
+
+# Enable all checks (inc. optional)
+enable=all
+
+# Disable some checks
+#
+# SC2250    require-variable-braces         optional
+disable=SC2250
