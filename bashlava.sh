@@ -697,7 +697,7 @@ function App_figlet {
 }
 
 function App_glow {
-  docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow ${input_2}
+  docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
 }
 
 function App_Pink { echo -e "${col_pink} ERROR: ${my_message}"
@@ -820,8 +820,10 @@ function main() {
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-# Load variables
+# Load ENV variables
   App_DefineVariables
+  # ToDo  App_Get_var_from_dockerfile
+
 
   if [[ -z "$2" ]]; then    #if empty
     input_2="not-set"
