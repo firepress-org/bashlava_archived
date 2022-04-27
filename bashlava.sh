@@ -17,7 +17,6 @@ function mainbranch {
   App_Is_commit_unpushed
   App_Are_files_existing
   App_Is_required_apps_installed
-  App_Get_var_from_dockerfile
 
   App_Show_version_from_three_sources
 
@@ -59,7 +58,6 @@ function commit {
 function pr {
   App_Is_edge
   App_Is_commit_unpushed
-  App_Get_var_from_dockerfile
   App_Is_required_apps_installed
 
   pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
@@ -89,7 +87,6 @@ function ci {
 function mrg {
   App_Is_edge
   App_Is_commit_unpushed
-  App_Get_var_from_dockerfile
 
   gh pr merge
   release-read
@@ -120,7 +117,6 @@ function version {
   App_Is_version_syntax_valid
 
 # version before
-  App_Get_var_from_dockerfile
   version_before=${app_release}
 
 # Logic between 'version' and 'release'.
@@ -144,20 +140,17 @@ function version {
   App_Get_var_from_dockerfile
   version_after=${app_release}
 
-  App_Get_var_from_dockerfile
   git add . &&\
   git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile" &&\
   git push && echo &&\
 
   version-read && sleep 1 && echo &&\
-
   log
 }
 
 function tag {
   App_Is_mainbranch
   App_Are_files_existing
-  App_Get_var_from_dockerfile
 
   git tag ${app_release} && git push --tags && echo &&\
   version-read && sleep 1 && echo &&\
@@ -212,7 +205,6 @@ function shortner-url {
 
 # when no attributes are passed, use configs from the current project.
   if [[ "${input_2}" == "not-set" ]]; then
-    App_Get_var_from_dockerfile
     input_2=${github_user}
     input_3=${app_name}
   fi
@@ -261,7 +253,6 @@ function test-bashlava {
 
   echo &&\
   echo "Configs for this git repo:" &&\
-  App_Get_var_from_dockerfile &&\
   my_message="${app_name} < app_name" App_Blue
   my_message="${app_version} < app_version" App_Blue
   my_message="${app_release} < app_release" App_Blue
@@ -289,7 +280,6 @@ function version-read {
 }
 
 function version-read-from-dockerfile {
-  App_Get_var_from_dockerfile
   my_message="${app_version} < VERSION found in Dockerfile" App_Blue
   my_message="${app_release} < RELEASE found in Dockerfile" App_Blue
 }
@@ -307,19 +297,7 @@ function help {
 }
 
 function release-read {
-# Find the latest version of any GitHub projects | usage: rr pascalandy docker-stack-this
-
-# Find the latest version for THIS project
-  if [[ "${input_2}" == "not-set" ]] && [[ "${input_3}" == "not-set" ]] ; then
-    App_Get_var_from_dockerfile
-# Find the latest version for ANY other projects
-  elif [[ "${input_2}" != "not-set" ]] && [[ "${input_3}" != "not-set" ]] ; then
-    github_user=${input_2}
-    app_name=${input_3}
-  else
-    my_message="FATAL: Please open an issue for this behavior (err_f13)" App_Pink && App_Stop
-  fi
-
+  # Find the latest version of any GitHub projects
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
 
@@ -369,11 +347,9 @@ function mdv {
   App_glow
 }
 function om {
-  App_Get_var_from_dockerfile
   git checkout ${default_branch}
 }
 function oe {
-  App_Get_var_from_dockerfile
   git checkout edge
 }
 function l {
@@ -435,8 +411,6 @@ function App_RemoveTmpFiles {
 }
 
 function App_Is_mainbranch {
-  App_Get_var_from_dockerfile
-
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "${default_branch}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
@@ -448,8 +422,6 @@ function App_Is_mainbranch {
 }
 
 function App_Is_edge {
-  App_Get_var_from_dockerfile
-
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
@@ -822,8 +794,7 @@ function main() {
 
 # Load ENV variables
   App_DefineVariables
-  # ToDo  App_Get_var_from_dockerfile
-
+  App_Get_var_from_dockerfile
 
   if [[ -z "$2" ]]; then    #if empty
     input_2="not-set"
