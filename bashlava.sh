@@ -580,12 +580,7 @@ function App_Is_required_apps_installed {
 #  fi
 }
 
-function App_release_check_vars {
-  url_to_check=${git_repo_url}
-  App_Curlurl
-}
-
-function App_Curlurl {
+function App_Curl_url {
 # must receive var: url_to_check
   UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
   MATCH_UPTIME_TEST1="OK";
@@ -636,11 +631,9 @@ function App_Get_var_from_dockerfile {
     my_message="Can't find variable GITHUB_REGISTRY in the Dockerfile (ERR_135)" App_Pink && App_Stop
   fi
 
-  # needed for `fct tag`
   url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
-
-  url_to_check=${git_repo_url}
-  App_Curlurl
+  url_to_check="https://github.com/${github_user}/${app_name}"
+  #App_Curl_url
 }
 
 function App_Show_version_from_three_sources {
