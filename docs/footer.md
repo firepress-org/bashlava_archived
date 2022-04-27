@@ -1,0 +1,2 @@
+- Git repo: https://github.com/firepress-org/bashlava
+- Follow me on twitter: https://twitter.com/askpascalandy
