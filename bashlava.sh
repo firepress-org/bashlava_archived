@@ -423,84 +423,6 @@ function release-read {
   #
 #
 
-function App_Changelog_Update {
-  App_Is_mainbranch
-  App_RemoveTmpFiles
-
-
-# --- GENERATE LOGS / START
-# get logs / raw format
-  git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
-    awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
-    sed -e 's/([^()]*)//g' | \
-    awk '$1=$1')"
-
-# copy logs in a file
-  mkdir -pv ~/temp
-  echo -e "${git_logs}" > ~/temp/tmpfile2
-
-# --- Time to make the log pretty for the CHANGELOG
-
-# find the number of line in this file
-  number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
-
-  App_Get_var_from_dockerfile
-
-# create URL for each hash commit
-  for lineID in $(seq 1 ${number_of_lines}); do
-    hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
-    # create URLs from commits
-      # Unlike Ubuntu, OS X requires the extension to be explicitly specified.
-      # The workaround is to set an empty string --> ''
-    sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2
-  done
-# add space at the begining of line
-  sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
-# add sign "-" at the begining of line
-  sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
-# --- GENERATE LOGS / END
-
-
-# --- GENERATE COMPARE URL / START
-# create empty line
-  echo -e "" >> ~/temp/tmpfile4
-
-# find the latest tag on Github for this project
-# Don't forget, 'release' will push the newest a big later. That's this tag is second_latest_tag
-  second_latest_tag=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
-    grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
-
-  echo -e "### 🔍 Compare" >> ~/temp/tmpfile4
-  echo -e "- ... with previous release: [${second_latest_tag} <> ${app_release}](https://github.com/${github_user}/${app_name}/compare/${second_latest_tag}...${app_release})" >> ~/temp/tmpfile4
-# --- GENERATE COMPARE URL / END
-
-# start and create changelog updates
-  echo -e "" > ~/temp/tmpfile
-# insert H2 title version
-  echo -e "## ${app_release} (${date_day})" >> ~/temp/tmpfile
-# insert H3 Updates
-  echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
-# insert commits
-  cat ~/temp/tmpfile4 >> ~/temp/tmpfile
-
-
-# Insert our release notes after pattern "# Release"
-  bottle="$(cat ~/temp/tmpfile)"
-# VERY IMPORTANT: we allign our updates under the title Release.
-# We must keep our template intacts for this reason.
-  awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
-  cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-  App_RemoveTmpFiles && echo &&\
-
-  if [[ "${_flag_bypass_changelog_prompt}" == "false" ]]; then
-    nano CHANGELOG.md && echo
-  elif [[ "${_flag_bypass_changelog_prompt}" == "true" ]]; then
-    echo "Do not prompt" > /dev/null 2>&1
-  else
-    my_message="FATAL: Please open an issue for this behavior (err_f14)" App_Pink && App_Stop
-  fi
-}
-
 function App_RemoveTmpFiles {
   rm ~/temp/tmpfile > /dev/null 2>&1
   rm ~/temp/tmpfile2 > /dev/null 2>&1
@@ -850,7 +772,6 @@ function App_DefineVariables {
   source "${local_bashlava_addon_path}/_entrypoint.sh"
 
 # Set defaults for flags
-  _flag_bypass_changelog_prompt="false"
   _flag_deploy_commit_message="not-set"
   _commit_message="not-set"
 
