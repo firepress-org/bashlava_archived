@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-function banner {
-  figlet_message="Banner Test"
-  App_figlet
-}
-
 function init_dockerfile {
 cat << EOF > Dockerfile_template
 ###################################

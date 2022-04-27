@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+function banner {
+  figlet_message="Banner Test"
+  App_figlet
+}
+
 function passgen {
   docker run --rm devmtl/alpine:3.11_2020-02-26_08H42s20_dec5798 sh "random7.sh"
 }
@@ -28,39 +33,4 @@ function example_array {
   for i in "${arr[@]}"; do
     echo ${i}
   done
-}
-
-function case_demo {
-printf 'Select your demo: (ex1 to ex4): '
-read DISTR
-
-case $DISTR in
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
-ex1)
-clear
-echo "ex1"
-
-;;
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
-ex2)
-clear
-
-echo "ex2"
-
-;;
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
-ex3)
-clear
-
-echo "ex3"
-
-;;
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#
-*)
-clear
-
-echo "Selection does not exist."
-
-;;
-esac
 }
