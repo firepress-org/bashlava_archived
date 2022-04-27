@@ -17,8 +17,7 @@ function mainbranch {
   App_Is_commit_unpushed
   App_Are_files_existing
   App_Is_required_apps_installed
-
-  App_Show_version_from_three_sources
+  App_Show_version
 
 # Update our local state
   git checkout ${default_branch} &&\
@@ -51,8 +50,7 @@ function commit {
 
   App_Is_input_2
   git status && git add -A &&\
-  git commit -m "${input_2}" && clear && git push  &&\
-  version-read-from-dockerfile
+  git commit -m "${input_2}" && clear && git push
 }
 
 function pr {
@@ -87,10 +85,8 @@ function ci {
 function mrg {
   App_Is_edge
   App_Is_commit_unpushed
-
-  gh pr merge
-  release-read
-  tag-read
+  gh pr merge &&\
+  App_Show_version
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -110,8 +106,6 @@ function version {
 # For BashLaVa, this Dockerfile is just a config-env file
   App_Is_commit_unpushed
   App_Are_files_existing
-
-  App_Show_version_from_three_sources
 
   App_Is_input_2
   App_Is_version_syntax_valid
@@ -144,7 +138,7 @@ function version {
   git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile" &&\
   git push && echo &&\
 
-  version-read && sleep 1 && echo &&\
+  App_Show_version && sleep 1 && echo &&\
   log
 }
 
@@ -153,7 +147,7 @@ function tag {
   App_Are_files_existing
 
   git tag ${app_release} && git push --tags && echo &&\
-  version-read && sleep 1 && echo &&\
+  App_Show_version && sleep 1 && echo &&\
 
   my_message="Next, prepare release" App_Blue &&\
   my_message="To quit the release notes: type ':qa + enter'" App_Blue &&\
@@ -253,35 +247,26 @@ function test-bashlava {
 
   echo &&\
   echo "Configs for this git repo:" &&\
+
   my_message="${app_name} < app_name" App_Blue
   my_message="${app_version} < app_version" App_Blue
   my_message="${app_release} < app_release" App_Blue
   my_message="${github_user} < github_user" App_Blue
+  my_message="${default_branch} < default_branch" App_Blue
+  my_message="${github_org} < github_org" App_Blue
+  my_message="${dockerhub_user} < dockerhub_user" App_Blue
+  my_message="${github_registry} < github_registry" App_Blue
   my_message="${bashlava_executable} < bashlava_executable" App_Blue
   my_message="${my_path} < my_path" App_Blue
-  my_message="${version_with_rc} < version_with_rc" App_Blue
 
   echo &&\
   my_message="This banner below confirm that your add-on is well configured:" App_Blue
   banner
 }
 
-function tag-read { 
-  latest_tag="$(git describe --tags --abbrev=0)"
-  my_message="${latest_tag} < tag version found on mainbranch" App_Blue
-}
 function status {
   gh status &&\
   git status
-}
-
-function version-read {
-  App_Show_version_from_three_sources
-}
-
-function version-read-from-dockerfile {
-  my_message="${app_version} < VERSION found in Dockerfile" App_Blue
-  my_message="${app_release} < RELEASE found in Dockerfile" App_Blue
 }
 
 function help {
@@ -294,14 +279,6 @@ function help {
   ### old code that could be useful in the future
   ### list tag #util> within the code
   # cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
-}
-
-function release-read {
-  # Find the latest version of any GitHub projects
-  release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
-    grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
-
-  my_message="${release_latest} < latest release found on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -333,13 +310,6 @@ function v {
 }
 function t { 
   tag
-}
-function rr {
-  release-read
-}
-function tr { 
-  App_Is_input_2_empty_as_it_should
-  tag-read
 }
 function mdv {
   clear
@@ -373,9 +343,10 @@ function hash {
 function diff {
   git diff
 }
-function vr {
+function sv {
+  # show version / version read
   App_Is_input_2_empty_as_it_should
-  version-read
+  App_Show_version
 }
 function test {
   test-bashlava
@@ -602,7 +573,7 @@ function App_Get_var_from_dockerfile {
   default_branch=$(cat Dockerfile | grep DEFAULT_BRANCH= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   dockerhub_user=$(cat Dockerfile | grep DOCKERHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  github_registery=$(cat Dockerfile | grep GITHUB_REGISTRY= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_registry=$(cat Dockerfile | grep GITHUB_REGISTRY= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
   # Validate vars are not empty
   if [[ -z "${app_name}" ]] ; then    #if empty
@@ -626,7 +597,7 @@ function App_Get_var_from_dockerfile {
   elif [[ -z "${dockerhub_user}" ]] ; then    #if empty
     clear
     my_message="Can't find variable DOCKERHUB_USER in the Dockerfile (ERR_134)" App_Pink && App_Stop
-  elif [[ -z "${github_registery}" ]] ; then    #if empty
+  elif [[ -z "${github_registry}" ]] ; then    #if empty
     clear
     my_message="Can't find variable GITHUB_REGISTRY in the Dockerfile (ERR_135)" App_Pink && App_Stop
   fi
@@ -636,13 +607,24 @@ function App_Get_var_from_dockerfile {
   #App_Curl_url
 }
 
-function App_Show_version_from_three_sources {
-# Read the version from three sources
+function App_Show_version {
+# Show version from three sources
   if [[ "${input_2}" == "not-set" ]]; then
-    my_message="Three version checkpoints:" && App_Blue &&\
-    version-read-from-dockerfile &&\
-    tag-read &&\
-    release-read && echo
+    echo && my_message="Version checkpoints:" && App_Blue &&\
+
+    # 1) dockerfile
+    my_message="${app_version} < VERSION in Dockerfile" App_Blue
+    my_message="${app_release} < RELEASE in Dockerfile" App_Blue
+
+    # 2) tag
+    latest_tag="$(git describe --tags --abbrev=0)"
+    my_message="${latest_tag} < TAG on mainbranch" App_Blue
+
+    # 3) release
+    release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
+      grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
+
+    my_message="${release_latest} < RELEASE on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue && echo
   fi
 }
 
