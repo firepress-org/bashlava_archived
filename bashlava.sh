@@ -271,8 +271,7 @@ function help {
 
   input_2="./docs/dev_workflow.md" && App_glow &&\
   input_2="./docs/release_workflow.md" && App_glow &&\
-  input_2="./docs/more_commands.md" && App_glow &&\
-  input_2="./docs/footer.md" && App_glow
+  input_2="./docs/more_commands.md" && App_glow
 
   ### old code that could be useful in the future
   ### list tag #util> within the code
