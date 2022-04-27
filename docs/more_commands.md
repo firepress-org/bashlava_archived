@@ -12,3 +12,6 @@
 - `diff` ......... show diff in my code
 - `hash` ......... hash from latest hash commit
 - `gitio` ........ git.io shortner, works only with GitHub repos
+
+- Git repo: https://github.com/firepress-org/bashlava
+- Follow me on twitter: https://twitter.com/askpascalandy
