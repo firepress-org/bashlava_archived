@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# Dev workflow
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+
 function mainbranch {
   App_Is_edge
   App_Is_commit_unpushed
@@ -80,7 +92,21 @@ function mrg {
   App_Get_var_from_dockerfile
 
   gh pr merge
+  release-read
+  tag-read
 }
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# Release workflow
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
 
 function version {
 # The version is tracked in a Dockerfile (it's cool if your project don't use docker)
@@ -141,91 +167,6 @@ function tag {
   echo && sleep 1 &&\
 
   gh release create
-}
-
-#
-  #
-    #
-      #
-        #
-          #
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# OFFICIAL SHORTCUTS
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-
-function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch
-  #core>
-  commit
-}
-function v {
-  version
-}
-function m { 
-  mainbranch
-}
-function rr {
-  release-read
-}
-function tr { 
-  App_Is_input_2_empty_as_it_should
-  tag-read
-}
-function mdv {
-  clear
-  App_Is_input_2
-  App_glow
-}
-function om {
-  App_Get_var_from_dockerfile
-  git checkout ${default_branch}
-}
-function oe {
-  git checkout edge
-}
-function l {
-  log
-}
-function sq { 
-  squash
-}
-function t { 
-  tag
-}
-function e {
-  edge
-}
-function s {
-  status
-}
-function h {
-  help
-}
-function log {
-  git log --all --decorate --oneline --graph --pretty=oneline | head -n 6
-}
-function hash {
-  git rev-parse HEAD && git rev-parse --short HEAD
-}
-function diff {
-  git diff
-}
-function vr { 
-  App_Is_input_2_empty_as_it_should
-  version-read
-}
-function test { 
-  test-bashlava
-}
-function gitio {
-  shortner-url
 }
 
 #
@@ -385,15 +326,9 @@ function release-read {
   my_message="${release_latest} < latest release found on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue
 }
 
-#
-  #
-    #
-      #
-        #
-          #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# WIP work in progress
+# function shortcut
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -402,6 +337,76 @@ function release-read {
     #
   #
 #
+
+function m {
+  mainbranch
+}
+function e {
+  edge
+}
+function c {
+  commit
+}
+
+## pr / ci / mrg
+
+function v {
+  version
+}
+function t { 
+  tag
+}
+function rr {
+  release-read
+}
+function tr { 
+  App_Is_input_2_empty_as_it_should
+  tag-read
+}
+function mdv {
+  clear
+  App_Is_input_2
+  App_glow
+}
+function om {
+  App_Get_var_from_dockerfile
+  git checkout ${default_branch}
+}
+function oe {
+  App_Get_var_from_dockerfile
+  git checkout edge
+}
+function l {
+  log
+}
+function sq { 
+  squash
+}
+function s {
+  status
+}
+function h {
+  help
+}
+function log {
+  git log --all --decorate --oneline --graph --pretty=oneline | head -n 6
+}
+function hash {
+  git rev-parse HEAD && git rev-parse --short HEAD
+}
+function diff {
+  git diff
+}
+function vr {
+  App_Is_input_2_empty_as_it_should
+  version-read
+}
+function test {
+  test-bashlava
+}
+function gitio {
+  shortner-url
+}
 
 #
   #
@@ -593,6 +598,7 @@ function App_Is_required_apps_installed {
 
 # gh (github cli)
 # does not work, see https://github.com/firepress-org/bashlava/issues/31
+
 #  if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; then
 #    my_message="gh is installed." App_Blue
 #  elif [[ $(gh auth status | grep -c "Logged in to github.com as") != "1" ]]; then
@@ -854,7 +860,6 @@ function main() {
   $1
 }
 
-# bash main entrypoint
 main "$@"
 
 # If the user does not provide any argument, let offer options
@@ -871,7 +876,7 @@ if [[ -z "$1" ]]; then
     5) help;;
     6) input_2="./LICENSE" && clear && App_glow;;
     7) input_2="./README.md" && clear && App_glow;;
-    *) echo "Invalid input.";; 
+    *) my_message="Invalid input." App_Pink;; 
   esac
 
 else
