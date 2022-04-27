@@ -59,7 +59,20 @@ function pr {
  # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
 }
 
-# TODO add fct ci here 0o0o
+function ci {
+  # continuous integration status
+  App_Is_input_2_empty_as_it_should &&\
+  gh run list && sleep 2 &&\
+  run_id=$(gh run list | head -1 | awk '{print $12}')
+
+  if [[ -z "${run_id}" ]]; then    #if empty
+    run_id="not-set"
+  else
+    open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
+  fi
+
+  #gh run watch
+}
 
 function mrg {
   App_Is_edge
@@ -169,10 +182,6 @@ function mdv {
   clear
   App_Is_input_2
   App_glow
-}
-function ci {
-  App_Is_input_2_empty_as_it_should
-  continuous-integration-status
 }
 function om {
   App_Get_var_from_dockerfile
@@ -343,6 +352,7 @@ function version-read-from-dockerfile {
   my_message="${app_version} < VERSION found in Dockerfile" App_Blue
   my_message="${app_release} < RELEASE found in Dockerfile" App_Blue
 }
+
 function help {
 
   input_2="./docs/dev_workflow.md" && App_glow &&\
@@ -353,17 +363,6 @@ function help {
   ### old code that could be useful in the future
   ### list tag #util> within the code
   # cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
-
-}
-
-function continuous-integration-status {
-  gh run list
-
-  sleep 2
-  run_id=$(gh run list | head -1 | awk '{print $12}')
-  open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
-
-  #gh run watch
 }
 
 function release-read {
