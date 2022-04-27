@@ -345,11 +345,15 @@ function version-read-from-dockerfile {
 }
 function help {
 
-  input_2="./docs/help.md" && App_glow
+  input_2="./docs/dev_workflow.md" && App_glow &&\
+  input_2="./docs/release_workflow.md" && App_glow &&\
+  input_2="./docs/more_commands.md" && App_glow &&\
+  input_2="./docs/footer.md" && App_glow
 
   ### old code that could be useful in the future
   ### list tag #util> within the code
   # cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
+
 }
 
 function continuous-integration-status {
@@ -765,19 +769,8 @@ function App_figlet {
   docker run --rm ${docker_img_figlet} ${figlet_message}
 }
 
-function App_glow50 {
-# markdown viewer for your terminal. Better than cat!
-  docker run --rm -it \
-    -v $(pwd):/sandbox \
-    -w /sandbox \
-    ${docker_img_glow} glow ${input_2} | sed -n 12,50p # show the first 60 lines
-}
-
 function App_glow {
-  docker run --rm -it \
-    -v $(pwd):/sandbox \
-    -w /sandbox \
-    ${docker_img_glow} glow ${input_2}
+  docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow ${input_2}
 }
 
 function App_Pink { echo -e "${col_pink} ERROR: ${my_message}"
@@ -904,15 +897,6 @@ function main() {
 # Load variables
   App_DefineVariables
 
-# Set empty attribute. The user must provide 1 to 3 attributes
-  input_1=$1
-  if [[ -z "$1" ]]; then    #if empty
-    clear
-    help
-  else
-    input_1=$1
-  fi
-
   if [[ -z "$2" ]]; then    #if empty
     input_2="not-set"
   else
@@ -945,10 +929,31 @@ function main() {
 ### optionnal Trace the execution of the script to debug (if needed)
   # set -o xtrace
 
-# TODO Add logic to confirm the function exist or not 0o0o
-  clear
+# 'command not found' / Add logic to confirm the function exist or not
+  #clear
   $1
 }
 
+# bash main entrypoint
 main "$@"
-echo
+
+# If the user does not provide any argument, let offer options
+input_1=$1
+if [[ -z "$1" ]]; then
+
+  input_2="./docs/case_what_do_you_want.md" && clear && App_glow;
+  read user_input; echo;
+  case ${user_input} in
+    1) input_2="./docs/dev_workflow.md" && clear && App_glow;;
+    2) input_2="./docs/release_workflow.md" && clear && App_glow;;
+    3) input_2="./docs/more_commands.md" && clear && App_glow;;
+    4) test;;
+    5) help;;
+    6) input_2="./LICENSE" && clear && App_glow;;
+    7) input_2="./README.md" && clear && App_glow;;
+    *) echo "Invalid input.";; 
+  esac
+
+else
+  input_1=$1
+fi
