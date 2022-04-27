@@ -104,6 +104,10 @@ function mrg {
 function version {
 # The version is tracked in a Dockerfile (it's cool if your project don't use docker)
 # For BashLaVa, this Dockerfile is just a config-env file
+
+  # ensure we are on main branch as it's a pain to manage tag from the edge branch
+  App_Is_mainbranch
+
   App_Is_commit_unpushed
   App_Are_files_existing
 
@@ -156,12 +160,6 @@ function tag {
   gh release create
 }
 
-#
-  #
-    #
-      #
-        #
-          #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
 # Utility's functions
@@ -195,9 +193,9 @@ function squash {
 }
 
 function shortner-url {
-# output example: https://git.io/bashlava
+### output example: https://git.io/bashlava
 
-# when no attributes are passed, use configs from the current project.
+### when no attributes are passed, use configs from the current project.
   if [[ "${input_2}" == "not-set" ]]; then
     input_2=${github_user}
     input_3=${app_name}
@@ -206,13 +204,13 @@ function shortner-url {
   App_Is_input_2
   App_Is_input_3
 
-# generate URL
+### generate URL
   clear
   curl -i https://git.io -F \
     "url=https://github.com/${input_2}/${input_3}" \
     -F "code=${input_3}" &&\
 
-# see result
+### see result
   echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
   open https://git.io/${input_3}
 }
@@ -238,7 +236,7 @@ function test-bashlava {
     my_message="FATAL: Please open an issue for this behavior (ERR_102)" App_Pink && App_Stop
   fi
 
-  # will stop if a file is missing
+### will stop if a file is missing
   App_Are_files_existing
 
   echo &&\
@@ -283,7 +281,7 @@ function help {
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# function shortcut
+# function alias
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -303,7 +301,7 @@ function c {
   commit
 }
 
-## pr / ci / mrg
+### pr / ci / mrg
 
 function v {
   version
@@ -344,7 +342,7 @@ function diff {
   git diff
 }
 function sv {
-  # show version / version read
+# show version / version read
   App_Is_input_2_empty_as_it_should
   App_Show_version
 }
@@ -355,16 +353,9 @@ function gitio {
   shortner-url
 }
 
-#
-  #
-    #
-      #
-        #
-          #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
 # CHILD FUNCTIONS
-# For BashLaVa, Apps are functions the user don't directly call
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -575,7 +566,7 @@ function App_Get_var_from_dockerfile {
   dockerhub_user=$(cat Dockerfile | grep DOCKERHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_registry=$(cat Dockerfile | grep GITHUB_REGISTRY= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
-  # Validate vars are not empty
+# Validate vars are not empty
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
     my_message="Can't find variable APP_NAME in the Dockerfile (ERR_128)" App_Pink && App_Stop
@@ -604,7 +595,7 @@ function App_Get_var_from_dockerfile {
 
   url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
   url_to_check="https://github.com/${github_user}/${app_name}"
-  #App_Curl_url
+  # App_Curl_url
 }
 
 function App_Show_version {
@@ -612,15 +603,15 @@ function App_Show_version {
   if [[ "${input_2}" == "not-set" ]]; then
     echo && my_message="Version checkpoints:" && App_Blue &&\
 
-    # 1) dockerfile
+# 1) dockerfile
     my_message="${app_version} < VERSION in Dockerfile" App_Blue
     my_message="${app_release} < RELEASE in Dockerfile" App_Blue
 
-    # 2) tag
+# 2) tag
     latest_tag="$(git describe --tags --abbrev=0)"
     my_message="${latest_tag} < TAG on mainbranch" App_Blue
 
-    # 3) release
+# 3) release
     release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
       grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
 
@@ -647,12 +638,6 @@ function App_Green { echo -e "${col_green} ${my_message}"
 function App_Stop { echo -e "${col_pink} exit 1" && echo && exit 1
 }
 
-#
-  #
-    #
-      #
-        #
-          #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
 # bashLaVa engine & low-level logic
@@ -674,9 +659,9 @@ function App_Reset_Custom_path {
   if [ ! -f ${my_path}/bashlava_path ]; then
     readlink $(which "${bashlava_executable}") > "${my_path}/bashlava_path_tmp"
     rm ${my_path}/bashlava_path
-    # this will strip "/bashlava.sh" from the absolute path
+# this will strip "/bashlava.sh" from the absolute path
     cat "${my_path}/bashlava_path_tmp" | sed "s/\/${bashlava_executable}//g" > "${my_path}/bashlava_path"
-    # clean up
+# clean up
     rm ${my_path}/bashlava_path_tmp
   elif [ -f ${my_path}/bashlava_path ]; then
       echo "Path is valid. Lets continue." > /dev/null 2>&1
@@ -699,28 +684,28 @@ function App_DefineVariables {
 # default value is false
   version_with_rc="false"
 
-# Reset if needed
+### Reset if needed
   App_Reset_Custom_path
   _bashlava_path="$(cat ${my_path}/bashlava_path)"
 
-# Set absolute path for the add-on scripts
+### Set absolute path for the add-on scripts
   local_bashlava_addon_path="${_bashlava_path}/add-on"
 
 # every scripts that are not under the main bashLaVa app, should be threated as an add-on.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
 
-# public: load scripts outside bashlava
+### public: load scripts outside bashlava
   source "${local_bashlava_addon_path}/_entrypoint.sh"
 
-# Set defaults for flags
+### Set defaults for flags
   _flag_deploy_commit_message="not-set"
   _commit_message="not-set"
 
-#	docker images
+###	docker images
   docker_img_figlet="devmtl/figlet:1.1"
   docker_img_glow="devmtl/glow:1.4.1"
 
-#	Define color for echo prompts:
+###	Define color for echo prompts:
   export col_std="\e[39m——>\e[39m"
   export col_grey="\e[39m——>\e[39m"
   export col_blue="\e[34m——>\e[39m"
@@ -729,7 +714,7 @@ function App_DefineVariables {
   export col_white="\e[97m——>\e[39m"
   export col_def="\e[39m"
 
-#	Date generators
+###	Date generators
   date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
     date_sec="$(date +%Y-%m-%d_%HH%Ms%S)"
     date_min="$(date +%Y-%m-%d_%HH%M)"
@@ -749,14 +734,14 @@ function App_DefineVariables {
             # 2017-XX-XX
 }
 
-# ENTRYPOINT
+### Entrypoint
 function main() {
 
   trap script_trap_err ERR
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-# Load ENV variables
+### Load ENV variables
   App_DefineVariables
   App_Get_var_from_dockerfile
 
@@ -778,12 +763,12 @@ function main() {
     input_4=$4
   fi
 
-# Load functions via .bashcheck.sh
+### Load functions via .bashcheck.sh
   script_init "$@"
   cron_init
   colour_init
 
-# Ensure there are no more than three attrbutes
+### Ensure there are no more than three attrbutes
   App_Is_Input_4_empty_as_it_should
 
 ### optional
@@ -792,14 +777,14 @@ function main() {
 ### optionnal Trace the execution of the script to debug (if needed)
   # set -o xtrace
 
-# 'command not found' / Add logic to confirm the function exist or not
+###'command not found' / Add logic to confirm the function exist or not
   #clear
   $1
 }
 
 main "$@"
 
-# If the user does not provide any argument, let offer options
+### If the user does not provide any argument, let offer options
 input_1=$1
 if [[ -z "$1" ]]; then
 
