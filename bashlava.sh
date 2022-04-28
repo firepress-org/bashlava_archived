@@ -41,19 +41,25 @@ function edge {
 }
 
 function commit {
-# if no attribute were past, well... let's see what changed:
+  # if no attribut was provided, well... let's see what changed: 
   if [[ "${input_2}" == "not-set" ]]; then
     git status -s && echo &&\
     git diff --color-words
-  fi
 
-  App_Is_input_2
-  git status && git add -A &&\
-  git commit -m "${input_2}" && clear && git push
+  elif [[ "${input_2}" != "not-set" ]]; then
+    App_Is_input_2
+    git status && git add -A &&\
+    git commit -m "${input_2}" && clear &&\
+    git push
+
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_137)" App_Pink && App_Stop
+  fi
 }
 
 function pr {
   App_Is_edge
+  App_Is_input_2_empty_as_it_should
   App_Is_commit_unpushed
   App_Is_required_apps_installed
 
