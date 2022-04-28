@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#!/usr/bin/env bash
+
 # Example 1: Output a Description for Each Option
 function case_a {
   echo "Which color do you like best?"
@@ -105,4 +107,53 @@ function case_ex3 {
 # Mapfile: Assigning a variable the values of a file's lines
 function case_ex4 {
   echo "Hello ${name:-nobody}!"
+}
+
+function idempotent_not_set {
+  # template, var needs to be ajusted
+  if [[ "${input_2}" == "not-set" ]]; then
+    echo "idempotent"
+
+  elif [[ "${input_2}" != "not-set" ]]; then
+    echo "idempotent"
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" App_Pink && App_Stop
+  fi
+}
+
+function idempotent_empty_var {
+  # template, var needs to be ajusted
+  if [[ -z "${run_id}" ]]; then    #if empty
+    echo "idempotent"
+    run_id="not-set"
+
+  elif [[ -n "${run_id}" ]]; then    #if not empty
+    echo "idempotent"
+
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" App_Pink && App_Stop
+  fi
+}
+
+function example_array {
+  arr=( "hello" "world" "three" )
+  
+  for i in "${arr[@]}"; do
+    echo ${i}
+  done
+}
+
+function banner {
+  figlet_message="Banner Test"
+  App_figlet
+}
+
+function passgen {
+  docker run --rm devmtl/alpine:3.11_2020-02-26_08H42s20_dec5798 sh "random7.sh"
+}
+
+function lint {
+  docker run -it --rm \
+    -v $(pwd)/Dockerfile:/Dockerfile:ro \
+    redcoolbeans/dockerlint
 }
