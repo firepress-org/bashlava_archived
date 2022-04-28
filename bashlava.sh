@@ -23,8 +23,6 @@ function mainbranch {
   git checkout ${default_branch} &&\
   git pull origin ${default_branch} &&\
   log
-
-# next step is to: tag and release
 }
 
 function edge {
@@ -45,7 +43,8 @@ function edge {
 function commit {
 # if no attribute were past, well... let's see what changed:
   if [[ "${input_2}" == "not-set" ]]; then
-    diff
+    git status -s && echo &&\
+    git diff --color-words
   fi
 
   App_Is_input_2
@@ -62,8 +61,7 @@ function pr {
   gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
   gh pr view --web
 
- # if the upstream is wrong, we can reset it:
- # https://github.com/cli/cli/issues/2300
+ # if the upstream is wrong, we can reset it / https://github.com/cli/cli/issues/2300
  # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
 }
 
@@ -83,6 +81,7 @@ function ci {
 }
 
 function mrg {
+  # merge from edge into main_branch
   App_Is_edge
   App_Is_commit_unpushed
   gh pr merge &&\
@@ -102,8 +101,7 @@ function mrg {
 #
 
 function version {
-# The version is tracked in a Dockerfile (it's cool if your project don't use docker)
-# For BashLaVa, this Dockerfile is just a config-env file
+# The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
 
   App_Is_commit_unpushed
   App_Are_files_existing
@@ -333,9 +331,6 @@ function log {
 }
 function hash {
   git rev-parse HEAD && git rev-parse --short HEAD
-}
-function diff {
-  git diff
 }
 function sv {
 # show version / version read
