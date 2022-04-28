@@ -105,9 +105,6 @@ function version {
 # The version is tracked in a Dockerfile (it's cool if your project don't use docker)
 # For BashLaVa, this Dockerfile is just a config-env file
 
-  # ensure we are on main branch as it's a pain to manage tag from the edge branch
-  App_Is_mainbranch
-
   App_Is_commit_unpushed
   App_Are_files_existing
 
