@@ -48,15 +48,13 @@ function commit {
   if [[ "${input_2}" == "not-set" ]]; then
     git status -s && echo &&\
     git diff --color-words
-
   elif [[ "${input_2}" != "not-set" ]]; then
     App_Is_input_2
     git status && git add -A &&\
     git commit -m "${input_2}" && clear &&\
     git push
-
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_137)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_137)" && App_Fatal
   fi
 }
 
@@ -67,18 +65,15 @@ function pr {
 
   pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
 
-  if [[ "${input_2}" == "not-set" ]]; then
-    echo "idempotent"
-
-  elif [[ "${input_2}" != "not-set" ]]; then
-    echo "idempotent"
+  if [[ -n "${pr_title}" ]]; then    #if not empty
+    echo "All good and idempotent" > /dev/null 2>&1
+    gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
+    gh pr view --web
+  elif [[ -z "${pr_title}" ]]; then    #if empty
+    my_message="Warning: pr_title variable is empty. (WAR_921)" && App_Warning_Stop
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
   fi
-
-
-  gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
-  gh pr view --web
 
  # if the upstream is wrong, we can reset it / https://github.com/cli/cli/issues/2300
  # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
@@ -142,7 +137,7 @@ function version {
   elif [[ "${version_with_rc}" != "false" ]]; then
     version_trim=${input_2}
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_101)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_101)" && App_Fatal
   fi
 
 # apply updates
@@ -246,20 +241,18 @@ function test-bashlava {
   if [[ $(uname) == "Darwin" ]]; then
     my_message="Running on a Mac (Darwin)" App_Blue
   elif [[ $(uname) != "Darwin" ]]; then
-    my_message="bashLaVa is not tested on other machine than Darmin (Mac). Please let me know if you want to contribute (WARN_901)." App_Warning
+    my_message="bashLaVa is not tested on other machine than Darmin (Mac). Please let me know if you want to contribute (WARN_901)." && App_Warning
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_102)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_102)" && App_Fatal
   fi
 
 ### will stop if a file is missing
   App_Are_files_existing
 
-  echo &&\
-  echo "App required on your local machine:" &&\
+  echo && echo "App required on your local machine:" &&\
   App_Is_required_apps_installed
 
-  echo &&\
-  echo "Configs for this git repo:" &&\
+  echo && echo "Configs for this git repo:" &&\
 
   my_message="${app_name} < app_name" App_Blue
   my_message="${app_version} < app_version" App_Blue
@@ -272,8 +265,10 @@ function test-bashlava {
   my_message="${bashlava_executable} < bashlava_executable" App_Blue
   my_message="${my_path} < my_path" App_Blue
 
-  echo &&\
-  my_message="This banner below confirm that your add-on is well configured:" App_Blue
+  # test that the entrypoint works properly
+  echo && echo "function example_array" && example_array
+
+  echo && my_message="This banner below confirm that your add-on is well configured:" App_Blue
   banner
 }
 
@@ -363,6 +358,9 @@ function test {
 function gitio {
   shortner-url
 }
+function App_Yellow {
+  App_Warning
+}
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
@@ -388,9 +386,9 @@ function App_Is_mainbranch {
   if [[ "${currentBranch}" == "${default_branch}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${currentBranch}" != "${default_branch}" ]]; then
-    my_message="You must be on branch ${default_branch} to perform this action (ERR_103)" App_Pink && App_Stop
+    my_message="You must be on branch ${default_branch} to perform this action (ERR_103)" && App_Warning_Stop
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_104)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_104)" && App_Fatal
   fi
 }
 
@@ -399,9 +397,9 @@ function App_Is_edge {
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${currentBranch}" != "edge" ]]; then
-    my_message="You must be on branch edge to perform this action (ERR_105)" App_Pink && App_Stop
+    my_message="You must be on branch edge to perform this action (ERR_105)" && App_Warning_Stop
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_106)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_106)" && App_Fatal
   fi
 }
 
@@ -409,63 +407,61 @@ function App_Is_commit_unpushed {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ $(git status | grep -c "nothing to commit") != "1" ]]; then
-    my_message="You must push your commit(s) before doing this action (ERR_107)" App_Pink && App_Stop
+    my_message="You must push your commit(s) before doing this action (ERR_107)" && App_Warning_Stop
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_108)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_108)" && App_Fatal
   fi
 }
 
 function App_Is_input_2 {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
-    my_message="You must provide two attributes. See help (ERR_109)" App_Pink
-    App_Stop
+    my_message="You must provide two attributes. See help (WARN_109)" && App_Warning_Stop
   elif [[ "${input_2}" != "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_110)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_110)" && App_Fatal
   fi
 }
 function App_Is_input_3 {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
-    my_message="You must provide three attributes. See help (ERR_111)" App_Pink
-    App_Stop
+    my_message="You must provide three attributes. See help (WARN_111)" && App_Warning_Stop
   elif [[ "${input_3}" != "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_112)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_112)" && App_Fatal
   fi
 }
 
 function App_Is_input_2_empty_as_it_should {
 # Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not-set" ]]; then
-      my_message="You cannot use two attributes for this function. See help (ERR_113)" App_Pink && App_Stop
+      my_message="You cannot use two attributes for this function. See help (ERR_113)" && App_Warning_Stop
   elif [[ "${input_2}" == "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_114)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_114)" && App_Fatal
   fi
 }
 function App_Is_input_3_empty_as_it_should {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not-set" ]]; then
-      my_message="You cannot use three attributes for this function. See help (ERR_115)" App_Pink && App_Stop
+      my_message="You cannot use three attributes for this function. See help (ERR_115)" && App_Warning_Stop
   elif [[ "${input_3}" == "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_116)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_116)" && App_Fatal
   fi
 }
 function App_Is_Input_4_empty_as_it_should {
 # Stop if 4 attributes are passed.
   if [[ "${input_4}" != "not-set" ]]; then
-      my_message="You cannot use four attributes with BashLava. See help (ERR_117)" App_Pink && App_Stop
+      my_message="You cannot use four attributes with BashLava. See help (ERR_117)" && App_Warning_Stop
   elif [[ "${input_4}" == "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_118)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_118)" && App_Fatal
   fi
 }
 
@@ -477,9 +473,9 @@ function App_Is_version_syntax_valid {
   if [[ "${input_2}" == "${ver_striped}" ]]; then
     echo "Version is valid, lets continue" > /dev/null 2>&1
   elif [[ "${input_2}" != "${ver_striped}" ]]; then
-    my_message="The version format is not valid (ERR_119)" App_Pink && App_Stop
+    my_message="The version format is not valid (ERR_119)" && App_Warning_Stop
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_120)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_120)" && App_Fatal
   fi
 }
 
@@ -489,41 +485,41 @@ function App_Are_files_existing {
   if [ -f Dockerfile ] || [ -f Dockerfile_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [ ! -f Dockerfile ] || [ ! -f Dockerfile_template ]; then
-    my_message="Dockerfile does not exit (WARN_902). Let's generate one:" App_Warning && init_dockerfile && App_Stop && echo
+    my_message="Dockerfile does not exit (WARN_902). Let's generate one:" && init_dockerfile && App_Warning_Stop && echo
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_121)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_121)" && App_Fatal
   fi
 # --- 3)
   if [ -f .gitignore ] || [ -f .gitignore_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [ ! -f .gitignore ] || [ ! -f .gitignore_template ]; then
-    my_message=".gitignore file does not exit. Let's generate one (WARN_903)" App_Warning && init_gitignore && App_Stop && echo
+    my_message=".gitignore file does not exit. Let's generate one (WARN_903)" && init_gitignore && App_Warning_Stop && echo
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_122)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_122)" && App_Fatal
   fi
 # --- 4)
   if [ -f LICENSE ] || [ -f LICENSE_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [ ! -f LICENSE ] || [ ! -f LICENSE_template ]; then
-    my_message="LICENSE file does not exit. Let's generate one (WARN_904)" App_Warning && init_license && App_Stop && echo
+    my_message="LICENSE file does not exit. Let's generate one (WARN_904)" && init_license && App_Warning_Stop && echo
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_123)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_123)" && App_Fatal
   fi
 # --- 5)
   if [ -f README.md ] || [ -f README_template.md ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [ ! -f README.md ] || [ ! -f README_template.md ]; then
-    my_message="README.md file does not exit. Let's generate one (WARN_905)" App_Warning && init_readme && App_Stop && echo
+    my_message="README.md file does not exit. Let's generate one (WARN_905)" && init_readme && App_Warning_Stop && echo
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_124)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_124)" && App_Fatal
   fi
 # --- 6)
   if [ -d .git ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [ ! -d .git ]; then
-    my_message="This is not a git repo (WARN_906)" App_Warning && App_Stop
+    my_message="This is not a git repo (WARN_906)" && App_Warning_Stop
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_125)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_125)" && App_Fatal
   fi
 # --- 7)
   # 'init_dockerfile_ignore' is optional as not everyone needs this option
@@ -536,9 +532,10 @@ function App_Is_required_apps_installed {
   if [[ $(docker version | grep -c "Server: Docker Desktop") == "1" ]]; then
     my_message="$(docker --version) is installed." App_Blue
   elif [[ $(docker version | grep -c "Server: Docker Desktop") != "1" ]]; then
-    my_message="Docker is not running (WARN_907). https://github.com/firepress-org/bash-script-template#requirements" App_Warning
+    my_message="Docker is not running (WARN_907). https://github.com/firepress-org/bash-script-template#requirements" && App_Warning
+    my_message="Bashlava can run withtout Docker but your visual experience will suffer." && App_Warning
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_126)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_126)" && App_Fatal
   fi
 
 # gh (github cli)
@@ -547,9 +544,9 @@ function App_Is_required_apps_installed {
 #  if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; then
 #    my_message="gh is installed." App_Blue
 #  elif [[ $(gh auth status | grep -c "Logged in to github.com as") != "1" ]]; then
-#    echo && my_message="gh is not installed. See requirements https://git.io/bashlava" App_Pink
+#    echo && my_message="gh is not installed. See requirements https://git.io/bashlava" && App_Warning_Stop
 #  else
-#    my_message="FATAL: Please open an issue for this behavior (ERR_127)" App_Pink && App_Stop
+#    my_message="FATAL: Please open an issue for this behavior (ERR_127)" && App_Fatal
 #  fi
 }
 
@@ -559,10 +556,10 @@ function App_Curl_url {
   MATCH_UPTIME_TEST1="OK";
   MATCH_UPTIME_TEST2="ok";
   if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is online" App_Green
+    my_message="${url_to_check} <== is online" && App_Green
   elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is offline" App_Pink
-    my_message="The git up repo is not responding as expected :-/" App_Pink && sleep 5
+    my_message="${url_to_check} <== is offline" && App_Warning
+    my_message="The git up repo is not responding as expected :-/" && App_Fatal
   fi
 }
 
@@ -580,28 +577,28 @@ function App_Get_var_from_dockerfile {
 # Validate vars are not empty
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
-    my_message="Can't find variable APP_NAME in the Dockerfile (ERR_128)" App_Pink && App_Stop
+    my_message="Can't find variable APP_NAME in the Dockerfile (ERR_128)" && App_Fatal
   elif [[ -z "${app_version}" ]] ; then    #if empty
     clear
-    my_message="Can't find variable VERSION in the Dockerfile (ERR_129)" App_Pink && App_Stop
+    my_message="Can't find variable VERSION in the Dockerfile (ERR_129)" && App_Fatal
   elif [[ -z "${app_release}" ]] ; then    #if empty
     clear
-    my_message="Can't find variable RELEASE in the Dockerfile (ERR_130)" App_Pink && App_Stop
+    my_message="Can't find variable RELEASE in the Dockerfile (ERR_130)" && App_Fatal
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
-    my_message="Can't find variable GITHUB_USER in the Dockerfile (ERR_131)" App_Pink && App_Stop
+    my_message="Can't find variable GITHUB_USER in the Dockerfile (ERR_131)" && App_Fatal
   elif [[ -z "${default_branch}" ]] ; then    #if empty
     clear
-    my_message="Can't find variable DEFAULT_BRANCH in the Dockerfile (ERR_132)" App_Pink && App_Stop
+    my_message="Can't find variable DEFAULT_BRANCH in the Dockerfile (ERR_132)" && App_Fatal
   elif [[ -z "${github_org}" ]] ; then    #if empty
     clear
-    my_message="Can't find variable GITHUB_ORG in the Dockerfile (ERR_133)" App_Pink && App_Stop
+    my_message="Can't find variable GITHUB_ORG in the Dockerfile (ERR_133)" && App_Fatal
   elif [[ -z "${dockerhub_user}" ]] ; then    #if empty
     clear
-    my_message="Can't find variable DOCKERHUB_USER in the Dockerfile (ERR_134)" App_Pink && App_Stop
+    my_message="Can't find variable DOCKERHUB_USER in the Dockerfile (ERR_134)" && App_Fatal
   elif [[ -z "${github_registry}" ]] ; then    #if empty
     clear
-    my_message="Can't find variable GITHUB_REGISTRY in the Dockerfile (ERR_135)" App_Pink && App_Stop
+    my_message="Can't find variable GITHUB_REGISTRY in the Dockerfile (ERR_135)" && App_Fatal
   fi
 
   url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
@@ -638,15 +635,35 @@ function App_glow {
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
 }
 
-function App_Pink { echo -e "${col_pink} ERROR: ${my_message}"
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# Define colors / https://www.shellhacks.com/bash-colors/
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+function App_Green { echo -e "\e[1;32m${my_message}\e[0m"
+                                # green
 }
-function App_Warning { echo -e "${col_pink} Warning: ${my_message}"
+function App_Blue { echo -e "\e[1;34m${my_message}\e[0m"
+                                # green
 }
-function App_Blue { echo -e "${col_blue} ${my_message}"
+function App_Warning { echo -e "\e[1;33m${my_message}\e[0m"
+                                # yellow
+                                # does not stop the scripts
 }
-function App_Green { echo -e "${col_green} ${my_message}"
+function App_Warning_Stop { echo -e "\e[1;33m${my_message}\e[0m" && App_Fatal
+                                # yellow
+                                # does not stop the scripts
 }
-function App_Stop { echo -e "${col_pink} exit 1" && echo && exit 1
+function App_Fatal {
+  my_message="exit 1" && echo -e "\e[1;31m${my_message}\e[0m"
+                                # red
+  exit 1
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -677,7 +694,7 @@ function App_Reset_Custom_path {
   elif [ -f ${my_path}/bashlava_path ]; then
       echo "Path is valid. Lets continue." > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_136)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_136)" && App_Fatal
   fi
 }
 
@@ -705,17 +722,27 @@ function App_DefineVariables {
 # every scripts that are not under the main bashLaVa app, should be threated as an add-on.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
 
-### public scripts
-if [[ -f "${local_bashlava_addon_path}/code_example.sh" ]]; then
-  source "${local_bashlava_addon_path}/code_example.sh"
-fi
+### entrypoint: public scripts
+  if [[ -f "${local_bashlava_addon_path}/code_example.sh" ]]; then
+    echo "all good / idempotent" > /dev/null 2>&1
+    source "${local_bashlava_addon_path}/code_example.sh"
+  elif [[ ! -f "${local_bashlava_addon_path}/code_example.sh" ]]; then
+    my_message="Warning: /code_example.sh is not present (WARN_108)" && App_Warning_Stop
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_139)" && App_Fatal
+  fi
 
-### private scripts
+### entrypoint: private / custom scripts
 # by default bashlava does not come with the private DIR
 # the user must create /private/_entrypoint.sh file
-if [[ -f "${local_bashlava_addon_path}/private/_entrypoint.sh" ]]; then
-  source "${local_bashlava_addon_path}/private/_entrypoint.sh"
-fi
+  if [[ -f "${local_bashlava_addon_path}/private/_entrypoint.sh" ]]; then
+    echo "all good / idempotent" > /dev/null 2>&1
+    source "${local_bashlava_addon_path}/private/_entrypoint.sh"
+  elif [[ ! -f "${local_bashlava_addon_path}/private/_entrypoint.sh" ]]; then
+    my_message="Warning: /private/_entrypoint.sh is not present (WARN_109)" && App_Warning_Stop
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_140)" && App_Fatal
+  fi
 
 ### Set defaults for flags
   _flag_deploy_commit_message="not-set"
@@ -724,15 +751,6 @@ fi
 ###	docker images
   docker_img_figlet="devmtl/figlet:1.1"
   docker_img_glow="devmtl/glow:1.4.1"
-
-###	Define color for echo prompts:
-  export col_std="\e[39m——>\e[39m"
-  export col_grey="\e[39m——>\e[39m"
-  export col_blue="\e[34m——>\e[39m"
-  export col_pink="\e[35m——>\e[39m"
-  export col_green="\e[36m——>\e[39m"
-  export col_white="\e[97m——>\e[39m"
-  export col_def="\e[39m"
 
 ###	Date generators
   date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
@@ -818,7 +836,7 @@ if [[ -z "$1" ]]; then
     5) help;;
     6) input_2="./LICENSE" && clear && App_glow;;
     7) input_2="./README.md" && clear && App_glow;;
-    *) my_message="Invalid input." App_Pink;; 
+    *) my_message="Invalid input." App_Fatal;; 
   esac
 
 else

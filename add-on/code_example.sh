@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 
-#!/usr/bin/env bash
-
 # Example 1: Output a Description for Each Option
 function case_a {
-  echo "Which color do you like best?"
-  echo "1 - Blue"
+  echo && echo "Which color do you like best?"
+  my_message="1 - Blue" && App_Blue
   echo "2 - Red"
-  echo "3 - Yellow"
-  echo "4 - Green"
+  my_message="3 - Yellow" && App_Warning
+  my_message="4 - Green" && App_Green
   echo "5 - Orange"
   read user_input;
   case ${user_input} in
-    1) echo "Blue is a primary color.";;
+    1) my_message="Blue is a primary color." && App_Blue;;
     2) echo "Red is a primary color.";;
-    3) echo "Yellow is a primary color.";;
-    4) echo "Green is a secondary color.";;
+    3) my_message="Yellow is a primary color." && App_Yellow;;
+    4) my_message="Green is a secondary color." && App_Green;;
     5) echo "Orange is a secondary color.";;
     *) echo "This color is not available. Please choose a different one.";; 
   esac
@@ -109,37 +107,57 @@ function case_ex4 {
   echo "Hello ${name:-nobody}!"
 }
 
-function idempotent_not_set {
-  # template, var needs to be ajusted
-  if [[ "${input_2}" == "not-set" ]]; then
-    echo "idempotent"
+function idempotent_compare_var {
+  # example only: var needs to be ajusted
 
-  elif [[ "${input_2}" != "not-set" ]]; then
-    echo "idempotent"
+  if [[ "${input_2}" != "not-set" ]]; then
+    echo "All good and idempotent" > /dev/null 2>&1
+    my_message="SOME_MESSAGE_HERE" && App_Blue
+
+  elif [[ "${input_2}" == "not-set" ]]; then
+    my_message="Warning: pr_title variable is empty. (WARN_999)" && App_Warning_Stop
+
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
   fi
 }
 
 function idempotent_empty_var {
-  # template, var needs to be ajusted
-  if [[ -z "${run_id}" ]]; then    #if empty
-    echo "idempotent"
-    run_id="not-set"
+  # example only: var needs to be ajusted
 
-  elif [[ -n "${run_id}" ]]; then    #if not empty
-    echo "idempotent"
+  if [[ -n "${run_id}" ]]; then    #if not empty
+    echo "All good and idempotent" > /dev/null 2>&1
+    my_message="SOME_MESSAGE_HERE" && App_Blue
+
+  elif [[ -z "${run_id}" ]]; then    #if empty
+    my_message="Warning: pr_title variable is empty. (WARN_999)" && App_Warning_Stop
 
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
+  fi
+}
+
+function idempotent_file_exist {
+  # example only: file needs to be ajusted
+
+  if [ -f ${my_path}/somefile.sh ]; then
+    echo "All good and idempotent" > /dev/null 2>&1
+    my_message="SOME_MESSAGE_HERE" && App_Blue
+
+  elif [ ! -f ${my_path}/somefile.sh ]; then
+    my_message="Warning: /somefile.sh is not present. (WARN_999)" && App_Warning_Stop
+
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
   fi
 }
 
 function example_array {
-  arr=( "hello" "world" "three" )
+  arr=( "hello" "world" "from entrypoint" )
   
+  echo
   for i in "${arr[@]}"; do
-    echo ${i}
+    my_message="${i}" && App_Green
   done
 }
 
