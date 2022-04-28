@@ -9,7 +9,6 @@
 - `oe` ........... checkout to branch edge
 - `om` ........... checkout to mainbranch
 - `mdv` .......... markdown viewer | usage: mdv README.md
-- `diff` ......... show diff in my code
 - `hash` ......... hash from latest hash commit
 - `gitio` ........ git.io shortner, works only with GitHub repos
 
