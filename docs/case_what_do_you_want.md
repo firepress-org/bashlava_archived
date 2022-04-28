@@ -6,4 +6,4 @@
 - 4 ..... `test`
 - 5 ..... `help`
 - 6 ..... `LICENSE`
-- 7 ..... `README`
+- 7 ..... `README.md`
