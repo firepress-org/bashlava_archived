@@ -99,6 +99,9 @@ function mrg {
   # merge from edge into main_branch
   App_Is_edge
   App_Is_commit_unpushed
+
+  input_2="./docs/mrg_info.md" && App_glow &&\
+
   gh pr merge &&\
   App_Show_version
 }
@@ -163,8 +166,8 @@ function tag {
   git tag ${app_release} && git push --tags && echo &&\
   App_Show_version && sleep 1 && echo &&\
 
-  my_message="Next, prepare release" App_Blue &&\
-  my_message="To quit the release notes: type ':qa + enter'" App_Blue &&\
+  my_message="Next, prepare release" App_Green &&\
+  my_message="To quit the release notes: type ':qa + enter'" App_Yellow &&\
   echo && sleep 1 &&\
 
   gh release create
@@ -609,7 +612,7 @@ function App_Get_var_from_dockerfile {
 function App_Show_version {
 # Show version from three sources
   if [[ "${input_2}" == "not-set" ]]; then
-    echo && my_message="Version checkpoints:" && App_Blue &&\
+    echo && my_message="Version checkpoints:" && App_Green &&\
 
 # 1) dockerfile
     my_message="${app_version} < VERSION in Dockerfile" App_Blue
