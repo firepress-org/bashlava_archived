@@ -17,6 +17,7 @@ function mainbranch {
   App_Is_commit_unpushed
   App_Are_files_existing
   App_Is_required_apps_installed
+  App_Is_input_2_empty_as_it_should
   App_Show_version
 
 # Update our local state
@@ -28,7 +29,9 @@ function mainbranch {
 function edge {
 # it assumes there will be no conflict with anybody else
 # as I'm the only person using 'edge'.
+  App_Is_input_2_empty_as_it_should
   App_Is_commit_unpushed
+  App_Is_required_apps_installed
 
   # delete branch
   git branch -d edge || true &&\
@@ -61,9 +64,19 @@ function pr {
   App_Is_edge
   App_Is_input_2_empty_as_it_should
   App_Is_commit_unpushed
-  App_Is_required_apps_installed
 
   pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
+
+  if [[ "${input_2}" == "not-set" ]]; then
+    echo "idempotent"
+
+  elif [[ "${input_2}" != "not-set" ]]; then
+    echo "idempotent"
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" App_Pink && App_Stop
+  fi
+
+
   gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
   gh pr view --web
 
@@ -74,6 +87,7 @@ function pr {
 function ci {
   # continuous integration status
   App_Is_input_2_empty_as_it_should &&\
+  App_Is_commit_unpushed &&\
   gh run list && sleep 2 &&\
   run_id=$(gh run list | head -1 | awk '{print $12}')
 
@@ -691,8 +705,17 @@ function App_DefineVariables {
 # every scripts that are not under the main bashLaVa app, should be threated as an add-on.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
 
-### public: load scripts outside bashlava
-  source "${local_bashlava_addon_path}/_entrypoint.sh"
+### public scripts
+if [[ -f "${local_bashlava_addon_path}/code_example.sh" ]]; then
+  source "${local_bashlava_addon_path}/code_example.sh"
+fi
+
+### private scripts
+# by default bashlava does not come with the private DIR
+# the user must create /private/_entrypoint.sh file
+if [[ -f "${local_bashlava_addon_path}/private/_entrypoint.sh" ]]; then
+  source "${local_bashlava_addon_path}/private/_entrypoint.sh"
+fi
 
 ### Set defaults for flags
   _flag_deploy_commit_message="not-set"
