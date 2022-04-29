@@ -65,6 +65,8 @@ function pr {
 
   pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
 
+  # TODO idempotent
+
   if [[ -n "${pr_title}" ]]; then    #if not empty
     echo "All good and idempotent" > /dev/null 2>&1
     gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
@@ -502,36 +504,20 @@ function App_Get_var_from_dockerfile {
   dockerhub_user=$(cat Dockerfile | grep DOCKERHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_registry=$(cat Dockerfile | grep GITHUB_REGISTRY= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
-# Validate vars are not empty
-  if [[ -z "${app_name}" ]] ; then    #if empty
-    clear
-    my_message="Can't find variable APP_NAME in the Dockerfile (ERR_128)" && App_Fatal
-  elif [[ -z "${app_version}" ]] ; then    #if empty
-    clear
-    my_message="Can't find variable VERSION in the Dockerfile (ERR_129)" && App_Fatal
-  elif [[ -z "${app_release}" ]] ; then    #if empty
-    clear
-    my_message="Can't find variable RELEASE in the Dockerfile (ERR_130)" && App_Fatal
-  elif [[ -z "${github_user}" ]] ; then    #if empty
-    clear
-    my_message="Can't find variable GITHUB_USER in the Dockerfile (ERR_131)" && App_Fatal
-  elif [[ -z "${default_branch}" ]] ; then    #if empty
-    clear
-    my_message="Can't find variable DEFAULT_BRANCH in the Dockerfile (ERR_132)" && App_Fatal
-  elif [[ -z "${github_org}" ]] ; then    #if empty
-    clear
-    my_message="Can't find variable GITHUB_ORG in the Dockerfile (ERR_133)" && App_Fatal
-  elif [[ -z "${dockerhub_user}" ]] ; then    #if empty
-    clear
-    my_message="Can't find variable DOCKERHUB_USER in the Dockerfile (ERR_134)" && App_Fatal
-  elif [[ -z "${github_registry}" ]] ; then    #if empty
-    clear
-    my_message="Can't find variable GITHUB_REGISTRY in the Dockerfile (ERR_135)" && App_Fatal
-  fi
+  _url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
+  _url_to_check="https://github.com/${github_user}/${app_name}"
 
-  url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
-  url_to_check="https://github.com/${github_user}/${app_name}"
-  # App_Curl_url
+  # idempotent checkpoints
+  _var_name_is="app_name" && App_Does_Var_Empty
+  _var_name_is="app_version" && App_Does_Var_Empty
+  _var_name_is="app_release" && App_Does_Var_Empty
+  _var_name_is="github_user" && App_Does_Var_Empty
+  _var_name_is="default_branch" && App_Does_Var_Empty
+  _var_name_is="github_org" && App_Does_Var_Empty
+  _var_name_is="dockerhub_user" && App_Does_Var_Empty
+  _var_name_is="github_registry" && App_Does_Var_Empty
+  _var_name_is="_url_to_release" && App_Does_Var_Empty
+  _var_name_is="_url_to_check" && App_Does_Var_Empty
 }
 
 function App_Show_version {
@@ -632,14 +618,24 @@ function App_Does_File_Exist {
   if [[ -f "${file_path_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
   elif [[ ! -f "${file_path_is}" ]]; then
-    my_message="Warning: ${file_path_is} is not present (WARN_${fct_id})" && App_Warning_Stop
+    my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
   else
-    my_message="Fatal: Please open an issue for this behavior (ERR_${fct_id})" && App_Fatal
+    my_message="Fatal error: ${file_path_is}" && App_Fatal
+  fi
+}
+
+function App_Does_Var_Empty {
+  _check_var=${app_name}
+  if [[ -n "${_check_var}" ]]; then    #if not empty
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
+  elif [[ -z "${_check_var}" ]]; then    #if empty
+    my_message="Warning: variable '${_var_name_is}' is empty" && App_Warning_Stop
+  else
+    my_message="Fatal error: '${_var_name_is}'" && App_Fatal
   fi
 }
 
 function App_DefineVariables {
-# Hardcoded VAR
 
 # Default var & path. Customize if need. Usefull if you want
 # to have multiple instance of bashLaVa on your machine
