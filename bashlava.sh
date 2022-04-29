@@ -1,17 +1,5 @@
 #!/usr/bin/env bash
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# Dev workflow
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-
 function mainbranch {
   App_Is_edge
   App_Is_commit_unpushed
@@ -99,41 +87,31 @@ function mrg {
   App_Show_version
 }
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# Release workflow
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-
 function version {
 # The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
 
   App_Is_commit_unpushed
-  App_Are_files_existing
-
   App_Is_input_2
+  App_Get_var_from_dockerfile
+  App_Are_files_existing
   App_Is_version_syntax_valid
 
 # version before
   version_before=${app_release}
 
+  _var_name_is="version_with_rc" && App_Does_Var_Empty
+
 # Logic between 'version' and 'release'.
-# For docker projects like https://github.com/firepress-org/ghostfire,
-# there is a conflict where defining a version like 3.11-rc2 doesn't work because the dockerfile will try to build 'alpine 3.11-rc2'.
-# Therefore, we need to have a release flag. This allows us to have a clean release cycle.
-# sed will trim '-rc2'
+  # For docker projects like https://github.com/firepress-org/ghostfire,
+  # there is a conflict where defining a version like 3.11-rc2 doesn't work because the dockerfile will try to build 'alpine 3.11-rc2'.
+  # Therefore, we need to have a release flag. This allows us to have a clean release cycle.
+  # sed will trim '-rc2'
   if [[ "${version_with_rc}" == "false" ]]; then
     version_trim=$(echo ${input_2} | sed 's/-r.*//g')
   elif [[ "${version_with_rc}" != "false" ]]; then
     version_trim=${input_2}
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_101)" && App_Fatal
+    my_message="FATAL: fct version" && App_Fatal
   fi
 
 # apply updates
@@ -141,14 +119,12 @@ function version {
   sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
 
 # version after
-  App_Get_var_from_dockerfile
   version_after=${app_release}
 
-  git add . &&\
-  git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile" &&\
-  git push && echo &&\
-
-  App_Show_version && sleep 1 && echo &&\
+  git add .
+  git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile"
+  git push && echo
+  App_Show_version && sleep 1 && echo
   log
 }
 
