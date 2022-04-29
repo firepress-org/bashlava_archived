@@ -53,7 +53,7 @@ function test {
   test-bashlava
 }
 function gitio {
-  shortner-url
+  App_short_url
 }
 function App_Yellow {
   App_Warning

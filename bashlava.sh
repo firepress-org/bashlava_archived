@@ -151,8 +151,7 @@ function squash {
   App_Is_input_3 # message
 
   if ! [[ $input_2 =~ ^[0-9]+$ ]] ; then
-    echo "Syntax error: input_2 is not a number" && exit 1
-    # my_message="Syntax error" && App_Fatal
+    my_message="Syntax error" && App_Fatal
   fi
 
   git reset --hard HEAD~"${input_2}"
@@ -165,19 +164,26 @@ function squash {
   log
 }
 
-function shortner-url {
-### output example: https://git.io/bashlava
+function App_short_url {
+  echo
+  my_message="URL ........ : https://git.io/${app_name}" && App_Gray
+  my_message="will point to: https://github.com/${github_user}/${app_name}" && App_Gray
+  #output example: https://git.io/bashlava
 
-### when no attributes are passed, use configs from the current project.
-  if [[ "${input_2}" == "not-set" ]]; then
-    input_2=${github_user}
-    input_3=${app_name}
-  fi
+  echo
+  my_message="Do you want to continue? (y/n)" && App_Gray
+  read user_input;
+  case ${user_input} in
+    y | Y) App_short_url_go;;
+    *) my_message="Operation cancelled" && App_Fatal;;
+  esac
+}
 
-  App_Is_input_2
-  App_Is_input_3
-
+function App_short_url_go {
 ### generate URL
+  echo "WIP 2022-04-29_14h14"
+  exit 1
+
   clear
   curl -i https://git.io -F \
     "url=https://github.com/${input_2}/${input_3}" \
@@ -194,10 +200,10 @@ function test-bashlava {
   figlet_message="bashLaVa" && App_figlet
 
   my_message="Attributes:" App_Blue
-  my_message="\$1 value is: ${input_1}" App_Gray &&\
-  my_message="\$2 value is: ${input_2}" App_Gray &&\
-  my_message="\$3 value is: ${input_3}" App_Gray &&\
-  my_message="\$4 value is: ${input_4}" App_Gray &&\
+  my_message="\$1 value is: ${input_1}" App_Gray
+  my_message="\$2 value is: ${input_2}" App_Gray
+  my_message="\$3 value is: ${input_3}" App_Gray
+  my_message="\$4 value is: ${input_4}" App_Gray
 
   echo
   my_message="OS:" App_Blue
@@ -236,6 +242,17 @@ function test-bashlava {
 
   echo && my_message="Test banner:" && App_Blue
   banner
+
+  test_color
+}
+
+function test_color {
+  my_message="Test my color"
+  App_Green
+  App_Blue
+  App_Warning
+  App_Gray
+  App_Fatal
 }
 
 function status {
@@ -577,7 +594,7 @@ function App_Warning_Stop {
                                 # yellow
 }
 function App_Fatal {
-  my_message="exit 1" && echo -e "\e[1;31m${my_message}\e[0m"
+  echo -e "\e[1;31m${my_message}\e[0m"
                                 # red
   exit 1
 }
