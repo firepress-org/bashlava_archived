@@ -161,13 +161,21 @@ function example_array {
   done
 }
 
-function banner {
-  figlet_message="Banner Test"
-  App_figlet
+function var_as_file {
+  # sometime it's useful to have a variable as a file
+  _my_var=(Yes No Maybe)
+  cat <(echo "${_my_var[@]}")
 }
 
-function passgen {
-  docker run --rm devmtl/alpine:3.11_2020-02-26_08H42s20_dec5798 sh "random7.sh"
+function rlwrap_example {
+# https://unix.stackexchange.com/questions/278631/bash-script-auto-complete-for-user-input-based-on-array-data#278666
+# works but it's not clean 2022-04-28_20h26
+
+  _choice=(Yes No Maybe)
+
+  reply=$(rlwrap -S 'Do you want to continue? ' -H ~/.jakob.history -e '' -i -f <(echo "${_choice[@]}") -o cat)
+
+  echo "reply='$reply'"
 }
 
 function lint {

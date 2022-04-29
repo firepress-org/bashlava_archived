@@ -70,7 +70,7 @@ function pr {
     gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
     gh pr view --web
   elif [[ -z "${pr_title}" ]]; then    #if empty
-    my_message="Warning: pr_title variable is empty. (WAR_921)" && App_Warning_Stop
+    my_message="Warning: pr_title variable is empty (WARN_921)" && App_Warning_Stop
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
   fi
@@ -175,7 +175,7 @@ function tag {
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# Utility's functions
+# Utility's fct
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -269,7 +269,7 @@ function test-bashlava {
   my_message="${my_path} < my_path" App_Blue
 
   # test that the entrypoint works properly
-  echo && echo "function example_array" && example_array
+  echo && echo "fct: example_array" && example_array
 
   echo && my_message="This banner below confirm that your add-on is well configured:" App_Blue
   banner
@@ -289,80 +289,6 @@ function help {
   ### old code that could be useful in the future
   ### list tag #util> within the code
   # cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
-}
-
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# function alias
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-
-function m {
-  mainbranch
-}
-function e {
-  edge
-}
-function c {
-  commit
-}
-
-### pr / ci / mrg
-
-function v {
-  version
-}
-function t { 
-  tag
-}
-function mdv {
-  clear
-  App_Is_input_2
-  App_glow
-}
-function om {
-  git checkout ${default_branch}
-}
-function oe {
-  git checkout edge
-}
-function l {
-  log
-}
-function sq { 
-  squash
-}
-function s {
-  status
-}
-function h {
-  help
-}
-function log {
-  git log --all --decorate --oneline --graph --pretty=oneline | head -n 6
-}
-function hash {
-  git rev-parse HEAD && git rev-parse --short HEAD
-}
-function sv {
-# show version / version read
-  App_Is_input_2_empty_as_it_should
-  App_Show_version
-}
-function test {
-  test-bashlava
-}
-function gitio {
-  shortner-url
-}
-function App_Yellow {
-  App_Warning
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -389,7 +315,7 @@ function App_Is_mainbranch {
   if [[ "${currentBranch}" == "${default_branch}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${currentBranch}" != "${default_branch}" ]]; then
-    my_message="You must be on branch ${default_branch} to perform this action (ERR_103)" && App_Warning_Stop
+    my_message="You must be on branch ${default_branch} to perform this action (WARN_103)" && App_Warning_Stop
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_104)" && App_Fatal
   fi
@@ -400,7 +326,7 @@ function App_Is_edge {
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${currentBranch}" != "edge" ]]; then
-    my_message="You must be on branch edge to perform this action (ERR_105)" && App_Warning_Stop
+    my_message="You must be on branch edge to perform this action (WARN_105)" && App_Warning_Stop
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_106)" && App_Fatal
   fi
@@ -410,7 +336,7 @@ function App_Is_commit_unpushed {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ $(git status | grep -c "nothing to commit") != "1" ]]; then
-    my_message="You must push your commit(s) before doing this action (ERR_107)" && App_Warning_Stop
+    my_message="You must push your commit(s) before doing this action (WARN_107)" && App_Warning_Stop
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_108)" && App_Fatal
   fi
@@ -429,7 +355,7 @@ function App_Is_input_2 {
 function App_Is_input_3 {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
-    my_message="You must provide three attributes. See help (WARN_111)" && App_Warning_Stop
+    my_message="You must provide three attributes (WARN_111)" && App_Warning_Stop
   elif [[ "${input_3}" != "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -440,7 +366,7 @@ function App_Is_input_3 {
 function App_Is_input_2_empty_as_it_should {
 # Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not-set" ]]; then
-      my_message="You cannot use two attributes for this function. See help (ERR_113)" && App_Warning_Stop
+      my_message="You cannot use two attributes for this fct (WARN_113)" && App_Warning_Stop
   elif [[ "${input_2}" == "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -450,7 +376,7 @@ function App_Is_input_2_empty_as_it_should {
 function App_Is_input_3_empty_as_it_should {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not-set" ]]; then
-      my_message="You cannot use three attributes for this function. See help (ERR_115)" && App_Warning_Stop
+      my_message="You cannot use three attributes for this fct. See help (ERR_115)" && App_Warning_Stop
   elif [[ "${input_3}" == "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -460,7 +386,7 @@ function App_Is_input_3_empty_as_it_should {
 function App_Is_Input_4_empty_as_it_should {
 # Stop if 4 attributes are passed.
   if [[ "${input_4}" != "not-set" ]]; then
-      my_message="You cannot use four attributes with BashLava. See help (ERR_117)" && App_Warning_Stop
+      my_message="You cannot use four attributes with BashLava (WARN_117)" && App_Warning && echo
   elif [[ "${input_4}" == "not-set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -649,19 +575,21 @@ function App_glow {
     #
   #
 #
-function App_Green { echo -e "\e[1;32m${my_message}\e[0m"
+function App_Green {
+  echo -e "\e[1;32m${my_message}\e[0m"
                                 # green
 }
-function App_Blue { echo -e "\e[1;34m${my_message}\e[0m"
+function App_Blue {
+  echo -e "\e[1;34m${my_message}\e[0m"
                                 # green
 }
-function App_Warning { echo -e "\e[1;33m${my_message}\e[0m"
+function App_Warning {
+  echo -e "\e[1;33m${my_message}\e[0m"
                                 # yellow
-                                # does not stop the scripts
 }
-function App_Warning_Stop { echo -e "\e[1;33m${my_message}\e[0m" && App_Fatal
+function App_Warning_Stop {
+  echo -e "\e[1;33m${my_message}\e[0m" && App_Fatal
                                 # yellow
-                                # does not stop the scripts
 }
 function App_Fatal {
   my_message="exit 1" && echo -e "\e[1;31m${my_message}\e[0m"
@@ -725,24 +653,39 @@ function App_DefineVariables {
 # every scripts that are not under the main bashLaVa app, should be threated as an add-on.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
 
-### entrypoint: public scripts
-  if [[ -f "${local_bashlava_addon_path}/code_example.sh" ]]; then
+### source our files
+
+  # public scripts
+  file_is="code_example.sh"
+  if [[ -f "${local_bashlava_addon_path}/${file_is}" ]]; then
     echo "all good / idempotent" > /dev/null 2>&1
-    source "${local_bashlava_addon_path}/code_example.sh"
-  elif [[ ! -f "${local_bashlava_addon_path}/code_example.sh" ]]; then
-    my_message="Warning: /code_example.sh is not present (WARN_108)" && App_Warning_Stop
+    source "${local_bashlava_addon_path}/${file_is}"
+  elif [[ ! -f "${local_bashlava_addon_path}/${file_is}" ]]; then
+    my_message="Warning: ./add-on/${file_is} is not present (WARN_108)" && App_Warning_Stop
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_139)" && App_Fatal
   fi
 
-### entrypoint: private / custom scripts
-# by default bashlava does not come with the private DIR
-# the user must create /private/_entrypoint.sh file
-  if [[ -f "${local_bashlava_addon_path}/private/_entrypoint.sh" ]]; then
+  # public scripts
+  file_is="alias.sh"
+  if [[ -f "${local_bashlava_addon_path}/${file_is}" ]]; then
     echo "all good / idempotent" > /dev/null 2>&1
-    source "${local_bashlava_addon_path}/private/_entrypoint.sh"
-  elif [[ ! -f "${local_bashlava_addon_path}/private/_entrypoint.sh" ]]; then
-    my_message="Warning: /private/_entrypoint.sh is not present (WARN_109)" && App_Warning_Stop
+    source "${local_bashlava_addon_path}/${file_is}"
+  elif [[ ! -f "${local_bashlava_addon_path}/${file_is}" ]]; then
+    my_message="Warning: ./add-on/${file_is} is not present (WARN_108)" && App_Warning_Stop
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_139)" && App_Fatal
+  fi
+
+  # private / custom scripts
+  # by default bashlava does not come with the private DIR
+  # the user must create /private/_entrypoint.sh file
+  file_is="_entrypoint.sh"
+  if [[ -f "${local_bashlava_addon_path}/private/${file_is}" ]]; then
+    echo "all good / idempotent" > /dev/null 2>&1
+    source "${local_bashlava_addon_path}/private/${file_is}"
+  elif [[ ! -f "${local_bashlava_addon_path}/private/${file_is}" ]]; then
+    my_message="Warning: /private/${file_is} is not present (WARN_109)" && App_Warning_Stop
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_140)" && App_Fatal
   fi
@@ -804,7 +747,7 @@ function main() {
     input_4=$4
   fi
 
-### Load functions via .bashcheck.sh
+### Load fct via .bashcheck.sh
   script_init "$@"
   cron_init
   colour_init
@@ -818,7 +761,7 @@ function main() {
 ### optionnal Trace the execution of the script to debug (if needed)
   # set -o xtrace
 
-###'command not found' / Add logic to confirm the function exist or not
+###'command not found' / Add logic to confirm the fct exist or not
   #clear
   $1
 }

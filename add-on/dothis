@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# https://opensource.com/article/18/3/creating-bash-completion-script
+
+function now() {
+  echo "je suis now"
+}
+
+_dothis_completions()
+{
+  COMPREPLY=($(compgen -W "now tomorrow never" "${COMP_WORDS[1]}"))
+}
+
+complete -F _dothis_completions dothis
