@@ -62,6 +62,10 @@ ARG APP_NAME="notset"
 ARG VERSION="notset"
 ARG RELEASE="notset"
 ARG GITHUB_USER="notset"
+ARG DEFAULT_BRANCH="notset"
+ARG GITHUB_ORG="notset"
+ARG DOCKERHUB_USER="notset"
+ARG GITHUB_REGISTRY="notset"
 
 ###################################
 # Start you Dockerfile from here (if any)
