@@ -56,11 +56,7 @@ function pr {
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
   gh pr view --web
 
- # if the upstream is wrong, we can reset it / https://github.com/cli/cli/issues/2300
- # git remote -v
- # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
- #
-
+  # if needed check ./docs/pr_upstream_issues.md
 }
 
 function ci {
