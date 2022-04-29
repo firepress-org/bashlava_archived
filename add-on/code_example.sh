@@ -4,41 +4,42 @@
 function idempotent_file_exist {
   file_is="somefile.sh"
   if [[ -f "${local_bashlava_addon_path}/${file_is}" ]]; then
-    echo "all good / idempotent" > /dev/null 2>&1
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
     source "${local_bashlava_addon_path}/${file_is}"
-    
+  
   elif [[ ! -f "${local_bashlava_addon_path}/${file_is}" ]]; then
-    my_message="Warning: ./add-on/${file_is} is not present (WARN_999)" && App_Warning_Stop
+    my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
+
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
+    my_message="Fatal error: ${file_path_is}" && App_Fatal
   fi
 }
 
 # Now we use 'App_Does_Var_Empty' instead of copy paste this fct
 function idempotent_empty_var {
   if [[ -n "${run_id}" ]]; then    #if not empty
-    echo "All good and idempotent" > /dev/null 2>&1
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
     my_message="SOME_MESSAGE_HERE" && App_Blue
 
   elif [[ -z "${run_id}" ]]; then    #if empty
-    my_message="Warning: pr_title variable is empty. (WARN_999)" && App_Warning_Stop
+    my_message="Warning: variable is empty" && App_Warning_Stop
 
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
+    my_message="Fatal error: ${run_id}" && App_Fatal
   fi
 }
 
 # Now we use 'App_Does_Var_Notset' instead of copy paste this fct
 function idempotent_compare_var {
   if [[ "${input_2}" != "not-set" ]]; then
-    echo "All good and idempotent" > /dev/null 2>&1
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
     my_message="SOME_MESSAGE_HERE" && App_Blue
 
   elif [[ "${input_2}" == "not-set" ]]; then
-    my_message="Warning: pr_title variable is empty. (WARN_999)" && App_Warning_Stop
+    my_message="Warning: variable is empty" && App_Warning_Stop
 
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
+    my_message="Fatal error: ${run_id}" && App_Fatal
   fi
 }
 
