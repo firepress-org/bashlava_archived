@@ -77,15 +77,12 @@ function ci {
   # continuous integration status
   App_Is_input_2_empty_as_it_should &&\
   App_Is_commit_unpushed &&\
-  gh run list && sleep 2 &&\
-  run_id=$(gh run list | head -1 | awk '{print $12}')
+  gh run list && sleep 2
+  
+  _run_id=$(gh run list | head -1 | awk '{print $12}')
+  _var_name_is="_run_id" && App_Does_Var_Empty
 
-  if [[ -z "${run_id}" ]]; then    #if empty
-    run_id="not-set"
-  else
-    open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
-  fi
-
+  open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
   #gh run watch
 }
 
