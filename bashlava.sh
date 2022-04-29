@@ -29,14 +29,14 @@ function edge {
   my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
 }
 
+# TODO App_Compare_If_Two_Var_Are_Equals
 function commit {
   # if no attribut was provided, well... let's see what changed: 
   if [[ "${input_2}" == "not-set" ]]; then
-    git status -s && echo &&\
-    git diff --color-words
+    status
   elif [[ "${input_2}" != "not-set" ]]; then
     App_Is_input_2
-    git status && git add -A &&\
+    status && git add -A &&\
     git commit -m "${input_2}" && clear &&\
     git push
   else
@@ -50,8 +50,8 @@ function pr {
   App_Is_commit_unpushed
 
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
-  _var_name_is="_pr_title" && App_Does_Var_Empty
-
+  _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && App_Does_Var_Empty
+  
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
   gh pr view --web
 
@@ -66,7 +66,7 @@ function ci {
   gh run list && sleep 2
   
   _run_id=$(gh run list | head -1 | awk '{print $12}')
-  _var_name_is="_run_id" && App_Does_Var_Empty
+  _check_var="_run_id" && App_Does_Var_Empty
 
   open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
   #gh run watch
@@ -90,10 +90,9 @@ function version {
   App_Is_input_2
   App_Is_version_syntax_valid
 
-# version before
+# TODO remove uneeded var version before + version after
   version_before=${app_release}
-
-  _var_name_is="version_with_rc" && App_Does_Var_Empty
+  _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && App_Does_Var_Empty
 
 # Logic between 'version' and 'release'.
   # For docker projects like https://github.com/firepress-org/ghostfire,
@@ -112,7 +111,6 @@ function version {
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${version_trim}\"/" Dockerfile
   sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
 
-# version after
   version_after=${app_release}
 
   git add .
@@ -212,10 +210,12 @@ function test_color {
 }
 
 function status {
-  gh status && git status
+  git status -s && echo &&\
+  git diff --color-words
 }
 
 function help {
+  App_Is_input_2
   input_2="./docs/dev_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/release_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/more_commands.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
@@ -281,26 +281,18 @@ function App_Is_commit_unpushed {
 }
 
 function App_Is_input_2 {
-# ensure the second attribute is not empty to continue
-  if [[ "${input_2}" == "not-set" ]]; then
-    my_message="You must provide two attributes. See help (WARN_109)" && App_Warning_Stop
-  elif [[ "${input_2}" != "not-set" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_110)" && App_Fatal
-  fi
-}
-function App_Is_input_3 {
-# ensure the third attribute is not empty to continue
-  if [[ "${input_3}" == "not-set" ]]; then
-    my_message="You must provide three attributes (WARN_111)" && App_Warning_Stop
-  elif [[ "${input_3}" != "not-set" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_112)" && App_Fatal
-  fi
+  _compare_to_me="${input_2}"
+  _compare_to_you="not-set" _fct_is="App_Is_input_2"
+  App_Compare_If_Two_Var_Are_Equals
 }
 
+function App_Is_input_3 {
+  _compare_to_me="${input_3}"
+  _compare_to_you="not-set" _fct_is="App_Is_input_3"
+  App_Compare_If_Two_Var_Are_Equals
+}
+
+# TODO new fct not equal
 function App_Is_input_2_empty_as_it_should {
 # Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not-set" ]]; then
@@ -311,6 +303,7 @@ function App_Is_input_2_empty_as_it_should {
     my_message="FATAL: Please open an issue for this behavior (ERR_114)" && App_Fatal
   fi
 }
+
 function App_Is_input_3_empty_as_it_should {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not-set" ]]; then
@@ -333,42 +326,22 @@ function App_Is_Input_4_empty_as_it_should {
 }
 
 function App_Is_version_syntax_valid {
-# Version is limited to these characters: 1234567890.rR-
-# so we can do: '3.5.13-r3' or '3.5.13-rc3'
-  ver_striped=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
-
-  if [[ "${input_2}" == "${ver_striped}" ]]; then
-    echo "Version is valid, lets continue" > /dev/null 2>&1
-  elif [[ "${input_2}" != "${ver_striped}" ]]; then
-    my_message="The version format is not valid (ERR_119)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_120)" && App_Fatal
-  fi
+  # Version is limited to these characters: 1234567890.rR-
+  # so we can do: '3.5.13-r3' or '3.5.13-rc3'
+  _compare_to_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
+  _compare_to_you="${input_2}" _fct_is="App_Is_version_syntax_valid"
+  App_Compare_If_Two_Var_Are_Equals
 }
 
 function App_Is_required_apps_installed {
-# check if these app are running
+# is docker running?
+  _compare_to_me=$(docker version | grep -c "Server: Docker Desktop")
+  _compare_to_you="1" _fct_is="App_Is_required_apps_installed"
+  App_Compare_If_Two_Var_Are_Equals
 
-# docker
-  if [[ $(docker version | grep -c "Server: Docker Desktop") == "1" ]]; then
-    my_message="$(docker --version) is installed." App_Gray
-  elif [[ $(docker version | grep -c "Server: Docker Desktop") != "1" ]]; then
-    my_message="Docker is not running (WARN_907). https://github.com/firepress-org/bash-script-template#requirements" && App_Warning
-    my_message="Bashlava can run withtout Docker but your visual experience will suffer." && App_Warning
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_126)" && App_Fatal
-  fi
-
-# gh (github cli)
+# id gh cli running ?
 # does not work, see https://github.com/firepress-org/bashlava/issues/31
-
-#  if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; then
-#    my_message="gh is installed." App_Blue
-#  elif [[ $(gh auth status | grep -c "Logged in to github.com as") != "1" ]]; then
-#    echo && my_message="gh is not installed. See requirements https://git.io/bashlava" && App_Warning_Stop
-#  else
-#    my_message="FATAL: Please open an issue for this behavior (ERR_127)" && App_Fatal
-#  fi
+# if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; ...
 }
 
 function App_Check_Are_Files_Exist {
@@ -380,11 +353,6 @@ function App_Check_Are_Files_Exist {
   file_is="README.md" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
-  fi
-
-  file_is=".git" dir_path_is="${_bashlava_path}/${file_is}" && App_Does_Directory_Exist
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message=".git directory does not exit" && App_Fatal
   fi
 
   file_is=".dockerignore" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
@@ -400,6 +368,11 @@ function App_Check_Are_Files_Exist {
   file_is="Dockerfile" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_dockerfile && exit 1
+  fi
+
+  file_is=".git" dir_path_is="${_bashlava_path}/${file_is}" && App_Does_Directory_Exist
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message=".git directory does not exit" && App_Fatal
   fi
 
   my_message="All good! <= App_Check_Are_Files_Exist" && App_Gray
@@ -490,69 +463,79 @@ file_is="_entrypoint.sh"
   _url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
   _url_to_check="https://github.com/${github_user}/${app_name}"
 
-  # idempotent checkpoints
-  _var_name_is="app_name" && App_Does_Var_Empty
-  _var_name_is="app_version" && App_Does_Var_Empty
-  _var_name_is="app_release" && App_Does_Var_Empty
-  _var_name_is="github_user" && App_Does_Var_Empty
-  _var_name_is="default_branch" && App_Does_Var_Empty
-  _var_name_is="github_org" && App_Does_Var_Empty
-  _var_name_is="dockerhub_user" && App_Does_Var_Empty
-  _var_name_is="github_registry" && App_Does_Var_Empty
-  _var_name_is="_url_to_release" && App_Does_Var_Empty
-  _var_name_is="_url_to_check" && App_Does_Var_Empty
+# idempotent checkpoints
+  _var_name="app_name" _is_it_empty=$(echo ${app_name}) && App_Does_Var_Empty
+  _var_name="app_version" _is_it_empty=$(echo ${app_version}) && App_Does_Var_Empty
+  _var_name="app_release" _is_it_empty=$(echo ${app_release}) && App_Does_Var_Empty
+  _var_name="github_user" _is_it_empty=$(echo ${github_user}) && App_Does_Var_Empty
+  _var_name="default_branch" _is_it_empty=$(echo ${default_branch}) && App_Does_Var_Empty
+  _var_name="github_org" _is_it_empty=$(echo ${github_org}) && App_Does_Var_Empty
+  _var_name="dockerhub_user" _is_it_empty=$(echo ${dockerhub_user}) && App_Does_Var_Empty
+  _var_name="github_registry" _is_it_empty=$(echo ${github_registry}) && App_Does_Var_Empty
+  _var_name="_url_to_release" _is_it_empty=$(echo ${_url_to_release}) && App_Does_Var_Empty
+  _var_name="_url_to_check" _is_it_empty=$(echo ${_url_to_check}) && App_Does_Var_Empty
 }
 
+# TODO App_Compare_If_Two_Var_Are_Equals
 function App_Show_version {
 # Show version from three sources
   if [[ "${input_2}" == "not-set" ]]; then
     echo && my_message="Version checkpoints:" && App_Green &&\
-
-# 1) dockerfile
+### dockerfile
     my_message="${app_version} < VERSION in Dockerfile" App_Blue
     my_message="${app_release} < RELEASE in Dockerfile" App_Blue
-
-# 2) tag
+### tag
     latest_tag="$(git describe --tags --abbrev=0)"
+    _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
     my_message="${latest_tag} < TAG on mainbranch" App_Blue
-
-# 3) release
+### release
     release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
       grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
-
+    _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
     my_message="${release_latest} < RELEASE on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue && echo
   fi
 }
 
 function App_figlet {
+  _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && App_Does_Var_Empty
+  _var_name="figlet_message" _is_it_empty=$(echo ${figlet_message}) && App_Does_Var_Empty
   docker run --rm ${docker_img_figlet} ${figlet_message}
 }
 
 function App_glow {
+  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && App_Does_Var_Empty
+  _var_name="input_2" _is_it_empty=$(echo ${input_2}) && App_Does_Var_Empty
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
 }
 
 # Define colors / https://www.shellhacks.com/bash-colors/
+# TODO check if var is empty
 function App_Green {
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   echo -e "\e[1;32m${my_message}\e[0m"
                                 # green
 }
 function App_Blue {
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   echo -e "\e[1;34m${my_message}\e[0m"
                                 # green
 }
 function App_Warning {
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   echo -e "\e[1;33m${my_message}\e[0m"
                                 # yellow
 }
 function App_Gray {
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   echo -e "\e[1;37m${my_message}\e[0m"
 }
 function App_Warning_Stop {
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   echo -e "\e[1;33m${my_message}\e[0m" && exit 1
                                 # yellow
 }
 function App_Fatal {
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   echo -e "\e[1;31m${my_message}\e[0m" && exit 1
                                 # red
 }
@@ -622,13 +605,13 @@ function App_Compare_If_Two_Var_Are_Equals {
 }
 
 function App_Does_Var_Empty {
-  _check_var=${app_name}
-  if [[ -n "${_check_var}" ]]; then    #if not empty
+  # source must send two vars:_is_it_empty AND _var_name
+  if [[ -n "${_is_it_empty}" ]]; then    #if not empty
     echo "idempotent checkpoint passed" > /dev/null 2>&1
-  elif [[ -z "${_check_var}" ]]; then    #if empty
-    my_message="Warning: variable '${_var_name_is}' is empty" && App_Warning_Stop
+  elif [[ -z "${_is_it_empty}" ]]; then    #if empty
+    my_message="Warning: variable '${_var_name}' is empty" && App_Warning_Stop
   else
-    my_message="Fatal error: '${_var_name_is}'" && App_Fatal
+    my_message="Fatal error: '${_var_name}'" && App_Fatal
   fi
 }
 
