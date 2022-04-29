@@ -1,5 +1,5 @@
-# Pop-up will ask 3 questions. We usually answer:
+# gh cli will ask 3 questions:
 
-- `rebase`
-- `YES` (delete edge branch)
-- `Submit`
+1. `rebase` ... (we might want to squash)
+1. `yes` ...... (delete edge branch)
+1. `submit` ... (confirm the merge)

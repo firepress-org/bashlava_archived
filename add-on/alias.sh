@@ -40,7 +40,7 @@ function h {
   help
 }
 function log {
-  git log --all --decorate --oneline --graph --pretty=oneline | head -n 6
+  git log --all --decorate --oneline --graph --pretty=oneline | head -n 10
 }
 function hash {
   git rev-parse HEAD && git rev-parse --short HEAD

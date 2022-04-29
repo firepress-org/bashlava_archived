@@ -91,9 +91,11 @@ function mrg {
   App_Is_edge
   App_Is_commit_unpushed
 
-  input_2="./docs/mrg_info.md" && App_glow &&\
+  input_2="./docs/mrg_info.md"
+  file_path_is="${input_2}" && App_Does_File_Exist
 
-  gh pr merge &&\
+  App_glow
+  gh pr merge
   App_Show_version
 }
 
