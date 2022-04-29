@@ -1,5 +1,47 @@
 #!/usr/bin/env bash
 
+# Now we use 'App_Does_File_Exist' instead of copy paste this fct
+function idempotent_file_exist {
+  file_is="somefile.sh"
+  if [[ -f "${local_bashlava_addon_path}/${file_is}" ]]; then
+    echo "all good / idempotent" > /dev/null 2>&1
+    source "${local_bashlava_addon_path}/${file_is}"
+    
+  elif [[ ! -f "${local_bashlava_addon_path}/${file_is}" ]]; then
+    my_message="Warning: ./add-on/${file_is} is not present (WARN_999)" && App_Warning_Stop
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
+  fi
+}
+
+# Now we use 'App_Does_Var_Empty' instead of copy paste this fct
+function idempotent_empty_var {
+  if [[ -n "${run_id}" ]]; then    #if not empty
+    echo "All good and idempotent" > /dev/null 2>&1
+    my_message="SOME_MESSAGE_HERE" && App_Blue
+
+  elif [[ -z "${run_id}" ]]; then    #if empty
+    my_message="Warning: pr_title variable is empty. (WARN_999)" && App_Warning_Stop
+
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
+  fi
+}
+
+# Now we use 'App_Does_Var_Notset' instead of copy paste this fct
+function idempotent_compare_var {
+  if [[ "${input_2}" != "not-set" ]]; then
+    echo "All good and idempotent" > /dev/null 2>&1
+    my_message="SOME_MESSAGE_HERE" && App_Blue
+
+  elif [[ "${input_2}" == "not-set" ]]; then
+    my_message="Warning: pr_title variable is empty. (WARN_999)" && App_Warning_Stop
+
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
+  fi
+}
+
 # Example 1: Output a Description for Each Option
 function case_a {
   echo && echo "Which color do you like best?"
@@ -105,60 +147,6 @@ function case_ex3 {
 # Mapfile: Assigning a variable the values of a file's lines
 function case_ex4 {
   echo "Hello ${name:-nobody}!"
-}
-
-function idempotent_compare_var {
-  # example only: var needs to be ajusted
-
-  if [[ "${input_2}" != "not-set" ]]; then
-    echo "All good and idempotent" > /dev/null 2>&1
-    my_message="SOME_MESSAGE_HERE" && App_Blue
-
-  elif [[ "${input_2}" == "not-set" ]]; then
-    my_message="Warning: pr_title variable is empty. (WARN_999)" && App_Warning_Stop
-
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
-  fi
-}
-
-function idempotent_empty_var {
-  # example only: var needs to be ajusted
-
-  if [[ -n "${run_id}" ]]; then    #if not empty
-    echo "All good and idempotent" > /dev/null 2>&1
-    my_message="SOME_MESSAGE_HERE" && App_Blue
-
-  elif [[ -z "${run_id}" ]]; then    #if empty
-    my_message="Warning: pr_title variable is empty. (WARN_999)" && App_Warning_Stop
-
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
-  fi
-}
-
-function idempotent_file_exist {
-  # example only: file needs to be ajusted
-
-  if [ -f ${my_path}/somefile.sh ]; then
-    echo "All good and idempotent" > /dev/null 2>&1
-    my_message="SOME_MESSAGE_HERE" && App_Blue
-
-  elif [ ! -f ${my_path}/somefile.sh ]; then
-    my_message="Warning: /somefile.sh is not present. (WARN_999)" && App_Warning_Stop
-
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
-  fi
-}
-
-function example_array {
-  arr=( "hello" "world" "from entrypoint" )
-  
-  echo
-  for i in "${arr[@]}"; do
-    my_message="${i}" && App_Green
-  done
 }
 
 function var_as_file {
