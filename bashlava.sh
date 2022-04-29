@@ -33,10 +33,11 @@ function edge {
 function commit {
   # if no attribut was provided, well... let's see what changed: 
   if [[ "${input_2}" == "not-set" ]]; then
-    status
+    git status -s && echo &&\
+    git diff --color-words
   elif [[ "${input_2}" != "not-set" ]]; then
-    App_Is_input_3
-    git add -A &&\
+    App_Is_input_2
+    git status && git add -A &&\
     git commit -m "${input_2}" && clear &&\
     git push
   else
@@ -56,7 +57,10 @@ function pr {
   gh pr view --web
 
  # if the upstream is wrong, we can reset it / https://github.com/cli/cli/issues/2300
+ # git remote -v
  # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
+ #
+
 }
 
 function ci {
@@ -211,7 +215,7 @@ function status {
 }
 
 function help {
-  App_Is_input_2
+  App_Is_input_3_empty_as_it_should
   input_2="./docs/dev_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/release_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/more_commands.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
@@ -276,16 +280,27 @@ function App_Is_commit_unpushed {
   App_Compare_If_Two_Var_Are_Equals
 }
 
+# TODO refactor this function
 function App_Is_input_2 {
-  _compare_to_me="${input_2}"
-  _compare_to_you="not-set" _fct_is="App_Is_input_2"
-  App_Compare_If_Two_Var_Are_Equals
+# ensure the second attribute is not empty to continue
+  if [[ "${input_2}" == "not-set" ]]; then
+    my_message="You must provide two attributes. See help (WARN_109)" && App_Warning_Stop
+  elif [[ "${input_2}" != "not-set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_110)" && App_Fatal
+  fi
 }
 
 function App_Is_input_3 {
-  _compare_to_me="${input_3}"
-  _compare_to_you="not-set" _fct_is="App_Is_input_3"
-  App_Compare_If_Two_Var_Are_Equals
+# ensure the third attribute is not empty to continue
+  if [[ "${input_3}" == "not-set" ]]; then
+    my_message="You must provide three attributes. See help (WARN_111)" && App_Warning_Stop
+  elif [[ "${input_3}" != "not-set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR_112)" && App_Fatal
+  fi
 }
 
 # TODO new fct not equal
