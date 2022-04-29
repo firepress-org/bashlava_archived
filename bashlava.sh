@@ -35,8 +35,8 @@ function commit {
   if [[ "${input_2}" == "not-set" ]]; then
     status
   elif [[ "${input_2}" != "not-set" ]]; then
-    App_Is_input_2
-    status && git add -A &&\
+    App_Is_input_3
+    git add -A &&\
     git commit -m "${input_2}" && clear &&\
     git push
   else
@@ -90,8 +90,6 @@ function version {
   App_Is_input_2
   App_Is_version_syntax_valid
 
-# TODO remove uneeded var version before + version after
-  version_before=${app_release}
   _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && App_Does_Var_Empty
 
 # Logic between 'version' and 'release'.
@@ -110,8 +108,6 @@ function version {
 # apply updates
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${version_trim}\"/" Dockerfile
   sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
-
-  version_after=${app_release}
 
   git add .
   git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile"
@@ -509,7 +505,6 @@ function App_glow {
 }
 
 # Define colors / https://www.shellhacks.com/bash-colors/
-# TODO check if var is empty
 function App_Green {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   echo -e "\e[1;32m${my_message}\e[0m"
