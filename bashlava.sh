@@ -78,10 +78,8 @@ function mrg {
   App_Is_edge
   App_Is_commit_unpushed
 
-  input_2="./docs/mrg_info.md"
-  file_path_is="${input_2}" && App_Does_File_Exist
+  input_2="./docs/mrg_info.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
 
-  App_glow
   gh pr merge
   App_Show_version
 }
@@ -132,9 +130,7 @@ function tag {
   App_Show_version && sleep 1 && echo &&\
 
   my_message="Next, prepare release" App_Green &&\
-  my_message="To quit the release notes: type ':qa + enter'" App_Yellow &&\
-  echo && sleep 1 &&\
-
+  my_message="To quit the release notes: type ':qa + enter'" App_Yellow && echo && sleep 1
   gh release create
 }
 
@@ -152,21 +148,21 @@ function tag {
 
 function squash {
   App_Is_commit_unpushed
-  App_Is_input_2
-  App_Is_input_3
+  App_Is_input_2 # how many steps
+  App_Is_input_3 # message
 
-  backwards_steps="${input_2}"
-  git_message="${input_3}"
-  usage="sq 3 'Add fct xyz'"
+  if ! [[ $input_2 =~ ^[0-9]+$ ]] ; then
+    echo "Syntax error: input_2 is not a number" && exit 1
+    # my_message="Syntax error" && App_Fatal
+  fi
 
-  git reset --hard HEAD~"${backwards_steps}" &&\
-  git merge --squash HEAD@{1} &&\
-  git push origin HEAD --force &&\
-  git status &&\
-  git add -A &&\
-  git commit -m "${git_message} (squash)" &&\
-  git push;
-
+  git reset --hard HEAD~"${input_2}"
+  git merge --squash HEAD@{1}
+  git push origin HEAD --force
+  git status
+  git add -A
+  git commit -m "${input_3} (squash)"
+  git push
   log
 }
 
@@ -217,6 +213,9 @@ function test-bashlava {
   echo && echo "App required on your local machine:" &&\
   App_Is_required_apps_installed
 
+  echo && echo "Ensure files and directories are present:" &&\
+  App_Check_Are_Files_Exist
+
   echo && echo "Configs for this git repo:" &&\
 
   my_message="${app_name} < app_name" App_Blue
@@ -243,9 +242,9 @@ function status {
 
 function help {
 
-  input_2="./docs/dev_workflow.md" && App_glow &&\
-  input_2="./docs/release_workflow.md" && App_glow &&\
-  input_2="./docs/more_commands.md" && App_glow
+  input_2="./docs/dev_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
+  input_2="./docs/release_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
+  input_2="./docs/more_commands.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
 
   ### old code that could be useful in the future
   ### list tag #util> within the code
@@ -394,6 +393,40 @@ function App_Is_required_apps_installed {
 #  fi
 }
 
+function App_Check_Are_Files_Exist {
+  file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+  fi
+
+  file_is="README.md" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+  fi
+
+  file_is=".git" dir_path_is="${_bashlava_path}/${file_is}" && App_Does_Directory_Exist
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message=".git directory does not exit" && App_Fatal
+  fi
+
+  file_is=".dockerignore" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+  fi
+
+  file_is=".gitignore" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+  fi
+
+  file_is="Dockerfile" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_dockerfile && exit 1
+  fi
+
+  my_message="All good! <= App_Check_Are_Files_Exist" && App_Green
+}
+
 function App_Curl_url {
 # must receive var: url_to_check
   UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
@@ -465,39 +498,6 @@ file_is="_entrypoint.sh"
     date_day="$(date +%Y-%m-%d)"
   date_month="$(date +%Y-%m)-XX"
   date_year="$(date +%Y)-XX-XX"
-
-  file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}"
-  App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
-  fi
-
-  file_is="README.md" file_path_is="${_bashlava_path}/${file_is}"
-  App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
-  fi
-
-# TODO # needs a fct that check DIR 
-#.git is a directory
-
-  file_is=".dockerignore" file_path_is="${_bashlava_path}/${file_is}"
-  App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
-  fi
-
-  file_is=".gitignore" file_path_is="${_bashlava_path}/${file_is}"
-  App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
-  fi
-
-  file_is="Dockerfile" file_path_is="${_bashlava_path}/${file_is}"
-  App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_dockerfile && exit 1
-  fi
 
 # Define vars from Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -652,6 +652,17 @@ function App_Does_Var_Empty {
   fi
 }
 
+# This fct return the flag '_file_do_not_exist'
+function App_Does_Directory_Exist {
+  if [[ -d "${dir_path_is}" ]]; then
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
+  elif [[ ! -d "${dir_path_is}" ]]; then
+    my_message="Warning: no directory: ${dir_path_is}" && App_Warning_Stop
+  else
+    my_message="Fatal error: ${dir_path_is}" && App_Fatal
+  fi
+}
+
 ### Entrypoint
 function main() {
   trap script_trap_err ERR
@@ -660,24 +671,28 @@ function main() {
 
   App_Load_variables
 
-# TODO idempotent
-
   if [[ -z "$2" ]]; then    #if empty
     input_2="not-set"
-  else
+  elif [[ ! -z "$2" ]]; then    #if empty
     input_2=$2
+  else
+    my_message="Fatal error: 'input_2'" && App_Fatal
   fi
 
   if [[ -z "$3" ]]; then    #if empty
     input_3="not-set"
-  else
+  elif [[ ! -z "$3" ]]; then    #if empty
     input_3=$3
+  else
+    my_message="Fatal error: 'input_3'" && App_Fatal
   fi
 
   if [[ -z "$4" ]]; then    #if empty
     input_4="not-set"
-  else
+  elif [[ ! -z "$4" ]]; then    #if empty
     input_4=$4
+  else
+    my_message="Fatal error: 'input_4'" && App_Fatal
   fi
 
 ### Load fct via .bashcheck.sh
@@ -705,7 +720,12 @@ main "$@"
 input_1=$1
 if [[ -z "$1" ]]; then
 
-  input_2="./docs/case_what_do_you_want.md" && clear && App_glow;
+  arr=( "./docs/case_what_do_you_want.md" "./docs/dev_workflow.md" "./docs/release_workflow.md" "./docs/more_commands.md" "./LICENSE" "./README.md" )
+  for input_2 in "${arr[@]}"; do
+    file_path_is="${input_2}" && App_Does_File_Exist
+  done
+
+  input_2="./docs/case_what_do_you_want.md" && clear && App_glow
   read user_input; echo;
   case ${user_input} in
     1) input_2="./docs/dev_workflow.md" && clear && App_glow;;
