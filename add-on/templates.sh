@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+function init_readme {
+cat << EOF > README_template.md
+This README is still empty.
+EOF
+}
+
+function banner {
+  figlet_message="Banner Test"
+  App_figlet
+}
+
+function passgen {
+  docker run --rm devmtl/alpine:3.11_2020-02-26_08H42s20_dec5798 sh "random7.sh"
+}
+
 function init_dockerfile {
 cat << EOF > Dockerfile_template
 ###################################
@@ -163,10 +178,4 @@ Find the GNU General Public License V3 at:
 https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
 EOF
 my_message="File created: ${local_bashlava_path}/LICENSE_template" App_Green
-}
-
-function init_readme {
-cat << EOF > README_template.md
-This README is still empty.
-EOF
 }
