@@ -133,18 +133,6 @@ function tag {
   gh release create
 }
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# Utility's fct
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-
 function squash {
   App_Is_commit_unpushed
   App_Is_input_2 # how many steps
@@ -180,21 +168,16 @@ function App_short_url {
 }
 
 function App_short_url_go {
-### generate URL
-  echo "WIP 2022-04-29_14h14"
-  exit 1
-
   clear
   curl -i https://git.io -F \
     "url=https://github.com/${input_2}/${input_3}" \
     -F "code=${input_3}" &&\
 
-### see result
   echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
   open https://git.io/${input_3}
 }
 
-function test-bashlava {
+function test {
 # test our script & fct. Idempotent bash script
 
   figlet_message="bashLaVa" && App_figlet
