@@ -3,7 +3,6 @@
 function mainbranch {
   App_Is_edge
   App_Is_commit_unpushed
-  App_Is_required_apps_installed
   App_Is_input_2_empty_as_it_should
   App_Show_version
 
@@ -161,7 +160,7 @@ function squash {
   git push origin HEAD --force
   git status
   git add -A
-  git commit -m "${input_3} (squash)"
+  git commit -m "${input_3} /sq"
   git push
   log
 }
@@ -194,45 +193,48 @@ function test-bashlava {
 
   figlet_message="bashLaVa" && App_figlet
 
-  echo "Attributes:" &&\
-  my_message="\$1 value is: ${input_1}" App_Blue &&\
-  my_message="\$2 value is: ${input_2}" App_Blue &&\
-  my_message="\$3 value is: ${input_3}" App_Blue &&\
-  my_message="\$4 value is: ${input_4}" App_Blue &&\
+  my_message="Attributes:" App_Blue
+  my_message="\$1 value is: ${input_1}" App_Gray &&\
+  my_message="\$2 value is: ${input_2}" App_Gray &&\
+  my_message="\$3 value is: ${input_3}" App_Gray &&\
+  my_message="\$4 value is: ${input_4}" App_Gray &&\
 
-  echo &&\
-  echo "OS:" &&\
+  echo
+  my_message="OS:" App_Blue
   if [[ $(uname) == "Darwin" ]]; then
-    my_message="Running on a Mac (Darwin)" App_Blue
+    my_message="Running on a Mac (Darwin)" App_Gray
   elif [[ $(uname) != "Darwin" ]]; then
     my_message="bashLaVa is not tested on other machine than Darmin (Mac). Please let me know if you want to contribute (WARN_901)." && App_Warning
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_102)" && App_Fatal
+    my_message="FATAL: Please open an issue for this behavior (Darmin (Mac)" && App_Fatal
   fi
 
-  echo && echo "App required on your local machine:" &&\
+  echo
+  my_message="App required on your local machine:" App_Blue
   App_Is_required_apps_installed
 
-  echo && echo "Ensure files and directories are present:" &&\
+  echo
+  my_message="Ensure files and directories are present:" App_Blue
   App_Check_Are_Files_Exist
 
-  echo && echo "Configs for this git repo:" &&\
+  echo
+  my_message="Configs for this git repo:" App_Blue
+  my_message="${app_name} < app_name" App_Gray
+  my_message="${app_version} < app_version" App_Gray
+  my_message="${app_release} < app_release" App_Gray
+  my_message="${github_user} < github_user" App_Gray
+  my_message="${default_branch} < default_branch" App_Gray
+  my_message="${github_org} < github_org" App_Gray
+  my_message="${dockerhub_user} < dockerhub_user" App_Gray
+  my_message="${github_registry} < github_registry" App_Gray
+  my_message="${bashlava_executable} < bashlava_executable" App_Gray
+  my_message="${my_path} < my_path" App_Gray
 
-  my_message="${app_name} < app_name" App_Blue
-  my_message="${app_version} < app_version" App_Blue
-  my_message="${app_release} < app_release" App_Blue
-  my_message="${github_user} < github_user" App_Blue
-  my_message="${default_branch} < default_branch" App_Blue
-  my_message="${github_org} < github_org" App_Blue
-  my_message="${dockerhub_user} < dockerhub_user" App_Blue
-  my_message="${github_registry} < github_registry" App_Blue
-  my_message="${bashlava_executable} < bashlava_executable" App_Blue
-  my_message="${my_path} < my_path" App_Blue
+  echo
+  my_message="Test entrypoint:" App_Blue
+  array
 
-  # test that the entrypoint works properly
-  echo && echo "fct: array" && array
-
-  echo && my_message="This banner below confirm that your add-on is well configured:" && App_Blue
+  echo && my_message="Test banner:" && App_Blue
   banner
 }
 
@@ -373,7 +375,7 @@ function App_Is_required_apps_installed {
 
 # docker
   if [[ $(docker version | grep -c "Server: Docker Desktop") == "1" ]]; then
-    my_message="$(docker --version) is installed." App_Blue
+    my_message="$(docker --version) is installed." App_Gray
   elif [[ $(docker version | grep -c "Server: Docker Desktop") != "1" ]]; then
     my_message="Docker is not running (WARN_907). https://github.com/firepress-org/bash-script-template#requirements" && App_Warning
     my_message="Bashlava can run withtout Docker but your visual experience will suffer." && App_Warning
@@ -424,7 +426,7 @@ function App_Check_Are_Files_Exist {
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_dockerfile && exit 1
   fi
 
-  my_message="All good! <= App_Check_Are_Files_Exist" && App_Green
+  my_message="All good! <= App_Check_Are_Files_Exist" && App_Gray
 }
 
 function App_Curl_url {
@@ -554,17 +556,7 @@ function App_glow {
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
 }
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
 # Define colors / https://www.shellhacks.com/bash-colors/
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
 function App_Green {
   echo -e "\e[1;32m${my_message}\e[0m"
                                 # green
@@ -576,6 +568,9 @@ function App_Blue {
 function App_Warning {
   echo -e "\e[1;33m${my_message}\e[0m"
                                 # yellow
+}
+function App_Gray {
+  echo -e "\e[1;37m${my_message}\e[0m"
 }
 function App_Warning_Stop {
   echo -e "\e[1;33m${my_message}\e[0m" && App_Fatal
