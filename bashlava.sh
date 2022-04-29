@@ -123,8 +123,6 @@ function version {
 }
 
 function tag {
-  App_Is_mainbranch
-
   git tag ${app_release} && git push --tags && echo &&\
   App_Show_version && sleep 1 && echo &&\
 
@@ -265,25 +263,17 @@ function App_short_url_go {
 }
 
 function App_Is_mainbranch {
-  currentBranch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "${currentBranch}" == "${default_branch}" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [[ "${currentBranch}" != "${default_branch}" ]]; then
-    my_message="You must be on branch ${default_branch} to perform this action (WARN_103)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_104)" && App_Fatal
-  fi
+  _compare_to_me=$(git rev-parse --abbrev-ref HEAD)
+  _compare_to_you="${default_branch}"
+  _fct_is="App_Is_mainbranch"
+  App_Compare_If_Two_Var_Are_Equals
 }
 
 function App_Is_edge {
-  currentBranch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "${currentBranch}" == "edge" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [[ "${currentBranch}" != "edge" ]]; then
-    my_message="You must be on branch edge to perform this action (WARN_105)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_106)" && App_Fatal
-  fi
+  _compare_to_me=$(git rev-parse --abbrev-ref HEAD)
+  _compare_to_you="edge"
+  _fct_is="App_Is_mainbranch"
+  App_Compare_If_Two_Var_Are_Equals
 }
 
 function App_Is_commit_unpushed {
@@ -565,13 +555,12 @@ function App_Gray {
   echo -e "\e[1;37m${my_message}\e[0m"
 }
 function App_Warning_Stop {
-  echo -e "\e[1;33m${my_message}\e[0m" && App_Fatal
+  echo -e "\e[1;33m${my_message}\e[0m" && exit 1
                                 # yellow
 }
 function App_Fatal {
-  echo -e "\e[1;31m${my_message}\e[0m"
+  echo -e "\e[1;31m${my_message}\e[0m" && exit 1
                                 # red
-  exit 1
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -625,6 +614,16 @@ function App_Does_File_Exist_NoStop {
     _file_do_not_exist="true"
   else
     my_message="Fatal error: ${file_path_is}" && App_Fatal
+  fi
+}
+
+function App_Compare_If_Two_Var_Are_Equals {
+  if [[ "${_compare_to_me}" == "${_compare_to_you}" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  elif [[ "${_compare_to_me}" != "${_compare_to_you}" ]]; then
+    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_to_me} and ${_compare_to_you} )" && App_Warning_Stop
+  else
+    my_message="FATAL — ${_fct_is}" && App_Fatal
   fi
 }
 
