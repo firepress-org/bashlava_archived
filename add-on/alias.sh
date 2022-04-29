@@ -49,9 +49,6 @@ function sv {
 # show version / version read
   App_Is_input_2_empty_as_it_should && App_Show_version
 }
-function test {
-  test-bashlava
-}
 function gitio {
   App_short_url
 }
