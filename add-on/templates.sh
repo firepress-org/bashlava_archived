@@ -7,7 +7,7 @@ function passgen {
 function array {
   arr=( "hello" "world" "from entrypoint" )
   for i in "${arr[@]}"; do
-    my_message="${i}" && App_Green
+    my_message="${i}" && App_Gray
   done
 }
 
