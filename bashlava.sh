@@ -63,19 +63,11 @@ function pr {
   App_Is_input_2_empty_as_it_should
   App_Is_commit_unpushed
 
-  pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
+  _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
+  _var_name_is="_pr_title" && App_Does_Var_Empty
 
-  # TODO idempotent
-
-  if [[ -n "${pr_title}" ]]; then    #if not empty
-    echo "All good and idempotent" > /dev/null 2>&1
-    gh pr create --fill --title "${pr_title}" --base "${default_branch}" &&\
-    gh pr view --web
-  elif [[ -z "${pr_title}" ]]; then    #if empty
-    my_message="Warning: pr_title variable is empty (WARN_921)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_999)" && App_Fatal
-  fi
+  gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
+  gh pr view --web
 
  # if the upstream is wrong, we can reset it / https://github.com/cli/cli/issues/2300
  # git config --local --get-regexp '\.gh-resolved$' | cut -f1 -d' ' | xargs -L1 git config --unset
