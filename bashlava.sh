@@ -231,7 +231,7 @@ function shortner-url {
 function test-bashlava {
 # test our script & fct. Idempotent bash script
 
-  figlet_message="bashLaVa" App_figlet
+  figlet_message="bashLaVa" && App_figlet
 
   echo "Attributes:" &&\
   my_message="\$1 value is: ${input_1}" App_Blue &&\
@@ -269,15 +269,14 @@ function test-bashlava {
   my_message="${my_path} < my_path" App_Blue
 
   # test that the entrypoint works properly
-  echo && echo "fct: example_array" && example_array
+  echo && echo "fct: array" && array
 
-  echo && my_message="This banner below confirm that your add-on is well configured:" App_Blue
+  echo && my_message="This banner below confirm that your add-on is well configured:" && App_Blue
   banner
 }
 
 function status {
-  gh status &&\
-  git status
+  gh status && git status
 }
 
 function help {
@@ -629,6 +628,16 @@ function App_Reset_Custom_path {
   fi
 }
 
+function App_Does_File_Exist {
+  if [[ -f "${file_path_is}" ]]; then
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
+  elif [[ ! -f "${file_path_is}" ]]; then
+    my_message="Warning: ${file_path_is} is not present (WARN_${fct_id})" && App_Warning_Stop
+  else
+    my_message="Fatal: Please open an issue for this behavior (ERR_${fct_id})" && App_Fatal
+  fi
+}
+
 function App_DefineVariables {
 # Hardcoded VAR
 
@@ -653,42 +662,26 @@ function App_DefineVariables {
 # every scripts that are not under the main bashLaVa app, should be threated as an add-on.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
 
-### source our files
+### source PUBLIC scripts
+file_is="templates.sh"
+  file_path_is="${local_bashlava_addon_path}/${file_is}"
+  fct_id="121"
+  App_Does_File_Exist
+  source "${file_path_is}"
 
-  # public scripts
-  file_is="code_example.sh"
-  if [[ -f "${local_bashlava_addon_path}/${file_is}" ]]; then
-    echo "all good / idempotent" > /dev/null 2>&1
-    source "${local_bashlava_addon_path}/${file_is}"
-  elif [[ ! -f "${local_bashlava_addon_path}/${file_is}" ]]; then
-    my_message="Warning: ./add-on/${file_is} is not present (WARN_108)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_139)" && App_Fatal
-  fi
+file_is="alias.sh"
+  file_path_is="${local_bashlava_addon_path}/${file_is}"
+  fct_id="123"
+  App_Does_File_Exist
+  source "${file_path_is}"
 
-  # public scripts
-  file_is="alias.sh"
-  if [[ -f "${local_bashlava_addon_path}/${file_is}" ]]; then
-    echo "all good / idempotent" > /dev/null 2>&1
-    source "${local_bashlava_addon_path}/${file_is}"
-  elif [[ ! -f "${local_bashlava_addon_path}/${file_is}" ]]; then
-    my_message="Warning: ./add-on/${file_is} is not present (WARN_108)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_139)" && App_Fatal
-  fi
-
-  # private / custom scripts
-  # by default bashlava does not come with the private DIR
-  # the user must create /private/_entrypoint.sh file
-  file_is="_entrypoint.sh"
-  if [[ -f "${local_bashlava_addon_path}/private/${file_is}" ]]; then
-    echo "all good / idempotent" > /dev/null 2>&1
-    source "${local_bashlava_addon_path}/private/${file_is}"
-  elif [[ ! -f "${local_bashlava_addon_path}/private/${file_is}" ]]; then
-    my_message="Warning: /private/${file_is} is not present (WARN_109)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_140)" && App_Fatal
-  fi
+### source PRIVATE / custom scripts
+# the user must create /private/_entrypoint.sh file
+file_is="_entrypoint.sh"
+  file_path_is="${local_bashlava_addon_path}/private/${file_is}"
+  fct_id="124"
+  App_Does_File_Exist
+  source "${file_path_is}"
 
 ### Set defaults for flags
   _flag_deploy_commit_message="not-set"
@@ -702,20 +695,11 @@ function App_DefineVariables {
   date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
     date_sec="$(date +%Y-%m-%d_%HH%Ms%S)"
     date_min="$(date +%Y-%m-%d_%HH%M)"
-#
+
   date_hour="$(date +%Y-%m-%d_%HH)XX"
     date_day="$(date +%Y-%m-%d)"
   date_month="$(date +%Y-%m)-XX"
   date_year="$(date +%Y)-XX-XX"
-#	This is how it looks like:
-            # 2017-02-22_10H24_14-500892448
-            # 2017-02-22_10H24_14
-            # 2017-02-22_10H24
-#
-            # 2017-02-22_10HXX
-            # 2017-02-22
-            # 2017-02-XX
-            # 2017-XX-XX
 }
 
 ### Entrypoint

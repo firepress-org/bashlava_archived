@@ -58,3 +58,6 @@ function gitio {
 function App_Yellow {
   App_Warning
 }
+function banner {
+  figlet_message="Banner Test" && App_figlet
+}
