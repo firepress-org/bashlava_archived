@@ -3,7 +3,6 @@
 function mainbranch {
   App_Is_edge
   App_Is_commit_unpushed
-  App_Are_files_existing
   App_Is_required_apps_installed
   App_Is_input_2_empty_as_it_should
   App_Show_version
@@ -92,8 +91,6 @@ function version {
 
   App_Is_commit_unpushed
   App_Is_input_2
-  App_Get_var_from_dockerfile
-  App_Are_files_existing
   App_Is_version_syntax_valid
 
 # version before
@@ -130,7 +127,6 @@ function version {
 
 function tag {
   App_Is_mainbranch
-  App_Are_files_existing
 
   git tag ${app_release} && git push --tags && echo &&\
   App_Show_version && sleep 1 && echo &&\
@@ -217,9 +213,6 @@ function test-bashlava {
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_102)" && App_Fatal
   fi
-
-### will stop if a file is missing
-  App_Are_files_existing
 
   echo && echo "App required on your local machine:" &&\
   App_Is_required_apps_installed
@@ -376,52 +369,6 @@ function App_Is_version_syntax_valid {
   fi
 }
 
-function App_Are_files_existing {
-
-# --- 2)
-  if [ -f Dockerfile ] || [ -f Dockerfile_template ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [ ! -f Dockerfile ] || [ ! -f Dockerfile_template ]; then
-    my_message="Dockerfile does not exit (WARN_902). Let's generate one:" && init_dockerfile && App_Warning_Stop && echo
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_121)" && App_Fatal
-  fi
-# --- 3)
-  if [ -f .gitignore ] || [ -f .gitignore_template ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [ ! -f .gitignore ] || [ ! -f .gitignore_template ]; then
-    my_message=".gitignore file does not exit. Let's generate one (WARN_903)" && init_gitignore && App_Warning_Stop && echo
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_122)" && App_Fatal
-  fi
-# --- 4)
-  if [ -f LICENSE ] || [ -f LICENSE_template ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [ ! -f LICENSE ] || [ ! -f LICENSE_template ]; then
-    my_message="LICENSE file does not exit. Let's generate one (WARN_904)" && init_license && App_Warning_Stop && echo
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_123)" && App_Fatal
-  fi
-# --- 5)
-  if [ -f README.md ] || [ -f README_template.md ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [ ! -f README.md ] || [ ! -f README_template.md ]; then
-    my_message="README.md file does not exit. Let's generate one (WARN_905)" && init_readme && App_Warning_Stop && echo
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_124)" && App_Fatal
-  fi
-# --- 6)
-  if [ -d .git ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [ ! -d .git ]; then
-    my_message="This is not a git repo (WARN_906)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_125)" && App_Fatal
-  fi
-# --- 7)
-  # 'init_dockerfile_ignore' is optional as not everyone needs this option
-}
-
 function App_Is_required_apps_installed {
 # check if these app are running
 
@@ -460,8 +407,99 @@ function App_Curl_url {
   fi
 }
 
-function App_Get_var_from_dockerfile {
-# Extract vars from our Dockerfile
+function App_Load_variables {
+
+# Default var & path. Customize if need. Usefull if you want
+# to have multiple instance of bashLaVa on your machine
+  bashlava_executable="bashlava.sh"
+  my_path="/usr/local/bin"
+
+# Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
+# When buidling docker images it better to not have rc in the version as breaks the pattern.
+# When not working with a docker build, feel free to put this flag as true.
+# default value is false
+  version_with_rc="false"
+
+### Reset if needed
+  App_Reset_Custom_path
+  _bashlava_path="$(cat ${my_path}/bashlava_path)"
+
+### Set absolute path for the add-on scripts
+  local_bashlava_addon_path="${_bashlava_path}/add-on"
+
+# every scripts that are not under the main bashLaVa app, should be threated as an add-on.
+# It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
+
+### source PUBLIC scripts
+file_is="templates.sh"
+  file_path_is="${local_bashlava_addon_path}/${file_is}"
+  App_Does_File_Exist
+  source "${file_path_is}"
+
+file_is="alias.sh"
+  file_path_is="${local_bashlava_addon_path}/${file_is}"
+  App_Does_File_Exist
+  source "${file_path_is}"
+
+### source PRIVATE / custom scripts
+# the user must create /private/_entrypoint.sh file
+file_is="_entrypoint.sh"
+  file_path_is="${local_bashlava_addon_path}/private/${file_is}"
+  App_Does_File_Exist
+  source "${file_path_is}"
+
+### Set defaults for flags
+  _flag_deploy_commit_message="not-set"
+  _commit_message="not-set"
+
+###	docker images
+  docker_img_figlet="devmtl/figlet:1.1"
+  docker_img_glow="devmtl/glow:1.4.1"
+
+###	Date generators
+  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
+    date_sec="$(date +%Y-%m-%d_%HH%Ms%S)"
+    date_min="$(date +%Y-%m-%d_%HH%M)"
+
+  date_hour="$(date +%Y-%m-%d_%HH)XX"
+    date_day="$(date +%Y-%m-%d)"
+  date_month="$(date +%Y-%m)-XX"
+  date_year="$(date +%Y)-XX-XX"
+
+  file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}"
+  App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+  fi
+
+  file_is="README.md" file_path_is="${_bashlava_path}/${file_is}"
+  App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+  fi
+
+# TODO # needs a fct that check DIR 
+#.git is a directory
+
+  file_is=".dockerignore" file_path_is="${_bashlava_path}/${file_is}"
+  App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+  fi
+
+  file_is=".gitignore" file_path_is="${_bashlava_path}/${file_is}"
+  App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+  fi
+
+  file_is="Dockerfile" file_path_is="${_bashlava_path}/${file_is}"
+  App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_dockerfile && exit 1
+  fi
+
+# Define vars from Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -591,6 +629,18 @@ function App_Does_File_Exist {
   fi
 }
 
+# This fct return the flag '_file_do_not_exist'
+function App_Does_File_Exist_NoStop {
+  if [[ -f "${file_path_is}" ]]; then
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
+  elif [[ ! -f "${file_path_is}" ]]; then
+    my_message="Warning: no file: ${file_path_is}" && App_Warning
+    _file_do_not_exist="true"
+  else
+    my_message="Fatal error: ${file_path_is}" && App_Fatal
+  fi
+}
+
 function App_Does_Var_Empty {
   _check_var=${app_name}
   if [[ -n "${_check_var}" ]]; then    #if not empty
@@ -602,79 +652,15 @@ function App_Does_Var_Empty {
   fi
 }
 
-function App_DefineVariables {
-
-# Default var & path. Customize if need. Usefull if you want
-# to have multiple instance of bashLaVa on your machine
-  bashlava_executable="bashlava.sh"
-  my_path="/usr/local/bin"
-
-# Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
-# When buidling docker images it better to not have rc in the version as breaks the pattern.
-# When not working with a docker build, feel free to put this flag as true.
-# default value is false
-  version_with_rc="false"
-
-### Reset if needed
-  App_Reset_Custom_path
-  _bashlava_path="$(cat ${my_path}/bashlava_path)"
-
-### Set absolute path for the add-on scripts
-  local_bashlava_addon_path="${_bashlava_path}/add-on"
-
-# every scripts that are not under the main bashLaVa app, should be threated as an add-on.
-# It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
-
-### source PUBLIC scripts
-file_is="templates.sh"
-  file_path_is="${local_bashlava_addon_path}/${file_is}"
-  fct_id="121"
-  App_Does_File_Exist
-  source "${file_path_is}"
-
-file_is="alias.sh"
-  file_path_is="${local_bashlava_addon_path}/${file_is}"
-  fct_id="123"
-  App_Does_File_Exist
-  source "${file_path_is}"
-
-### source PRIVATE / custom scripts
-# the user must create /private/_entrypoint.sh file
-file_is="_entrypoint.sh"
-  file_path_is="${local_bashlava_addon_path}/private/${file_is}"
-  fct_id="124"
-  App_Does_File_Exist
-  source "${file_path_is}"
-
-### Set defaults for flags
-  _flag_deploy_commit_message="not-set"
-  _commit_message="not-set"
-
-###	docker images
-  docker_img_figlet="devmtl/figlet:1.1"
-  docker_img_glow="devmtl/glow:1.4.1"
-
-###	Date generators
-  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
-    date_sec="$(date +%Y-%m-%d_%HH%Ms%S)"
-    date_min="$(date +%Y-%m-%d_%HH%M)"
-
-  date_hour="$(date +%Y-%m-%d_%HH)XX"
-    date_day="$(date +%Y-%m-%d)"
-  date_month="$(date +%Y-%m)-XX"
-  date_year="$(date +%Y)-XX-XX"
-}
-
 ### Entrypoint
 function main() {
-
   trap script_trap_err ERR
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-### Load ENV variables
-  App_DefineVariables
-  App_Get_var_from_dockerfile
+  App_Load_variables
+
+# TODO idempotent
 
   if [[ -z "$2" ]]; then    #if empty
     input_2="not-set"
