@@ -152,31 +152,6 @@ function squash {
   log
 }
 
-function App_short_url {
-  echo
-  my_message="URL ........ : https://git.io/${app_name}" && App_Gray
-  my_message="will point to: https://github.com/${github_user}/${app_name}" && App_Gray
-  #output example: https://git.io/bashlava
-
-  echo
-  my_message="Do you want to continue? (y/n)" && App_Gray
-  read user_input;
-  case ${user_input} in
-    y | Y) App_short_url_go;;
-    *) my_message="Operation cancelled" && App_Fatal;;
-  esac
-}
-
-function App_short_url_go {
-  clear
-  curl -i https://git.io -F \
-    "url=https://github.com/${input_2}/${input_3}" \
-    -F "code=${input_3}" &&\
-
-  echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
-  open https://git.io/${input_3}
-}
-
 function test {
 # test our script & fct. Idempotent bash script
 
@@ -243,7 +218,6 @@ function status {
 }
 
 function help {
-
   input_2="./docs/dev_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/release_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/more_commands.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
@@ -265,11 +239,29 @@ function help {
   #
 #
 
-function App_RemoveTmpFiles {
-  rm ~/temp/tmpfile > /dev/null 2>&1
-  rm ~/temp/tmpfile2 > /dev/null 2>&1
-  rm ~/temp/tmpfile3 > /dev/null 2>&1
-  rm ~/temp/tmpfile4 > /dev/null 2>&1
+function App_short_url {
+  echo
+  my_message="URL ........ : https://git.io/${app_name}" && App_Gray
+  my_message="will point to: https://github.com/${github_user}/${app_name}" && App_Gray
+  #output example: https://git.io/bashlava
+
+  echo
+  my_message="Do you want to continue? (y/n)" && App_Gray
+  read user_input;
+  case ${user_input} in
+    y | Y) App_short_url_go;;
+    *) my_message="Operation cancelled" && App_Fatal;;
+  esac
+}
+
+function App_short_url_go {
+  clear
+  curl -i https://git.io -F \
+    "url=https://github.com/${input_2}/${input_3}" \
+    -F "code=${input_3}" &&\
+
+  echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
+  open https://git.io/${input_3}
 }
 
 function App_Is_mainbranch {
