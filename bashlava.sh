@@ -264,26 +264,20 @@ function App_short_url_go {
 
 function App_Is_mainbranch {
   _compare_to_me=$(git rev-parse --abbrev-ref HEAD)
-  _compare_to_you="${default_branch}"
-  _fct_is="App_Is_mainbranch"
+  _compare_to_you="${default_branch}" _fct_is="App_Is_mainbranch"
   App_Compare_If_Two_Var_Are_Equals
 }
 
 function App_Is_edge {
   _compare_to_me=$(git rev-parse --abbrev-ref HEAD)
-  _compare_to_you="edge"
-  _fct_is="App_Is_mainbranch"
+  _compare_to_you="edge" _fct_is="App_Is_edge"
   App_Compare_If_Two_Var_Are_Equals
 }
 
 function App_Is_commit_unpushed {
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [[ $(git status | grep -c "nothing to commit") != "1" ]]; then
-    my_message="You must push your commit(s) before doing this action (WARN_107)" && App_Warning_Stop
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_108)" && App_Fatal
-  fi
+  _compare_to_me=$(git status | grep -c "nothing to commit")
+  _compare_to_you="1" _fct_is="App_Is_commit_unpushed"
+  App_Compare_If_Two_Var_Are_Equals
 }
 
 function App_Is_input_2 {
