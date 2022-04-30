@@ -1,23 +1,25 @@
 #!/usr/bin/env bash
 
 # TODO normalize FATAL error messages
+# TODO this should not happen '"${input_2}" == "not_set"'. Just use 'App_Is_input_2'
 
 function mainbranch {
-  App_Is_edge
+  App_Is_input_2_empty_as_it_should       # fct without attributs
   App_Is_commit_unpushed
-  App_Is_input_2_empty_as_it_should
+  App_Is_required_apps_installed
+  App_Is_edge
   App_Show_version
 
 # Update our local state
-  git checkout ${default_branch} &&\
-  git pull origin ${default_branch} &&\
+  git checkout ${default_branch}
+  git pull origin ${default_branch}
   log
 }
 
 function edge {
 # it assumes there will be no conflict with anybody else
 # as I'm the only person using 'edge'.
-  App_Is_input_2_empty_as_it_should
+  App_Is_input_2_empty_as_it_should       # fct without attributs
   App_Is_commit_unpushed
   App_Is_required_apps_installed
 
@@ -28,34 +30,16 @@ function edge {
 
   git checkout -b edge
   git push --set-upstream origin edge -f
-  my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
+  my_message="<edge> was freshly branched out from ${default_branch}" App_Green
 }
 
-# TODO App_Are_Var_Equal
-# App_Are_Var_Not_Equal #not_set
-
-  _compare_to_me="0o"
-  _compare_to_you="0o"
-
 function commit {
-  # if no attribut was provided, well... let's see what changed: 
-  if [[ "${input_2}" == "not_set" ]]; then
-    git status -s && echo &&\
-    git diff --color-words
-  elif [[ "${input_2}" != "not_set" ]]; then
-    App_Is_input_2
-    git status && git add -A &&\
-    git commit -m "${input_2}" && clear &&\
-    git push
-  else
-    my_message="FATAL: Please open an issue for this behavior (ERR_137)" && App_Fatal
-  fi
-
-  #_compare_to_me=$(git rev-parse --abbrev-ref HEAD)
-  #_compare_to_you="${default_branch}" _fct_is="App_Is_mainbranch"
-  #App_Are_Var_Equal
-
-  echo && my_message="Next step: 'commits' OR 'pr' " App_Green
+  App_Is_input_2
+  git status
+  git add -A
+  git commit -m "${input_2}"
+  git push
+  echo && my_message="Next step: 'c' OR 's' OR 'pr' " App_Green
 }
 
 function pr {
@@ -236,8 +220,7 @@ function test_color {
 }
 
 function status {
-  git status -s && echo &&\
-  git diff --color-words
+  git diff --color-words && git status -s
 }
 
 function help {
@@ -648,6 +631,7 @@ function App_Does_File_Exist_NoStop {
   fi
 }
 
+# Think, IF vars are EQUAL, continue else fail the process
 function App_Are_Var_Equal {
   if [[ "${_compare_to_me}" == "${_compare_to_you}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
@@ -657,6 +641,7 @@ function App_Are_Var_Equal {
     my_message="FATAL — ${_fct_is}" && App_Fatal
   fi
 }
+# Think, IF vars are NOT equal, continue else fail the process
 function App_Are_Var_Not_Equal {
   if [[ "${_compare_to_me}" == "${_compare_to_you}" ]]; then
     my_message="Checkpoint failed '${_fct_is}' ( ${_compare_to_me} and ${_compare_to_you} )" && App_Warning_Stop
