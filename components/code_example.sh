@@ -3,11 +3,11 @@
 # Now we use 'App_Does_File_Exist' instead of copy paste this fct
 function idempotent_file_exist {
   file_is="somefile.sh"
-  if [[ -f "${local_bashlava_addon_path}/${file_is}" ]]; then
+  if [[ -f "${_components_path}/${file_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
-    source "${local_bashlava_addon_path}/${file_is}"
+    source "${_components_path}/${file_is}"
   
-  elif [[ ! -f "${local_bashlava_addon_path}/${file_is}" ]]; then
+  elif [[ ! -f "${_components_path}/${file_is}" ]]; then
     my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
 
   else
@@ -131,7 +131,7 @@ function case_ex1 {
 
 # Mapfile: Assigning a variable the values of a file's lines
 function case_ex2 {
-  mapfile -t file_var < ${local_bashlava_addon_path}/list.txt
+  mapfile -t file_var < ${_components_path}/list.txt
 
   for i in "${file_var[@]}"; do
     echo "${i}"

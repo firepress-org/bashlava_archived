@@ -442,27 +442,27 @@ function App_Load_variables {
   App_Reset_Custom_path
   _bashlava_path="$(cat ${my_path}/bashlava_path)"
 
-### Set absolute path for the add-on scripts
-  local_bashlava_addon_path="${_bashlava_path}/add-on"
+### Set absolute path for the components scripts
+  _components_path="${_bashlava_path}/components"
 
-# every scripts that are not under the main bashLaVa app, should be threated as an add-on.
+# every scripts that are not under the main bashLaVa app, should be threated as an components.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
 
 ### source PUBLIC scripts
 file_is="templates.sh"
-  file_path_is="${local_bashlava_addon_path}/${file_is}"
+  file_path_is="${_components_path}/${file_is}"
   App_Does_File_Exist
   source "${file_path_is}"
 
 file_is="alias.sh"
-  file_path_is="${local_bashlava_addon_path}/${file_is}"
+  file_path_is="${_components_path}/${file_is}"
   App_Does_File_Exist
   source "${file_path_is}"
 
 ### source PRIVATE / custom scripts
 # the user must create /private/_entrypoint.sh file
 file_is="_entrypoint.sh"
-  file_path_is="${local_bashlava_addon_path}/private/${file_is}"
+  file_path_is="${_components_path}/private/${file_is}"
   App_Does_File_Exist
   source "${file_path_is}"
 
@@ -524,12 +524,12 @@ function App_Show_Version {
 ### tag
   latest_tag="$(git describe --tags --abbrev=0)"
   _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
-  my_message="${latest_tag} < TAG on mainbranch" App_Gray
+  my_message="${latest_tag} < TAG in mainbranch" App_Gray
 ### release
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
   _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
-  my_message="${release_latest} < RELEASE on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray && echo
+  my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray && echo
 
 }
 
