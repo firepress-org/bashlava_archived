@@ -4,6 +4,7 @@
 # normalize FATAL error messages
 # manage core vars
 # manage private vars
+# dummy task to commit and test the flow
 
 function mainbranch {
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
