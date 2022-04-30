@@ -58,3 +58,14 @@ function App_Yellow {
 function banner {
   figlet_message="Banner Test" && App_figlet
 }
+
+### capture common typo or bad habits
+function invalid {
+  my_message="Invalid command" && App_Warning_Stop
+}
+function sh { 
+  invalid
+}
+function oo { 
+  invalid
+}
