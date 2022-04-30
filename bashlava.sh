@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO normalize FATAL error messages
+
 function mainbranch {
   App_Is_edge
   App_Is_commit_unpushed
@@ -32,7 +34,6 @@ function edge {
 # TODO App_Are_Var_Equal
 # App_Are_Var_Not_Equal #not-set
 
-
   _compare_to_me="0o"
   _compare_to_you="0o"
 
@@ -49,6 +50,11 @@ function commit {
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_137)" && App_Fatal
   fi
+
+  #_compare_to_me=$(git rev-parse --abbrev-ref HEAD)
+  #_compare_to_you="${default_branch}" _fct_is="App_Is_mainbranch"
+  #App_Are_Var_Equal
+
   echo && my_message="Next step: 'commits' OR 'pr' " App_Green
 }
 
@@ -647,6 +653,15 @@ function App_Are_Var_Equal {
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${_compare_to_me}" != "${_compare_to_you}" ]]; then
     my_message="Checkpoint failed '${_fct_is}' ( ${_compare_to_me} and ${_compare_to_you} )" && App_Warning_Stop
+  else
+    my_message="FATAL — ${_fct_is}" && App_Fatal
+  fi
+}
+function App_Are_Var_Not_Equal {
+  if [[ "${_compare_to_me}" == "${_compare_to_you}" ]]; then
+    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_to_me} and ${_compare_to_you} )" && App_Warning_Stop
+  elif [[ "${_compare_to_me}" != "${_compare_to_you}" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="FATAL — ${_fct_is}" && App_Fatal
   fi
