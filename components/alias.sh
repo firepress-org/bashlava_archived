@@ -55,9 +55,6 @@ function gitio {
 function App_Yellow {
   App_Warning
 }
-function banner {
-  my_message="Banner Test" && App_figlet
-}
 
 ### capture common typo or bad habits
 function invalid {
