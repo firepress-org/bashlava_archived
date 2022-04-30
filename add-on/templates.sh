@@ -5,7 +5,7 @@ function passgen {
 }
 
 function array {
-  arr=( "hello" "world" "from entrypoint" )
+  arr=( "Hello" "Mr Andy" )
   for i in "${arr[@]}"; do
     my_message="${i}" && App_Gray
   done
@@ -18,7 +18,7 @@ EOF
 }
 
 # optional as not everyone needs this option
-function init_dockerignore {
+function App_init_dockerignore {
 cat << EOF > .dockerignore_template
 .cache
 coverage
