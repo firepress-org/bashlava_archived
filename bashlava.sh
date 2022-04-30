@@ -147,6 +147,7 @@ function squash {
   git commit -m "${input_3} /sq"
   git push
   log
+  echo && my_message="Next step: 'c' OR 's' OR 'pr' " App_Green
 }
 
 function test {
