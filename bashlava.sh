@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# TODO normalize FATAL error messages
-# TODO this should not happen '"${input_2}" == "not_set"'. Just use 'App_Is_input_2_Provided'
+# TODO list
+# normalize FATAL error messages
+# manage core vars
+# manage private vars
 
 function mainbranch {
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
@@ -10,23 +12,26 @@ function mainbranch {
   App_Is_edge
   App_Show_Version
 
-# Update our local state
+### Update our local state
   git checkout ${default_branch}
   git pull origin ${default_branch}
   log
 }
 
-# TODO have this branch created with a unique ID to avoid conflicts with other developers
 function edge {
-# it assumes there will be no conflict with anybody else
-# as I'm the only person using 'edge'.
+# TODO
+# have this branch created with a unique ID to avoid conflicts with other developers edge_sunny
+
+### it assumes there will be no conflict with anybody else
+### as I'm the only person using 'edge'.
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
   App_No_Commits_Pending
   App_Check_Required_Apps
 
-  # delete branch
+### delete branch
   git branch -D edge || true
-  # delete branch so there is no need to use the github GUI to delete it
+
+### delete branch so there is no need to use the github GUI to delete it
   git push origin --delete edge || true
 
   git checkout -b edge
@@ -302,7 +307,9 @@ function App_No_Commits_Pending {
   App_Are_Var_Equal
 }
 
-# TODO refactor this function
+# TODO 1
+# refactor this function
+# compare var to var
 function App_Is_input_2_Provided {
 ### ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not_set" ]]; then
@@ -314,7 +321,7 @@ function App_Is_input_2_Provided {
   fi
 }
 
-# TODO refactor this function
+# TODO 2
 function App_Is_input_3_Provided {
 ### ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not_set" ]]; then
@@ -326,7 +333,7 @@ function App_Is_input_3_Provided {
   fi
 }
 
-# TODO new fct not equal
+# TODO 3
 function App_input_2_Is_Empty_As_It_Should {
 ### Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not_set" ]]; then
@@ -389,7 +396,6 @@ function App_Check_Are_Files_Exist {
     file_path_is="./docs/${action}.md" && App_Does_File_Exist
   done
 
-## TODO init are broken
   file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
@@ -518,9 +524,6 @@ file_is="_entrypoint.sh"
   _var_name="_url_to_release" _is_it_empty=$(echo ${_url_to_release}) && App_Does_Var_Empty
   _var_name="_url_to_check" _is_it_empty=$(echo ${_url_to_check}) && App_Does_Var_Empty
 }
-
-# TODO App_Are_Var_Equal
-# TODO logic '"${input_2}" == "not_set"' prevent to call it from test
 
 function App_Show_Version {
 ### Show version from three sources
