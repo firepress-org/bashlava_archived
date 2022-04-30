@@ -20,12 +20,12 @@ function edge {
   App_Is_required_apps_installed
 
   # delete branch
-  git branch -D edge || true &&\
+  git branch -D edge || true
   # delete branch so there is no need to use the github GUI to delete it
-  git push origin --delete edge || true &&\
+  git push origin --delete edge || true
 
-  git checkout -b edge &&\
-  git push --set-upstream origin edge -f &&\
+  git checkout -b edge
+  git push --set-upstream origin edge -f
   my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
 }
 
@@ -124,7 +124,7 @@ function tag {
   my_message="To quit the release notes: type ':qa + enter'" App_Warning && echo && sleep 1
   gh release create &&\
 
-  App_Show_version &&\
+  App_Show_version && sleep 2
   App_Show_release
 }
 
