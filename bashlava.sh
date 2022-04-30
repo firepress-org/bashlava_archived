@@ -1,21 +1,33 @@
 #!/usr/bin/env bash
 
 # TODO list
-# normalize FATAL error messages
+# normalize FATAL messages
+# normalize WARN_ messages
+# normalize ERR_ messages
 # manage core vars
 # manage private vars
 # dummy task to commit and test the flow
+
+### Rename business rule App like 'App_No_Commits_Pending' 'App_Is_edge'
+  # To be able to continue ... 
+  # App_BR_No_Commits_Pending
+  # App_BR_Branch_Is_Edge
+  # App_BR_Branch_Is_Mainbranch
+  # App_BR_Attribut_2_Provided
+  # App_BR_Attribut_2_Not_Provided
 
 function mainbranch {
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
   App_No_Commits_Pending
   App_Check_Required_Apps
   App_Is_edge
+
   App_Show_Version
 
 ### Update our local state
   git checkout ${default_branch}
   git pull origin ${default_branch}
+  echo
   log
 }
 
@@ -33,6 +45,7 @@ function edge {
   git branch -D edge || true
 
 ### delete branch so there is no need to use the github GUI to delete it
+# TODO check if branch edge exist (more slick)
   git push origin --delete edge || true
 
   git checkout -b edge
