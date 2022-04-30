@@ -153,26 +153,15 @@ function squash {
 function test {
 # test our script & fct. Idempotent bash script
 
-  figlet_message="bashLaVa" && App_figlet
-
-  my_message="Attributes:" App_Blue
+  echo
+  my_message="Check attributes:" App_Blue
   my_message="\$1 value is: ${input_1}" App_Gray
   my_message="\$2 value is: ${input_2}" App_Gray
   my_message="\$3 value is: ${input_3}" App_Gray
   my_message="\$4 value is: ${input_4}" App_Gray
 
   echo
-  my_message="OS:" App_Blue
-  if [[ $(uname) == "Darwin" ]]; then
-    my_message="Running on a Mac (Darwin)" App_Gray
-  elif [[ $(uname) != "Darwin" ]]; then
-    my_message="bashLaVa is not tested on other machine than Darmin (Mac). Please let me know if you want to contribute (WARN_901)." && App_Warning
-  else
-    my_message="FATAL: Please open an issue for this behavior (Darmin (Mac)" && App_Fatal
-  fi
-
-  echo
-  my_message="App required on your local machine:" App_Blue
+  my_message="Check apps required:" App_Blue
   App_Check_Required_Apps
 
   echo
@@ -180,13 +169,10 @@ function test {
   App_Check_Are_Files_Exist
   my_message="All good!" App_Gray
 
-  echo
-  my_message="Check versions:" App_Blue
   input_2="not_set"
   App_Show_Version
-  
-  echo
-  my_message="Configs for this git repo:" App_Blue
+
+  my_message="Check configs::" App_Blue
   my_message="${app_name} < app_name" App_Gray
   my_message="${app_version} < app_version" App_Gray
   my_message="${app_release} < app_release" App_Gray
@@ -199,18 +185,33 @@ function test {
   my_message="${my_path} < my_path" App_Gray
 
   echo
-  my_message="Test entrypoint:" App_Blue
+  my_message="Check source to other files" App_Blue
   array
 
-  echo && my_message="Test banner:" && App_Blue
-  banner
+  echo
+  my_message="Check OS" App_Blue
+  if [[ $(uname) == "Darwin" ]]; then
+    my_message="Running on a Mac (Darwin)" App_Gray
+  elif [[ $(uname) != "Darwin" ]]; then
+    my_message="bashLaVa is not tested on other machine than Darmin (Mac). Please let me know if you want to contribute (WARN_901)." && App_Warning
+  else
+    my_message="FATAL: Please open an issue for this behavior (Darmin (Mac)" && App_Fatal
+  fi
 
-  my_message="Test colors option for echo:" && App_Gray
+  echo
+  my_message="Check App_Banner:" && App_Blue
+  my_message="bashLaVa test" && App_Banner
+
+  my_message="Check App_glow:" && App_Gray
+  input_2="./docs/test.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
+
+  my_message="Check colors option (echo):" && App_Gray
+  # must be the last test as test_color do an 'exit 0'
   test_color
 }
 
 function test_color {
-  my_message="Test my color"
+  my_message="bashlava test"
   App_Green
   App_Blue
   App_Warning
@@ -373,7 +374,7 @@ function App_Check_Required_Apps {
 
 function App_Check_Are_Files_Exist {
 
-  arr=( "case_what_do_you_want" "dev_workflow" "more_commands" "pr_upstream_issues" "release_workflow" )
+  arr=( "case_what_do_you_want" "dev_workflow" "more_commands" "pr_upstream_issues" "release_workflow" "test" )
   for input_2 in "${arr[@]}"; do
     file_path_is="./docs/${input_2}.md" && App_Does_File_Exist
   done
@@ -514,7 +515,7 @@ function App_Show_Version {
 ### Show version from three sources
   App_input_2_Is_Empty_As_It_Should
 
-  echo && my_message="Version checkpoints:" && App_Blue &&\
+  echo && my_message="Check versions:" && App_Blue &&\
 ### dockerfile
   my_message="${app_version} < VERSION in Dockerfile" App_Gray
   my_message="${app_release} < RELEASE in Dockerfile" App_Gray
@@ -538,10 +539,10 @@ function App_Show_Release {
 }
 
 
-function App_figlet {
+function App_Banner {
   _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && App_Does_Var_Empty
-  _var_name="figlet_message" _is_it_empty=$(echo ${figlet_message}) && App_Does_Var_Empty
-  docker run --rm ${docker_img_figlet} ${figlet_message}
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
+  docker run --rm ${docker_img_figlet} ${my_message}
 }
 
 function App_glow {
