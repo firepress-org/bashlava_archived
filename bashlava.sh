@@ -374,40 +374,42 @@ function App_Check_Required_Apps {
 
 function App_Check_Are_Files_Exist {
 
-  arr=( "case_what_do_you_want" "dev_workflow" "more_commands" "pr_upstream_issues" "release_workflow" "test" )
-  for input_2 in "${arr[@]}"; do
-    file_path_is="./docs/${input_2}.md" && App_Does_File_Exist
+### Here, make sure you like all markdown files under /docs
+  arr=( "case_what_do_you_want" "dev_workflow" "more_commands" "mrg_info" "pr_upstream_issues" "release_workflow" "test" )
+  for action in "${arr[@]}"; do
+    file_path_is="./docs/${action}.md" && App_Does_File_Exist
   done
 
+## TODO init are broken
   file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
   fi
 
   file_is="README.md" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
-  fi
-
-  file_is=".dockerignore" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_readme && exit 1
   fi
 
   file_is=".gitignore" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_gitignore && exit 1
   fi
 
   file_is="Dockerfile" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_dockerfile && exit 1
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_dockerfile && exit 1
   fi
 
+### Warning only
+  file_is=".dockerignore" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+
+### Whern it happens, you want to know ASAP
   file_is=".git" dir_path_is="${_bashlava_path}/${file_is}" && App_Does_Directory_Exist
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message=".git directory does not exit" && App_Fatal
   fi
+
 }
 
 function App_Curl_url {
@@ -735,6 +737,9 @@ main "$@"
 ### If the user does not provide any argument, let offer options
 input_1=$1
 if [[ -z "$1" ]]; then
+
+  # ensure file are present
+  App_Check_Are_Files_Exist
 
   input_2="./docs/case_what_do_you_want.md" && clear && App_glow
   read user_input; echo;
