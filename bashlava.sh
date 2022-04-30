@@ -526,10 +526,8 @@ file_is="_entrypoint.sh"
 }
 
 function App_Show_Version {
-### Show version from three sources
-  App_input_2_Is_Empty_As_It_Should
+  echo && my_message="Check versions:" && App_Blue
 
-  echo && my_message="Check versions:" && App_Blue &&\
 ### dockerfile
   my_message="${app_version} < VERSION in Dockerfile" App_Gray
   my_message="${app_release} < RELEASE in Dockerfile" App_Gray
@@ -541,8 +539,8 @@ function App_Show_Version {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
   _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
-  my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray && echo
-
+  my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray
+  echo
 }
 
 function App_Show_Release {
