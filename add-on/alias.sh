@@ -56,7 +56,7 @@ function App_Yellow {
   App_Warning
 }
 function banner {
-  figlet_message="Banner Test" && App_figlet
+  my_message="Banner Test" && App_figlet
 }
 
 ### capture common typo or bad habits
