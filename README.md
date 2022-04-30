@@ -46,7 +46,7 @@ ln -s /Volumes/myuser/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin
 
 Assuming your $path is `/usr/local/bin`
 
-- 4. Create a file named `/add-on/_entrypoint.sh`. [Here is how to use it.](https://github.com/firepress-org/bashlava/issues/50)
+- 4. Create a file named `/components/_entrypoint.sh`. [Here is how to use it.](https://github.com/firepress-org/bashlava/issues/50)
 
 - 4. **Test your installation**. run: `bashlava.sh test`
 
