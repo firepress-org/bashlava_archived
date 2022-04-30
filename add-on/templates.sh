@@ -11,7 +11,7 @@ function array {
   done
 }
 
-function init_readme {
+function App_init_readme {
 cat << EOF > README_template.md
 This README is still empty.
 EOF
@@ -29,7 +29,7 @@ npm-debug
 EOF
 }
 
-function init_license {
+function App_init_license {
 # two things two update here
 # project URL
 # URL to LICENSE.md (you should fork it)
@@ -50,7 +50,7 @@ EOF
 my_message="File created: ${local_bashlava_path}/LICENSE_template" App_Green
 }
 
-function init_dockerfile {
+function App_init_dockerfile {
 cat << EOF > Dockerfile_template
 ###################################
 # REQUIRED for bashLaVa https://github.com/firepress-org/bashlava
@@ -74,7 +74,7 @@ EOF
 my_message="File created: ${local_bashlava_path}/Dockerfile_template" App_Green
 }
 
-function init_gitignore {
+function App_init_gitignore {
 cat <<EOF > .gitignore_template
 # Files
 ############
@@ -182,5 +182,5 @@ TheVolumeSettingsFolder
 .FBCSemaphoreFile
 .FBCLockFolder
 EOF
-my_message="File created: ${local_bashlava_path}/init_gitignore" App_Green
+my_message="File created: ${local_bashlava_path}/App_init_gitignore" App_Green
 }
