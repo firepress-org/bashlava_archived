@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # TODO normalize FATAL error messages
-# TODO this should not happen '"${input_2}" == "not_set"'. Just use 'App_Is_input_2'
+# TODO this should not happen '"${input_2}" == "not_set"'. Just use 'App_Is_input_2_Provided'
 
 function mainbranch {
-  App_Is_input_2_empty_as_it_should       # fct without attributs
-  App_Is_commit_unpushed
-  App_Is_required_apps_installed
+  App_input_2_Is_Empty_As_It_Should       # fct without attributs
+  App_Commits_Are_Pending
+  App_Check_Required_Apps
   App_Is_edge
-  App_Show_version
+  App_Show_Version
 
 # Update our local state
   git checkout ${default_branch}
@@ -17,13 +17,12 @@ function mainbranch {
 }
 
 # TODO have this branch created with a unique ID to avoid conflicts with other developers
-
 function edge {
 # it assumes there will be no conflict with anybody else
 # as I'm the only person using 'edge'.
-  App_Is_input_2_empty_as_it_should       # fct without attributs
-  App_Is_commit_unpushed
-  App_Is_required_apps_installed
+  App_input_2_Is_Empty_As_It_Should       # fct without attributs
+  App_Commits_Are_Pending
+  App_Check_Required_Apps
 
   # delete branch
   git branch -D edge || true
@@ -36,7 +35,7 @@ function edge {
 }
 
 function commit {
-  App_Is_input_2
+  App_Is_input_2_Provided
   git status
   git add -A
   git commit -m "${input_2}"
@@ -46,8 +45,8 @@ function commit {
 
 function pr {
   App_Is_edge
-  App_Is_input_2_empty_as_it_should
-  App_Is_commit_unpushed
+  App_input_2_Is_Empty_As_It_Should
+  App_Commits_Are_Pending
 
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
   _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && App_Does_Var_Empty
@@ -60,11 +59,12 @@ function pr {
 
 function ci {
   # continuous integration status
-  App_Is_input_2_empty_as_it_should &&\
-  App_Is_commit_unpushed &&\
+  App_input_2_Is_Empty_As_It_Should
+  App_Commits_Are_Pending
   gh run list && sleep 2
   
   _run_id=$(gh run list | head -1 | awk '{print $12}')
+# TODO 
   _check_var="_run_id" && App_Does_Var_Empty
 
   open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
@@ -75,20 +75,20 @@ function ci {
 function mrg {
   # merge from edge into main_branch
   App_Is_edge
-  App_Is_commit_unpushed
+  App_Commits_Are_Pending
 
   input_2="./docs/mrg_info.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
 
   gh pr merge
-  App_Show_version
+  App_Show_Version
   echo && my_message="Next step: 'version' " App_Green
 }
 
 function version {
 # The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
 
-  App_Is_commit_unpushed
-  App_Is_input_2
+  App_Commits_Are_Pending
+  App_Is_input_2_Provided
   App_Is_version_syntax_valid
 
   _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && App_Does_Var_Empty
@@ -113,7 +113,7 @@ function version {
   git add .
   git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile"
   git push && echo
-  App_Show_version && sleep 1
+  App_Show_Version && sleep 1
   log
 
   echo && my_message="Next step: 'tag' " App_Green
@@ -121,21 +121,21 @@ function version {
 
 function tag {
   git tag ${app_release} && git push --tags && echo &&\
-  App_Show_version && sleep 1 && echo &&\
+  App_Show_Version && sleep 1 && echo &&\
 
   my_message="Next, prepare release" App_Green &&\
   my_message="To quit the release notes: type ':qa + enter'" App_Warning && echo
   gh release create && sleep 4
 
-  App_Show_version
+  App_Show_Version
   App_Show_release
   echo && my_message="Next step: 'edge' " App_Green
 }
 
 function squash {
-  App_Is_commit_unpushed
-  App_Is_input_2 # how many steps
-  App_Is_input_3 # message
+  App_Commits_Are_Pending
+  App_Is_input_2_Provided # how many steps
+  App_Is_input_3_Provided # message
 
   if ! [[ $input_2 =~ ^[0-9]+$ ]] ; then
     my_message="Syntax error" && App_Fatal
@@ -175,7 +175,7 @@ function test {
 
   echo
   my_message="App required on your local machine:" App_Blue
-  App_Is_required_apps_installed
+  App_Check_Required_Apps
   my_message="All good!" App_Gray
 
   echo
@@ -186,7 +186,7 @@ function test {
   echo
   my_message="Check versions:" App_Blue
   input_2="not_set"
-  App_Show_version
+  App_Show_Version
   
   echo
   my_message="Configs for this git repo:" App_Blue
@@ -226,7 +226,7 @@ function status {
 }
 
 function help {
-  App_Is_input_3_empty_as_it_should
+  App_Is_input_3_Provided_empty_as_it_should
   input_2="./docs/dev_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/release_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/more_commands.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
@@ -289,14 +289,14 @@ function App_Is_edge {
   App_Are_Var_Equal
 }
 
-function App_Is_commit_unpushed {
+function App_Commits_Are_Pending {
   _compare_to_me=$(git status | grep -c "nothing to commit")
-  _compare_to_you="1" _fct_is="App_Is_commit_unpushed"
+  _compare_to_you="1" _fct_is="App_Commits_Are_Pending"
   App_Are_Var_Equal
 }
 
 # TODO refactor this function
-function App_Is_input_2 {
+function App_Is_input_2_Provided {
 ### ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not_set" ]]; then
     my_message="You must provide two attributes. See help (WARN_109)" && App_Warning_Stop
@@ -307,7 +307,7 @@ function App_Is_input_2 {
   fi
 }
 
-function App_Is_input_3 {
+function App_Is_input_3_Provided {
 ### ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not_set" ]]; then
     my_message="You must provide three attributes. See help (WARN_111)" && App_Warning_Stop
@@ -319,7 +319,7 @@ function App_Is_input_3 {
 }
 
 # TODO new fct not equal
-function App_Is_input_2_empty_as_it_should {
+function App_input_2_Is_Empty_As_It_Should {
 ### Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not_set" ]]; then
       my_message="You cannot use two attributes for this fct (WARN_113)" && App_Warning_Stop
@@ -330,7 +330,7 @@ function App_Is_input_2_empty_as_it_should {
   fi
 }
 
-function App_Is_input_3_empty_as_it_should {
+function App_Is_input_3_Provided_empty_as_it_should {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not_set" ]]; then
       my_message="You cannot use three attributes for this fct. See help (ERR_115)" && App_Warning_Stop
@@ -359,10 +359,10 @@ function App_Is_version_syntax_valid {
   App_Are_Var_Equal
 }
 
-function App_Is_required_apps_installed {
+function App_Check_Required_Apps {
 # is docker running?
   _compare_to_me=$(docker version | grep -c "Server: Docker Desktop")
-  _compare_to_you="1" _fct_is="App_Is_required_apps_installed"
+  _compare_to_you="1" _fct_is="App_Check_Required_Apps"
   App_Are_Var_Equal
 
 # id gh cli running ?
@@ -509,9 +509,9 @@ file_is="_entrypoint.sh"
 # TODO App_Are_Var_Equal
 # TODO logic '"${input_2}" == "not_set"' prevent to call it from test
 
-function App_Show_version {
+function App_Show_Version {
 ### Show version from three sources
-  App_Is_input_2_empty_as_it_should
+  App_input_2_Is_Empty_As_It_Should
 
   echo && my_message="Version checkpoints:" && App_Blue &&\
 ### dockerfile
