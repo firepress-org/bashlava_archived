@@ -174,7 +174,6 @@ function test {
   echo
   my_message="App required on your local machine:" App_Blue
   App_Check_Required_Apps
-  my_message="All good!" App_Gray
 
   echo
   my_message="Check files and directories:" App_Blue
@@ -224,7 +223,7 @@ function status {
 }
 
 function help {
-  App_Is_input_3_Provided_empty_as_it_should
+  App_input_3_Is_Empty_As_It_Should
   input_2="./docs/dev_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/release_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
   input_2="./docs/more_commands.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
@@ -305,6 +304,7 @@ function App_Is_input_2_Provided {
   fi
 }
 
+# TODO refactor this function
 function App_Is_input_3_Provided {
 ### ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not_set" ]]; then
@@ -328,7 +328,7 @@ function App_input_2_Is_Empty_As_It_Should {
   fi
 }
 
-function App_Is_input_3_Provided_empty_as_it_should {
+function App_input_3_Is_Empty_As_It_Should {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not_set" ]]; then
       my_message="You cannot use three attributes for this fct. See help (ERR_115)" && App_Warning_Stop
@@ -338,7 +338,7 @@ function App_Is_input_3_Provided_empty_as_it_should {
     my_message="FATAL: Please open an issue for this behavior (ERR_116)" && App_Fatal
   fi
 }
-function App_Is_Input_4_empty_as_it_should {
+function App_input_4_Is_Empty_As_It_Should {
 # Stop if 4 attributes are passed.
   if [[ "${input_4}" != "not_set" ]]; then
       my_message="You cannot use four attributes with BashLava (WARN_117)" && App_Warning && echo
@@ -358,14 +358,17 @@ function App_Is_Version_Syntax_Valid {
 }
 
 function App_Check_Required_Apps {
-# is docker running?
+### docker running?
   _compare_to_me=$(docker version | grep -c "Server: Docker Desktop")
   _compare_to_you="1" _fct_is="App_Check_Required_Apps"
   App_Are_Var_Equal
+  my_message="Docker is installed" && App_Gray
 
-# id gh cli running ?
-# does not work, see https://github.com/firepress-org/bashlava/issues/31
-# if [[ $(gh auth status | grep -c "Logged in to github.com as") == "1" ]]; ...
+### gh cli installed
+  _compare_to_me=$(gh --version | grep -c "https://github.com/cli/cli/releases/tag/v")
+  _compare_to_you="1" _fct_is="App_Check_Required_Apps"
+  App_Are_Var_Equal
+  my_message="gh cli is installed" && App_Gray
 }
 
 function App_Check_Are_Files_Exist {
@@ -713,7 +716,7 @@ function main() {
   colour_init
 
 ### Ensure there are no more than three attrbutes
-  App_Is_Input_4_empty_as_it_should
+  App_input_4_Is_Empty_As_It_Should
 
 ### optional
   # lock_init system
