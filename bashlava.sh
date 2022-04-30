@@ -51,6 +51,7 @@ function edge {
   git checkout -b edge
   git push --set-upstream origin edge -f
   my_message="<edge> was freshly branched out from ${default_branch}" App_Green
+    echo && my_message="Next step: code something and 'c' " App_Green
 }
 
 function commit {
@@ -59,7 +60,7 @@ function commit {
   git add -A
   git commit -m "${input_2}"
   git push
-  echo && my_message="Next step: 'c' OR 's' OR 'pr' " App_Green
+  echo && my_message="Next step: 'c' - 'pr' " App_Green
 }
 
 function pr {
@@ -72,7 +73,7 @@ function pr {
   
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
   gh pr view --web
-  echo && my_message="Next step: check 'ci' OR 'mrg' " App_Green
+  echo && my_message="Next step: 'ci' - 'mrg' " App_Green
   # if needed check ./docs/pr_upstream_issues.md
 }
 
@@ -151,7 +152,7 @@ function tag {
   gh release create && sleep 4
   App_Show_Version
   App_Show_Release
-  echo && my_message="Next step: 'e' " App_Green
+  echo && my_message="Next step: start over from 'e' " App_Green
 }
 
 function squash {
@@ -171,7 +172,7 @@ function squash {
   git commit -m "${input_3} /sq"
   git push
   log
-  echo && my_message="Next step: 'c' OR 's' OR 'pr' " App_Green
+  echo && my_message="Next step: 'c' - 'pr' " App_Green
 }
 
 function test {
