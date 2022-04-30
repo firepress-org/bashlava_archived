@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # TODO list
+# See bashlava for all details https://github.com/firepress-org/bashlava
+
 # normalize FATAL messages
 # normalize WARN_ messages
 # normalize ERR_ messages
@@ -8,13 +10,14 @@
 # manage private vars
 # dummy task to commit and test the flow
 
-### Rename business rule App like 'App_No_Commits_Pending' 'App_Is_edge'
-  # To be able to continue ... 
-  # App_BR_No_Commits_Pending
-  # App_BR_Branch_Is_Edge
-  # App_BR_Branch_Is_Mainbranch
-  # App_BR_Attribut_2_Provided
-  # App_BR_Attribut_2_Not_Provided
+### Many Apps are utilities but some are BR (business rules).
+### like 'App_No_Commits_Pending' 'App_Is_edge'
+### Example to be able to run this function ...
+  # App_BR11_No_Commits_Pending
+  # App_BR12_Branch_Is_Edge
+  # App_BR13_Branch_Is_Mainbranch
+  # App_BR14_Attribut_2_Provided
+  # App_BR15_Attribut_2_Not_Provided
 
 function mainbranch {
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
