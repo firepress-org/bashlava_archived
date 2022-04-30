@@ -5,7 +5,7 @@
 
 function mainbranch {
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
-  App_Commits_Are_Pending
+  App_No_Commits_Pending
   App_Check_Required_Apps
   App_Is_edge
   App_Show_Version
@@ -21,7 +21,7 @@ function edge {
 # it assumes there will be no conflict with anybody else
 # as I'm the only person using 'edge'.
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
-  App_Commits_Are_Pending
+  App_No_Commits_Pending
   App_Check_Required_Apps
 
   # delete branch
@@ -46,7 +46,7 @@ function commit {
 function pr {
   App_Is_edge
   App_input_2_Is_Empty_As_It_Should
-  App_Commits_Are_Pending
+  App_No_Commits_Pending
 
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
   _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && App_Does_Var_Empty
@@ -60,7 +60,7 @@ function pr {
 function ci {
   # continuous integration status
   App_input_2_Is_Empty_As_It_Should
-  App_Commits_Are_Pending
+  App_No_Commits_Pending
   gh run list && sleep 2
   
   _run_id=$(gh run list | head -1 | awk '{print $12}')
@@ -74,7 +74,7 @@ function ci {
 function mrg {
   # merge from edge into main_branch
   App_Is_edge
-  App_Commits_Are_Pending
+  App_No_Commits_Pending
 
   input_2="./docs/mrg_info.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
 
@@ -84,19 +84,19 @@ function mrg {
 }
 
 function version {
-# The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
-
-  App_Commits_Are_Pending
+### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
+  App_No_Commits_Pending
   App_Is_input_2_Provided
-  App_Is_version_syntax_valid
+  App_Is_Version_Syntax_Valid
 
   _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && App_Does_Var_Empty
 
-# Logic between 'version' and 'release'.
+### Logic between 'version' and 'release'.
   # For docker projects like https://github.com/firepress-org/ghostfire,
   # there is a conflict where defining a version like 3.11-rc2 doesn't work because the dockerfile will try to build 'alpine 3.11-rc2'.
   # Therefore, we need to have a release flag. This allows us to have a clean release cycle.
   # sed will trim '-rc2'
+
   if [[ "${version_with_rc}" == "false" ]]; then
     version_trim=$(echo ${input_2} | sed 's/-r.*//g')
   elif [[ "${version_with_rc}" != "false" ]]; then
@@ -105,7 +105,7 @@ function version {
     my_message="FATAL: fct version" && App_Fatal
   fi
 
-# apply updates
+### Apply updates
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${version_trim}\"/" Dockerfile
   sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
 
@@ -114,25 +114,24 @@ function version {
   git push && echo
   App_Show_Version && sleep 1
   log
-
   echo && my_message="Next step: 'tag' " App_Green
 }
 
 function tag {
-  git tag ${app_release} && git push --tags && echo &&\
-  App_Show_Version && sleep 1 && echo &&\
+  git tag ${app_release} && git push --tags && echo
+  App_Show_Version && sleep 1 && echo
 
-  my_message="Next, prepare release" App_Green &&\
-  my_message="To quit the release notes: type ':qa + enter'" App_Warning && echo
+  my_message="Next, prepare release" App_Gray
+  my_message="To quit the release notes: type ':qa + enter'" App_Gray && echo
+
   gh release create && sleep 4
-
   App_Show_Version
-  App_Show_release
+  App_Show_Release
   echo && my_message="Next step: 'edge' " App_Green
 }
 
 function squash {
-  App_Commits_Are_Pending
+  App_No_Commits_Pending
   App_Is_input_2_Provided # how many steps
   App_Is_input_3_Provided # message
 
@@ -288,9 +287,9 @@ function App_Is_edge {
   App_Are_Var_Equal
 }
 
-function App_Commits_Are_Pending {
+function App_No_Commits_Pending {
   _compare_to_me=$(git status | grep -c "nothing to commit")
-  _compare_to_you="1" _fct_is="App_Commits_Are_Pending"
+  _compare_to_you="1" _fct_is="App_No_Commits_Pending"
   App_Are_Var_Equal
 }
 
@@ -350,11 +349,11 @@ function App_Is_Input_4_empty_as_it_should {
   fi
 }
 
-function App_Is_version_syntax_valid {
+function App_Is_Version_Syntax_Valid {
   # Version is limited to these characters: 1234567890.rR-
   # so we can do: '3.5.13-r3' or '3.5.13-rc3'
   _compare_to_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
-  _compare_to_you="${input_2}" _fct_is="App_Is_version_syntax_valid"
+  _compare_to_you="${input_2}" _fct_is="App_Is_Version_Syntax_Valid"
   App_Are_Var_Equal
 }
 
@@ -528,7 +527,7 @@ function App_Show_Version {
 
 }
 
-function App_Show_release {
+function App_Show_Release {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
   _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
