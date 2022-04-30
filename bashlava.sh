@@ -66,6 +66,7 @@ function ci {
   # continuous integration status
   App_input_2_Is_Empty_As_It_Should
   App_No_Commits_Pending
+
   gh run list && sleep 2
   
   _run_id=$(gh run list | head -1 | awk '{print $12}')
@@ -80,12 +81,13 @@ function mrg {
   # merge from edge into main_branch
   App_Is_edge
   App_No_Commits_Pending
+  App_input_2_Is_Empty_As_It_Should
 
   input_2="./docs/mrg_info.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
 
   gh pr merge
   App_Show_Version
-  echo && my_message="Next step: 'version' " App_Green
+  echo && my_message="Next step: 'v' " App_Green
 }
 
 function version {
@@ -119,10 +121,13 @@ function version {
   git push && echo
   App_Show_Version && sleep 1
   log
-  echo && my_message="Next step: 'tag' " App_Green
+  echo && my_message="Next step: 't' " App_Green
 }
 
 function tag {
+  App_No_Commits_Pending
+  App_input_2_Is_Empty_As_It_Should
+
   git tag ${app_release} && git push --tags && echo
   App_Show_Version && sleep 1 && echo
 
@@ -132,7 +137,7 @@ function tag {
   gh release create && sleep 4
   App_Show_Version
   App_Show_Release
-  echo && my_message="Next step: 'edge' " App_Green
+  echo && my_message="Next step: 'e' " App_Green
 }
 
 function squash {
