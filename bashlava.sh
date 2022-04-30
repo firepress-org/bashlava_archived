@@ -43,6 +43,7 @@ function commit {
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_137)" && App_Fatal
   fi
+  echo && my_message="Next step: 'commits' OR 'pr' " App_Green
 }
 
 function pr {
@@ -55,7 +56,7 @@ function pr {
   
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
   gh pr view --web
-
+  echo && my_message="Next step: check 'ci' OR 'mrg' " App_Green
   # if needed check ./docs/pr_upstream_issues.md
 }
 
@@ -69,6 +70,7 @@ function ci {
   _check_var="_run_id" && App_Does_Var_Empty
 
   open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
+  echo && my_message="Next step: 'mrg' " App_Green
   #gh run watch
 }
 
@@ -81,6 +83,7 @@ function mrg {
 
   gh pr merge
   App_Show_version
+  echo && my_message="Next step: 'version' " App_Green
 }
 
 function version {
@@ -112,8 +115,10 @@ function version {
   git add .
   git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile"
   git push && echo
-  App_Show_version && sleep 1 && echo
+  App_Show_version && sleep 1
   log
+
+  echo && my_message="Next step: 'tag' " App_Green
 }
 
 function tag {
@@ -121,11 +126,12 @@ function tag {
   App_Show_version && sleep 1 && echo &&\
 
   my_message="Next, prepare release" App_Green &&\
-  my_message="To quit the release notes: type ':qa + enter'" App_Warning && echo && sleep 1
+  my_message="To quit the release notes: type ':qa + enter'" App_Warning && echo
   gh release create && sleep 4
 
   App_Show_version
   App_Show_release
+  echo && my_message="Next step: 'edge' " App_Green
 }
 
 function squash {
@@ -149,6 +155,8 @@ function squash {
 
 function test {
 # test our script & fct. Idempotent bash script
+
+  help 
 
   figlet_message="bashLaVa" && App_figlet
 
@@ -233,7 +241,7 @@ function help {
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# CHILD FUNCTIONS
+# App : these are sub functions. They are not called directly by the user
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -292,7 +300,7 @@ function App_Is_commit_unpushed {
 
 # TODO refactor this function
 function App_Is_input_2 {
-# ensure the second attribute is not empty to continue
+### ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
     my_message="You must provide two attributes. See help (WARN_109)" && App_Warning_Stop
   elif [[ "${input_2}" != "not-set" ]]; then
@@ -303,7 +311,7 @@ function App_Is_input_2 {
 }
 
 function App_Is_input_3 {
-# ensure the third attribute is not empty to continue
+### ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
     my_message="You must provide three attributes. See help (WARN_111)" && App_Warning_Stop
   elif [[ "${input_3}" != "not-set" ]]; then
@@ -315,7 +323,7 @@ function App_Is_input_3 {
 
 # TODO new fct not equal
 function App_Is_input_2_empty_as_it_should {
-# Stop if 2 attributes are passed.
+### Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not-set" ]]; then
       my_message="You cannot use two attributes for this fct (WARN_113)" && App_Warning_Stop
   elif [[ "${input_2}" == "not-set" ]]; then
