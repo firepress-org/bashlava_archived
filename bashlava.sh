@@ -64,8 +64,7 @@ function ci {
   gh run list && sleep 2
   
   _run_id=$(gh run list | head -1 | awk '{print $12}')
-# TODO 
-  _check_var="_run_id" && App_Does_Var_Empty
+  _var_name="_run_id" _is_it_empty=$(echo ${_run_id}) && App_Does_Var_Empty
 
   open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
   echo && my_message="Next step: 'mrg' " App_Green
