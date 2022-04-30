@@ -122,7 +122,10 @@ function tag {
 
   my_message="Next, prepare release" App_Green &&\
   my_message="To quit the release notes: type ':qa + enter'" App_Warning && echo && sleep 1
-  gh release create
+  gh release create &&\
+
+  App_Show_version &&\
+  App_Show_release
 }
 
 function squash {
@@ -168,11 +171,17 @@ function test {
   echo
   my_message="App required on your local machine:" App_Blue
   App_Is_required_apps_installed
+  my_message="All good!" App_Gray
 
   echo
-  my_message="Ensure files and directories are present:" App_Blue
+  my_message="Check files and directories:" App_Blue
   App_Check_Are_Files_Exist
+  my_message="All good!" App_Gray
 
+  echo
+  my_message="Check versions:" App_Blue
+  App_Show_version
+  
   echo
   my_message="Configs for this git repo:" App_Blue
   my_message="${app_name} < app_name" App_Gray
@@ -193,6 +202,7 @@ function test {
   echo && my_message="Test banner:" && App_Blue
   banner
 
+  my_message="Test colors option for echo:" && App_Gray
   test_color
 }
 
@@ -352,6 +362,12 @@ function App_Is_required_apps_installed {
 }
 
 function App_Check_Are_Files_Exist {
+
+  arr=( "case_what_do_you_want" "dev_workflow" "more_commands" "pr_upstream_issues" "release_workflow" )
+  for input_2 in "${arr[@]}"; do
+    file_path_is="./docs/${input_2}.md" && App_Does_File_Exist
+  done
+
   file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && init_gitignore && exit 1
@@ -381,8 +397,6 @@ function App_Check_Are_Files_Exist {
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message=".git directory does not exit" && App_Fatal
   fi
-
-  my_message="All good! <= App_Check_Are_Files_Exist" && App_Gray
 }
 
 function App_Curl_url {
@@ -484,24 +498,34 @@ file_is="_entrypoint.sh"
 }
 
 # TODO App_Compare_If_Two_Var_Are_Equals
+# TODO logic '"${input_2}" == "not-set"' prevent to call it from test
+
 function App_Show_version {
 # Show version from three sources
   if [[ "${input_2}" == "not-set" ]]; then
-    echo && my_message="Version checkpoints:" && App_Green &&\
+    echo && my_message="Version checkpoints:" && App_Blue &&\
 ### dockerfile
-    my_message="${app_version} < VERSION in Dockerfile" App_Blue
-    my_message="${app_release} < RELEASE in Dockerfile" App_Blue
+    my_message="${app_version} < VERSION in Dockerfile" App_Gray
+    my_message="${app_release} < RELEASE in Dockerfile" App_Gray
 ### tag
     latest_tag="$(git describe --tags --abbrev=0)"
     _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
-    my_message="${latest_tag} < TAG on mainbranch" App_Blue
+    my_message="${latest_tag} < TAG on mainbranch" App_Gray
 ### release
     release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
       grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
     _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
-    my_message="${release_latest} < RELEASE on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue && echo
+    my_message="${release_latest} < RELEASE on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray && echo
   fi
 }
+
+function App_Show_release {
+  release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
+    grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
+  _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
+  open "https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}"
+}
+
 
 function App_figlet {
   _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && App_Does_Var_Empty
@@ -688,11 +712,6 @@ main "$@"
 ### If the user does not provide any argument, let offer options
 input_1=$1
 if [[ -z "$1" ]]; then
-
-  arr=( "./docs/case_what_do_you_want.md" "./docs/dev_workflow.md" "./docs/release_workflow.md" "./docs/more_commands.md" "./LICENSE" "./README.md" )
-  for input_2 in "${arr[@]}"; do
-    file_path_is="${input_2}" && App_Does_File_Exist
-  done
 
   input_2="./docs/case_what_do_you_want.md" && clear && App_glow
   read user_input; echo;
