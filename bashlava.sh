@@ -122,9 +122,9 @@ function tag {
 
   my_message="Next, prepare release" App_Green &&\
   my_message="To quit the release notes: type ':qa + enter'" App_Warning && echo && sleep 1
-  gh release create &&\
+  gh release create && sleep 4
 
-  App_Show_version && sleep 2
+  App_Show_version
   App_Show_release
 }
 
