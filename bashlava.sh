@@ -16,6 +16,8 @@ function mainbranch {
   log
 }
 
+# TODO have this branch created with a unique ID to avoid conflicts with other developers
+
 function edge {
 # it assumes there will be no conflict with anybody else
 # as I'm the only person using 'edge'.
@@ -153,8 +155,6 @@ function squash {
 function test {
 # test our script & fct. Idempotent bash script
 
-  help 
-
   figlet_message="bashLaVa" && App_figlet
 
   my_message="Attributes:" App_Blue
@@ -185,6 +185,7 @@ function test {
 
   echo
   my_message="Check versions:" App_Blue
+  input_2="not_set"
   App_Show_version
   
   echo
@@ -509,22 +510,23 @@ file_is="_entrypoint.sh"
 # TODO logic '"${input_2}" == "not_set"' prevent to call it from test
 
 function App_Show_version {
-# Show version from three sources
-  if [[ "${input_2}" == "not_set" ]]; then
-    echo && my_message="Version checkpoints:" && App_Blue &&\
+### Show version from three sources
+  App_Is_input_2_empty_as_it_should
+
+  echo && my_message="Version checkpoints:" && App_Blue &&\
 ### dockerfile
-    my_message="${app_version} < VERSION in Dockerfile" App_Gray
-    my_message="${app_release} < RELEASE in Dockerfile" App_Gray
+  my_message="${app_version} < VERSION in Dockerfile" App_Gray
+  my_message="${app_release} < RELEASE in Dockerfile" App_Gray
 ### tag
-    latest_tag="$(git describe --tags --abbrev=0)"
-    _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
-    my_message="${latest_tag} < TAG on mainbranch" App_Gray
+  latest_tag="$(git describe --tags --abbrev=0)"
+  _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
+  my_message="${latest_tag} < TAG on mainbranch" App_Gray
 ### release
-    release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
-      grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
-    _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
-    my_message="${release_latest} < RELEASE on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray && echo
-  fi
+  release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
+    grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
+  _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
+  my_message="${release_latest} < RELEASE on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray && echo
+
 }
 
 function App_Show_release {
