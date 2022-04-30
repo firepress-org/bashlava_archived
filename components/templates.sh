@@ -4,6 +4,10 @@ function passgen {
   docker run --rm devmtl/alpine:3.11_2020-02-26_08H42s20_dec5798 sh "random7.sh"
 }
 
+function App_random_6 {
+  openssl rand -hex 3
+}
+
 function array {
   arr=( "Hello" "Mr Andy" )
   for i in "${arr[@]}"; do
