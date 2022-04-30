@@ -31,11 +31,11 @@ function idempotent_empty_var {
 
 # Now we use 'App_Does_Var_Notset' instead of copy paste this fct
 function idempotent_compare_var {
-  if [[ "${input_2}" != "not-set" ]]; then
+  if [[ "${input_2}" != "not_set" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
     my_message="SOME_MESSAGE_HERE" && App_Blue
 
-  elif [[ "${input_2}" == "not-set" ]]; then
+  elif [[ "${input_2}" == "not_set" ]]; then
     my_message="Warning: variable is empty" && App_Warning_Stop
 
   else

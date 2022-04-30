@@ -32,17 +32,17 @@ function edge {
 }
 
 # TODO App_Are_Var_Equal
-# App_Are_Var_Not_Equal #not-set
+# App_Are_Var_Not_Equal #not_set
 
   _compare_to_me="0o"
   _compare_to_you="0o"
 
 function commit {
   # if no attribut was provided, well... let's see what changed: 
-  if [[ "${input_2}" == "not-set" ]]; then
+  if [[ "${input_2}" == "not_set" ]]; then
     git status -s && echo &&\
     git diff --color-words
-  elif [[ "${input_2}" != "not-set" ]]; then
+  elif [[ "${input_2}" != "not_set" ]]; then
     App_Is_input_2
     git status && git add -A &&\
     git commit -m "${input_2}" && clear &&\
@@ -313,9 +313,9 @@ function App_Is_commit_unpushed {
 # TODO refactor this function
 function App_Is_input_2 {
 ### ensure the second attribute is not empty to continue
-  if [[ "${input_2}" == "not-set" ]]; then
+  if [[ "${input_2}" == "not_set" ]]; then
     my_message="You must provide two attributes. See help (WARN_109)" && App_Warning_Stop
-  elif [[ "${input_2}" != "not-set" ]]; then
+  elif [[ "${input_2}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_110)" && App_Fatal
@@ -324,9 +324,9 @@ function App_Is_input_2 {
 
 function App_Is_input_3 {
 ### ensure the third attribute is not empty to continue
-  if [[ "${input_3}" == "not-set" ]]; then
+  if [[ "${input_3}" == "not_set" ]]; then
     my_message="You must provide three attributes. See help (WARN_111)" && App_Warning_Stop
-  elif [[ "${input_3}" != "not-set" ]]; then
+  elif [[ "${input_3}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_112)" && App_Fatal
@@ -336,9 +336,9 @@ function App_Is_input_3 {
 # TODO new fct not equal
 function App_Is_input_2_empty_as_it_should {
 ### Stop if 2 attributes are passed.
-  if [[ "${input_2}" != "not-set" ]]; then
+  if [[ "${input_2}" != "not_set" ]]; then
       my_message="You cannot use two attributes for this fct (WARN_113)" && App_Warning_Stop
-  elif [[ "${input_2}" == "not-set" ]]; then
+  elif [[ "${input_2}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_114)" && App_Fatal
@@ -347,9 +347,9 @@ function App_Is_input_2_empty_as_it_should {
 
 function App_Is_input_3_empty_as_it_should {
 # Stop if 3 attributes are passed.
-  if [[ "${input_3}" != "not-set" ]]; then
+  if [[ "${input_3}" != "not_set" ]]; then
       my_message="You cannot use three attributes for this fct. See help (ERR_115)" && App_Warning_Stop
-  elif [[ "${input_3}" == "not-set" ]]; then
+  elif [[ "${input_3}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_116)" && App_Fatal
@@ -357,9 +357,9 @@ function App_Is_input_3_empty_as_it_should {
 }
 function App_Is_Input_4_empty_as_it_should {
 # Stop if 4 attributes are passed.
-  if [[ "${input_4}" != "not-set" ]]; then
+  if [[ "${input_4}" != "not_set" ]]; then
       my_message="You cannot use four attributes with BashLava (WARN_117)" && App_Warning && echo
-  elif [[ "${input_4}" == "not-set" ]]; then
+  elif [[ "${input_4}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="FATAL: Please open an issue for this behavior (ERR_118)" && App_Fatal
@@ -478,8 +478,8 @@ file_is="_entrypoint.sh"
   source "${file_path_is}"
 
 ### Set defaults for flags
-  _flag_deploy_commit_message="not-set"
-  _commit_message="not-set"
+  _flag_deploy_commit_message="not_set"
+  _commit_message="not_set"
 
 ###	docker images
   docker_img_figlet="devmtl/figlet:1.1"
@@ -522,11 +522,11 @@ file_is="_entrypoint.sh"
 }
 
 # TODO App_Are_Var_Equal
-# TODO logic '"${input_2}" == "not-set"' prevent to call it from test
+# TODO logic '"${input_2}" == "not_set"' prevent to call it from test
 
 function App_Show_version {
 # Show version from three sources
-  if [[ "${input_2}" == "not-set" ]]; then
+  if [[ "${input_2}" == "not_set" ]]; then
     echo && my_message="Version checkpoints:" && App_Blue &&\
 ### dockerfile
     my_message="${app_version} < VERSION in Dockerfile" App_Gray
@@ -698,7 +698,7 @@ function main() {
   App_Load_variables
 
   if [[ -z "$2" ]]; then    #if empty
-    input_2="not-set"
+    input_2="not_set"
   elif [[ ! -z "$2" ]]; then    #if empty
     input_2=$2
   else
@@ -706,7 +706,7 @@ function main() {
   fi
 
   if [[ -z "$3" ]]; then    #if empty
-    input_3="not-set"
+    input_3="not_set"
   elif [[ ! -z "$3" ]]; then    #if empty
     input_3=$3
   else
@@ -714,7 +714,7 @@ function main() {
   fi
 
   if [[ -z "$4" ]]; then    #if empty
-    input_4="not-set"
+    input_4="not_set"
   elif [[ ! -z "$4" ]]; then    #if empty
     input_4=$4
   else
