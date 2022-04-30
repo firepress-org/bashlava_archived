@@ -169,21 +169,6 @@ function test {
   App_Check_Are_Files_Exist
   my_message="All good!" App_Gray
 
-  input_2="not_set"
-  App_Show_Version
-
-  my_message="Check configs::" App_Blue
-  my_message="${app_name} < app_name" App_Gray
-  my_message="${app_version} < app_version" App_Gray
-  my_message="${app_release} < app_release" App_Gray
-  my_message="${github_user} < github_user" App_Gray
-  my_message="${default_branch} < default_branch" App_Gray
-  my_message="${github_org} < github_org" App_Gray
-  my_message="${dockerhub_user} < dockerhub_user" App_Gray
-  my_message="${github_registry} < github_registry" App_Gray
-  my_message="${bashlava_executable} < bashlava_executable" App_Gray
-  my_message="${my_path} < my_path" App_Gray
-
   echo
   my_message="Check source to other files" App_Blue
   array
@@ -198,16 +183,40 @@ function test {
     my_message="FATAL: Please open an issue for this behavior (Darmin (Mac)" && App_Fatal
   fi
 
+  # PRINT OPTION 1
+  echo
+  my_message="Check App_glow:" && App_Blue
+  input_2="./docs/test.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
+
+  # PRINT OPTION 2
+  # 'test_color' it bypassed as it does an 'exit 0'
+  my_message="Check colors options:" && App_Blue && echo
+  my_message="bashlava test"
+  App_Green
+  #App_Blue
+  App_Warning
+  App_Gray
+  #App_Fatal
+
+  # PRINT OPTION 3
   echo
   my_message="Check App_Banner:" && App_Blue
   my_message="bashLaVa test" && App_Banner
 
-  my_message="Check App_glow:" && App_Gray
-  input_2="./docs/test.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
+  my_message="Check configs:" App_Blue
+  my_message="${app_name} < app_name" App_Gray
+  #my_message="${app_version} < app_version" App_Gray
+  #my_message="${app_release} < app_release" App_Gray
+  my_message="${github_user} < github_user" App_Gray
+  my_message="${default_branch} < default_branch" App_Gray
+  my_message="${github_org} < github_org" App_Gray
+  my_message="${dockerhub_user} < dockerhub_user" App_Gray
+  my_message="${github_registry} < github_registry" App_Gray
+  my_message="${bashlava_executable} < bashlava_executable" App_Gray
+  my_message="${my_path} < my_path" App_Gray
 
-  my_message="Check colors option (echo):" && App_Gray
-  # must be the last test as test_color do an 'exit 0'
-  test_color
+  input_2="not_set"
+  App_Show_Version
 }
 
 function test_color {
@@ -524,7 +533,7 @@ function App_Show_Version {
 ### tag
   latest_tag="$(git describe --tags --abbrev=0)"
   _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
-  my_message="${latest_tag} < TAG in mainbranch" App_Gray
+  my_message="${latest_tag} < TAG     in mainbranch" App_Gray
 ### release
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
