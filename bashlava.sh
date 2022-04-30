@@ -244,28 +244,32 @@ function help {
 #
 
 function App_short_url {
-  echo
-  my_message="URL ........ : https://git.io/${app_name}" && App_Gray
-  my_message="will point to: https://github.com/${github_user}/${app_name}" && App_Gray
-  #output example: https://git.io/bashlava
 
-  echo
-  my_message="Do you want to continue? (y/n)" && App_Gray
-  read user_input;
-  case ${user_input} in
-    y | Y) App_short_url_go;;
-    *) my_message="Operation cancelled" && App_Fatal;;
-  esac
-}
-
-function App_short_url_go {
+### CMD EXECUTION
+  function sub_short_url {
   clear
   curl -i https://git.io -F \
     "url=https://github.com/${input_2}/${input_3}" \
     -F "code=${input_3}" &&\
 
+### PREVIEW
   echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
   open https://git.io/${input_3}
+  }
+
+  echo
+  my_message="URL ........ : https://git.io/${app_name}" && App_Gray
+  my_message="will point to: https://github.com/${github_user}/${app_name}" && App_Gray
+  #output example: https://git.io/bashlava
+
+### PROMPT CONFIRMATION
+  echo
+  my_message="Do you want to continue? (y/n)" && App_Gray
+  read user_input;
+  case ${user_input} in
+    y | Y) sub_short_url;;
+    *) my_message="Operation cancelled" && App_Fatal;;
+  esac
 }
 
 function App_Is_mainbranch {
