@@ -29,7 +29,13 @@ function edge {
   my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
 }
 
-# TODO App_Compare_If_Two_Var_Are_Equals
+# TODO App_Are_Var_Equal
+# App_Are_Var_Not_Equal #not-set
+
+
+  _compare_to_me="0o"
+  _compare_to_you="0o"
+
 function commit {
   # if no attribut was provided, well... let's see what changed: 
   if [[ "${input_2}" == "not-set" ]]; then
@@ -283,19 +289,19 @@ function App_short_url {
 function App_Is_mainbranch {
   _compare_to_me=$(git rev-parse --abbrev-ref HEAD)
   _compare_to_you="${default_branch}" _fct_is="App_Is_mainbranch"
-  App_Compare_If_Two_Var_Are_Equals
+  App_Are_Var_Equal
 }
 
 function App_Is_edge {
   _compare_to_me=$(git rev-parse --abbrev-ref HEAD)
   _compare_to_you="edge" _fct_is="App_Is_edge"
-  App_Compare_If_Two_Var_Are_Equals
+  App_Are_Var_Equal
 }
 
 function App_Is_commit_unpushed {
   _compare_to_me=$(git status | grep -c "nothing to commit")
   _compare_to_you="1" _fct_is="App_Is_commit_unpushed"
-  App_Compare_If_Two_Var_Are_Equals
+  App_Are_Var_Equal
 }
 
 # TODO refactor this function
@@ -359,14 +365,14 @@ function App_Is_version_syntax_valid {
   # so we can do: '3.5.13-r3' or '3.5.13-rc3'
   _compare_to_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
   _compare_to_you="${input_2}" _fct_is="App_Is_version_syntax_valid"
-  App_Compare_If_Two_Var_Are_Equals
+  App_Are_Var_Equal
 }
 
 function App_Is_required_apps_installed {
 # is docker running?
   _compare_to_me=$(docker version | grep -c "Server: Docker Desktop")
   _compare_to_you="1" _fct_is="App_Is_required_apps_installed"
-  App_Compare_If_Two_Var_Are_Equals
+  App_Are_Var_Equal
 
 # id gh cli running ?
 # does not work, see https://github.com/firepress-org/bashlava/issues/31
@@ -509,7 +515,7 @@ file_is="_entrypoint.sh"
   _var_name="_url_to_check" _is_it_empty=$(echo ${_url_to_check}) && App_Does_Var_Empty
 }
 
-# TODO App_Compare_If_Two_Var_Are_Equals
+# TODO App_Are_Var_Equal
 # TODO logic '"${input_2}" == "not-set"' prevent to call it from test
 
 function App_Show_version {
@@ -636,7 +642,7 @@ function App_Does_File_Exist_NoStop {
   fi
 }
 
-function App_Compare_If_Two_Var_Are_Equals {
+function App_Are_Var_Equal {
   if [[ "${_compare_to_me}" == "${_compare_to_you}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${_compare_to_me}" != "${_compare_to_you}" ]]; then
