@@ -82,7 +82,7 @@ function pr {
   Condition_No_Commits_Must_Be_Pending
 
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
-  _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && App_Does_Var_Empty
+  _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && Condition_Vars_Must_Be_Not_Empty
   
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}"
   gh pr view --web
@@ -133,7 +133,7 @@ function ci {
 ### show latest build and open webpage on Github Actions
   #gh run list && sleep 1
   _run_id=$(gh run list | head -1 | awk '{print $11}')
-  _var_name="_run_id" _is_it_empty=$(echo ${_run_id}) && App_Does_Var_Empty
+  _var_name="_run_id" _is_it_empty=$(echo ${_run_id}) && Condition_Vars_Must_Be_Not_Empty
 ### Opening the run id cuase issues. Lets stick to /actions/
   open https://github.com/${github_user}/${app_name}/actions/
 
@@ -149,7 +149,7 @@ function version {
   Condition_Attr_2_Must_Be_Provided
   Condition_Version_Must_Be_Valid
 
-  _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && App_Does_Var_Empty
+  _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && Condition_Vars_Must_Be_Not_Empty
 
 ### Logic between 'version' and 'release'.
   # For docker projects like https://github.com/firepress-org/ghostfire,
@@ -431,16 +431,16 @@ function App_Load_variables {
   _url_to_check="https://github.com/${github_user}/${app_name}"
 
 # idempotent checkpoints
-  _var_name="app_name" _is_it_empty=$(echo ${app_name}) && App_Does_Var_Empty
-  _var_name="app_version" _is_it_empty=$(echo ${app_version}) && App_Does_Var_Empty
-  _var_name="app_release" _is_it_empty=$(echo ${app_release}) && App_Does_Var_Empty
-  _var_name="github_user" _is_it_empty=$(echo ${github_user}) && App_Does_Var_Empty
-  _var_name="default_branch" _is_it_empty=$(echo ${default_branch}) && App_Does_Var_Empty
-  _var_name="github_org" _is_it_empty=$(echo ${github_org}) && App_Does_Var_Empty
-  _var_name="dockerhub_user" _is_it_empty=$(echo ${dockerhub_user}) && App_Does_Var_Empty
-  _var_name="github_registry" _is_it_empty=$(echo ${github_registry}) && App_Does_Var_Empty
-  _var_name="_url_to_release" _is_it_empty=$(echo ${_url_to_release}) && App_Does_Var_Empty
-  _var_name="_url_to_check" _is_it_empty=$(echo ${_url_to_check}) && App_Does_Var_Empty
+  _var_name="app_name" _is_it_empty=$(echo ${app_name}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="app_version" _is_it_empty=$(echo ${app_version}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="app_release" _is_it_empty=$(echo ${app_release}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_user" _is_it_empty=$(echo ${github_user}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="default_branch" _is_it_empty=$(echo ${default_branch}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_org" _is_it_empty=$(echo ${github_org}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="dockerhub_user" _is_it_empty=$(echo ${dockerhub_user}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_registry" _is_it_empty=$(echo ${github_registry}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_url_to_release" _is_it_empty=$(echo ${_url_to_release}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_url_to_check" _is_it_empty=$(echo ${_url_to_check}) && Condition_Vars_Must_Be_Not_Empty
 }
 
 function App_Show_Version {
@@ -454,7 +454,7 @@ function App_Show_Version {
   if [ $(git tag -l "$app_version") ]; then
     echo "Good, a tag is present" > /dev/null 2>&1
     latest_tag="$(git describe --tags --abbrev=0)"
-    _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
+    _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && Condition_Vars_Must_Be_Not_Empty
   else
     echo "Logic: new projet don't have any tags. So we must expect that it can be empty" > /dev/null 2>&1
     latest_tag="none "
@@ -470,7 +470,7 @@ function App_Show_Version {
     echo "Logic: new projet don't have any release. So we must expect that it can be empty" > /dev/null 2>&1
   elif [[ ! -z "$release_latest" ]]; then
     echo "Good, a release is present" > /dev/null 2>&1
-    _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
+    _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && Condition_Vars_Must_Be_Not_Empty
   else
     my_message="FATAL: App_Show_Version | release_latest " && App_Fatal
   fi
@@ -485,13 +485,13 @@ function App_Show_Version {
 function App_Show_Release {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
-  _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
+  _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && Condition_Vars_Must_Be_Not_Empty
   open "https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}"
 }
 
 function App_Banner {
-  _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && App_Does_Var_Empty
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
+  _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   docker run --rm ${docker_img_figlet} ${my_message}
 }
 
@@ -504,8 +504,8 @@ function App_Banner {
 
 function App_glow {
   # markdown viewer (mdv)
-  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && App_Does_Var_Empty
-  _var_name="input_2" _is_it_empty=$(echo ${input_2}) && App_Does_Var_Empty
+  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="input_2" _is_it_empty=$(echo ${input_2}) && Condition_Vars_Must_Be_Not_Empty
   my_message="Info: 'mdv' can only read markdown files at the same path level" App_Green
   sleep 0.5
 
@@ -517,8 +517,8 @@ function App_glow {
 
 function App_Show_Docs {
   # idempotent checkpoint
-  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && App_Does_Var_Empty
-  _var_name="_doc_name" _is_it_empty=$(echo ${_doc_name}) && App_Does_Var_Empty
+  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_doc_name" _is_it_empty=$(echo ${_doc_name}) && Condition_Vars_Must_Be_Not_Empty
 
   _present_path_is=$(pwd)
   _file_is="${_doc_name}" _file_path_is="${_docs_path}/${_doc_name}" && App_Does_File_Exist
@@ -530,27 +530,27 @@ function App_Show_Docs {
 
 # Define colors / https://www.shellhacks.com/bash-colors/
 function App_Green {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "✨ \e[1;32m${my_message}\e[0m"
 }
 function App_Blue {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "👋 \e[1;34m${my_message}\e[0m"
 }
 function App_Warning {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "🚨 \e[1;33m${my_message}\e[0m"
 }
 function App_Gray {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "\e[1;37m${my_message}\e[0m"
 }
 function App_Warning_Stop {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;33m${my_message}\e[0m 🚨" && exit 1
 }
 function App_Fatal {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;31m${my_message}\e[0m 🚨" && exit 1
 }
 
@@ -752,14 +752,14 @@ function Condition_Vars_Must_Be_Not_Equal {
 }
 
 # Think, IF vars is not empty, continue else fail
-function App_Does_Var_Empty {
+function Condition_Vars_Must_Be_Not_Empty {
   # source must send two vars:_is_it_empty AND _var_name
   if [[ -n "${_is_it_empty}" ]]; then    #if not empty
     echo "idempotent checkpoint passed" > /dev/null 2>&1
   elif [[ -z "${_is_it_empty}" ]]; then    #if empty
     my_message="Warning: variable '${_var_name}' is empty" && App_Warning_Stop
   else
-    my_message="FATAL: App_Does_Var_Empty | ${_var_name}" && App_Fatal
+    my_message="FATAL: Condition_Vars_Must_Be_Not_Empty | ${_var_name}" && App_Fatal
   fi
 }
 

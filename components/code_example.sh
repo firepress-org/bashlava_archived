@@ -15,7 +15,7 @@ function idempotent_file_exist {
   fi
 }
 
-# Now we use 'App_Does_Var_Empty' instead of copy paste this fct
+# Now we use 'Condition_Vars_Must_Be_Not_Empty' instead of copy paste this fct
 function idempotent_empty_var {
   if [[ -n "${run_id}" ]]; then    #if not empty
     echo "idempotent checkpoint passed" > /dev/null 2>&1
