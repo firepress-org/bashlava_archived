@@ -849,10 +849,14 @@ function main() {
   $1
 }
 
-### Invoke main with args if not sourced. Approach via: https://stackoverflow.com/a/28776166/8787985
-if ! (return 0 2> /dev/null); then
-    main "$@"
-fi
+### Calling 'main' function by default
+main "$@"
+
+  # TODO This logic was probably creating issues
+  ### Invoke main with args if not sourced. Approach via: https://stackoverflow.com/a/28776166/8787985
+  #  if ! (return 0 2> /dev/null); then
+  #      main "$@"
+  #  fi
 
 ### When no arg are provided
 input_1=$1
