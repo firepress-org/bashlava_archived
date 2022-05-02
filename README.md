@@ -24,7 +24,9 @@ In other word, the the **agile release cycle** should be something you master. B
 
 **This section in not done yet**. 2022-05-01_21h44
 
-- Feature
+- Features
+  - open webpage on Github Actions CI
+  - open webpage on Github Actions PR
 - How to Installation
 - Using git-crypt + gnupg
 - /private directory

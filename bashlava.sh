@@ -131,7 +131,6 @@ function mrg {
 
   gh pr merge && wait
   App_Show_Version
-  my_message="CI completed" && App_Banner
 
   # UX fun
   echo && my_message="NEXT MOVE suggestion: 'ci' - 'v' " App_Green
