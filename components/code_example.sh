@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Now we use 'App_Does_File_Exist' instead of copy paste this fct
+# Now we use 'Condition_File_Must_Be_Present' instead of copy paste this fct
 function idempotent_file_exist {
   _file_is="somefile.sh"
   if [[ -f "${_components_path}/${_file_is}" ]]; then
