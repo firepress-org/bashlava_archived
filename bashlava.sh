@@ -678,28 +678,28 @@ function App_Check_Which_File_Exist {
     _file_is="${action}" _file_path_is="${_docs_path}/${_file_is}.md" && Condition_File_Must_Be_Present
   done
 
-  _file_is="LICENSE" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Must_Be_Present_NoStop
+  _file_is="LICENSE" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
   fi
 
-  _file_is="README.md" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Must_Be_Present_NoStop
+  _file_is="README.md" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_readme && exit 1
   fi
 
-  _file_is=".gitignore" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Must_Be_Present_NoStop
+  _file_is=".gitignore" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_gitignore && exit 1
   fi
 
-  _file_is="Dockerfile" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Must_Be_Present_NoStop
+  _file_is="Dockerfile" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_dockerfile && exit 1
   fi
 
 ### Warning only
-  _file_is=".dockerignore" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Must_Be_Present_NoStop
+  _file_is=".dockerignore" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
 
 ### Whern it happens, you want to know ASAP
   _file_is=".git" dir_path_is="${_bashlava_path}/${_file_is}" && App_Does_Directory_Exist
@@ -719,14 +719,14 @@ function Condition_File_Must_Be_Present {
 }
 
 # This fct return the flag '_file_do_not_exist'
-function Condition_File_Must_Be_Present_NoStop {
+function Condition_File_Optionnally_Present {
   if [[ -f "${_file_path_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
   elif [[ ! -f "${_file_path_is}" ]]; then
     my_message="Warning: no file: ${_file_path_is}" && App_Warning
     _file_do_not_exist="true"
   else
-    my_message="FATAL: Condition_File_Must_Be_Present_NoStop | ${_file_path_is}" && App_Fatal
+    my_message="FATAL: Condition_File_Optionnally_Present | ${_file_path_is}" && App_Fatal
   fi
 }
 
