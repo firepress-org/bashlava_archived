@@ -774,6 +774,10 @@ function Condition_Dir_Must_Be_Present {
   fi
 }
 
+function Condition_Dir_Optionnally_Present {
+  echo "function required yet"
+}
+
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
 # bashLaVa engine set up
