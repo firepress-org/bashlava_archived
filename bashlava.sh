@@ -4,6 +4,9 @@
 
 # There are: 0o0o TODO
 
+# Logic is: to be able to run this function
+  # Condition_Branch_Must_Be_Mainbranch << needed ?
+
 # TODO
 #fct: m
 #	CASE ask if the user wants 'e'
@@ -26,7 +29,6 @@ function mainbranch {
   App_input_2_Is_Empty_As_It_Should
   Condition_No_Commits_Must_Be_Pending
   Condition_Apps_Must_Be_Installed
-  Condition_Branch_Must_Be_Edge
 
   App_Show_Version
 
@@ -64,7 +66,7 @@ function edge {
 }
 
 function commit {
-  App_Is_input_2_Provided
+  Condition_Attr_2_Must_Be_Provided
   git status
   git add -A
   git commit -m "${input_2}"
@@ -144,7 +146,7 @@ function ci {
 function version {
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
   Condition_No_Commits_Must_Be_Pending
-  App_Is_input_2_Provided
+  Condition_Attr_2_Must_Be_Provided
   Condition_Version_Must_Be_Valid
 
   _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && App_Does_Var_Empty
@@ -195,7 +197,7 @@ function tag {
 
 function squash {
   Condition_No_Commits_Must_Be_Pending
-  App_Is_input_2_Provided # how many steps
+  Condition_Attr_2_Must_Be_Provided # how many steps
   App_Is_input_3_Provided # message
 
   if ! [[ $input_2 =~ ^[0-9]+$ ]] ; then
@@ -586,14 +588,14 @@ function Condition_No_Commits_Must_Be_Pending {
 # TODO 1
 # refactor this function
 # compare var to var
-function App_Is_input_2_Provided {
+function Condition_Attr_2_Must_Be_Provided {
 ### ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not_set" ]]; then
-    my_message="You must provide two attributes. fct: App_Is_input_2_Provided" && App_Warning_Stop
+    my_message="You must provide two attributes. fct: Condition_Attr_2_Must_Be_Provided" && App_Warning_Stop
   elif [[ "${input_2}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: App_Is_input_2_Provided" && App_Fatal
+    my_message="FATAL: Condition_Attr_2_Must_Be_Provided" && App_Fatal
   fi
 }
 
