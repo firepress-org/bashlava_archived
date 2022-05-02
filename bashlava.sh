@@ -72,6 +72,7 @@ function edge {
 
   git checkout -b edge
   git push --set-upstream origin edge -f
+  App_Show_Version
   # UX fun
   my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
@@ -163,7 +164,7 @@ function version {
   sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
 
   git add .
-  git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile"
+  git commit . -m "Update ${app_name} to version ${input_2}"
   git push && echo
   App_Show_Version && sleep 1
   log
