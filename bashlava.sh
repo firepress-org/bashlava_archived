@@ -655,17 +655,14 @@ function App_Show_Docs {
 function App_Green {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   echo -e "   💻 \e[1;32m${my_message}\e[0m"
-                                # green
 }
 function App_Blue {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
-  echo -e "\e[1;34m${my_message}\e[0m"
-                                # green
+  echo -e "👋 \e[1;34m${my_message}\e[0m"
 }
 function App_Warning {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
-  echo -e "\e[1;33m${my_message}\e[0m"
-                                # yellow
+  echo -e "🚨 \e[1;33m${my_message}\e[0m"
 }
 function App_Gray {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
@@ -673,13 +670,11 @@ function App_Gray {
 }
 function App_Warning_Stop {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
-  echo -e "\e[1;33m${my_message}\e[0m" && exit 1
-                                # yellow
+  echo -e "   🚨 \e[1;33m${my_message}\e[0m 🚨" && exit 1
 }
 function App_Fatal {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
-  echo -e "🚨 \e[1;31m${my_message}\e[0m 🚨" && exit 1
-                                # red
+  echo -e "   🚨 \e[1;31m${my_message}\e[0m 🚨" && exit 1
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
