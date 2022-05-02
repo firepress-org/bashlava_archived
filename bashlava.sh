@@ -440,34 +440,34 @@ function App_Check_Are_Files_Exist {
 ### List markdown files under /docs
   arr=( "welcome_to_bashlava" "dev_workflow" "more_commands" "mrg_info" "pr_upstream_issues" "release_workflow" "test" )
   for action in "${arr[@]}"; do
-    file_is="${action}" file_path_is="${_docs_path}/${file_is}.md" && App_Does_File_Exist
+    _file_is="${action}" _file_path_is="${_docs_path}/${_file_is}.md" && App_Does_File_Exist
   done
 
-  file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  _file_is="LICENSE" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
   fi
 
-  file_is="README.md" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  _file_is="README.md" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_readme && exit 1
   fi
 
-  file_is=".gitignore" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  _file_is=".gitignore" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_gitignore && exit 1
   fi
 
-  file_is="Dockerfile" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  _file_is="Dockerfile" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_dockerfile && exit 1
   fi
 
 ### Warning only
-  file_is=".dockerignore" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
+  _file_is=".dockerignore" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
 
 ### Whern it happens, you want to know ASAP
-  file_is=".git" dir_path_is="${_bashlava_path}/${file_is}" && App_Does_Directory_Exist
+  _file_is=".git" dir_path_is="${_bashlava_path}/${_file_is}" && App_Does_Directory_Exist
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message=".git directory does not exit" && App_Fatal
   fi
@@ -507,20 +507,20 @@ function App_Load_variables {
 ### source files under /components
   arr=( "alias.sh" "code_example.sh" "templates.sh")
   for action in "${arr[@]}"; do
-    file_is="${action}" file_path_is="${_components_path}/${file_is}" && App_Does_File_Exist
-    source "${file_path_is}"
+    _file_is="${action}" _file_path_is="${_components_path}/${_file_is}" && App_Does_File_Exist
+    source "${_file_path_is}"
   done
 
 ### We dont source this file. See example using Mapfile
-  file_is="list.txt" file_path_is="${_components_path}/${file_is}" && App_Does_File_Exist
+  _file_is="list.txt" _file_path_is="${_components_path}/${_file_is}" && App_Does_File_Exist
 
 # TODO
 # create a flag where the default is we don't use private
 
 ### source PRIVATE / custom scripts
   # the user must create /private/_entrypoint.sh file
-  file_is="_entrypoint.sh" file_path_is="${_components_path}/private/${file_is}" && App_Does_File_Exist
-  source "${file_path_is}"
+  _file_is="_entrypoint.sh" _file_path_is="${_components_path}/private/${_file_is}" && App_Does_File_Exist
+  source "${_file_path_is}"
 
 ### Set defaults for flags
   _flag_deploy_commit_message="not_set"
@@ -633,7 +633,7 @@ function App_glow {
   sleep 0.5
 
   _present_path_is=$(pwd)
-  file_is="${input_2}" file_path_is="${_present_path_is}/${input_2}" && App_Does_File_Exist
+  _file_is="${input_2}" _file_path_is="${_present_path_is}/${input_2}" && App_Does_File_Exist
 
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
 }
@@ -644,7 +644,7 @@ function App_Show_Docs {
   _var_name="_doc_name" _is_it_empty=$(echo ${_doc_name}) && App_Does_Var_Empty
 
   _present_path_is=$(pwd)
-  file_is="${_doc_name}" file_path_is="${_docs_path}/${_doc_name}" && App_Does_File_Exist
+  _file_is="${_doc_name}" _file_path_is="${_docs_path}/${_doc_name}" && App_Does_File_Exist
 
   cd ${_docs_path}
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 110 ${_doc_name}
@@ -690,24 +690,24 @@ function App_Fatal {
 #
 
 function App_Does_File_Exist {
-  if [[ -f "${file_path_is}" ]]; then
+  if [[ -f "${_file_path_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
-  elif [[ ! -f "${file_path_is}" ]]; then
-    my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
+  elif [[ ! -f "${_file_path_is}" ]]; then
+    my_message="Warning: no file: ${_file_path_is}" && App_Warning_Stop
   else
-    my_message="FATAL: App_Does_File_Exist | ${file_path_is}" && App_Fatal
+    my_message="FATAL: App_Does_File_Exist | ${_file_path_is}" && App_Fatal
   fi
 }
 
 # This fct return the flag '_file_do_not_exist'
 function App_Does_File_Exist_NoStop {
-  if [[ -f "${file_path_is}" ]]; then
+  if [[ -f "${_file_path_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
-  elif [[ ! -f "${file_path_is}" ]]; then
-    my_message="Warning: no file: ${file_path_is}" && App_Warning
+  elif [[ ! -f "${_file_path_is}" ]]; then
+    my_message="Warning: no file: ${_file_path_is}" && App_Warning
     _file_do_not_exist="true"
   else
-    my_message="FATAL: App_Does_File_Exist_NoStop | ${file_path_is}" && App_Fatal
+    my_message="FATAL: App_Does_File_Exist_NoStop | ${_file_path_is}" && App_Fatal
   fi
 }
 
