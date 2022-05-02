@@ -67,6 +67,7 @@ function edge {
 
   git checkout -b edge
   git push --set-upstream origin edge -f
+  # UX fun
   my_message="<edge> was freshly branched out from ${default_branch}" App_Green
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
 }
@@ -77,10 +78,12 @@ function commit {
   git add -A
   git commit -m "${input_2}"
   git push
+  # UX fun
   echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " App_Green
 }
 
 function pr {
+### see pr_upstream_issues.md to debug merging
   App_Is_edge
   App_input_2_Is_Empty_As_It_Should
   App_No_Commits_Pending
@@ -90,8 +93,8 @@ function pr {
   
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
   gh pr view --web
+  # UX fun
   echo && my_message="NEXT MOVE suggestion: 'ci' - 'mrg' " App_Green
-  # see pr_upstream_issues.md to debug merging
 }
 
 function ci {
@@ -99,14 +102,17 @@ function ci {
   App_input_2_Is_Empty_As_It_Should
   App_No_Commits_Pending
 
-  gh run list && sleep 2
+  gh run list && sleep 1
   
-  _run_id=$(gh run list | head -1 | awk '{print $12}')
+  # show latest build and open webpage on Github Actions
+  _run_id=$(gh run list | head -1 | awk '{print $11}')
   _var_name="_run_id" _is_it_empty=$(echo ${_run_id}) && App_Does_Var_Empty
-
   open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
+
+  # Follow status within the terminal
+  gh run watch
+  # UX fun
   echo && my_message="NEXT MOVE suggestion: 'mrg' " App_Green
-  #gh run watch
 }
 
 function mrg {
@@ -119,6 +125,7 @@ function mrg {
 
   gh pr merge
   App_Show_Version
+  # UX fun
   echo && my_message="NEXT MOVE suggestion: 'v' " App_Green
 }
 
@@ -153,6 +160,7 @@ function version {
   git push && echo
   App_Show_Version && sleep 1
   log
+  # UX fun
   echo && my_message="NEXT MOVE suggestion: 't' " App_Green
 }
 
@@ -169,6 +177,7 @@ function tag {
   gh release create && sleep 4
   App_Show_Version
   App_Show_Release
+  # UX fun
   echo && my_message="NEXT MOVE suggestion: start over from 'e' " App_Green
 }
 
@@ -189,6 +198,7 @@ function squash {
   git commit -m "${input_3} /sq"
   git push
   log
+  # UX fun
   echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " App_Green
 }
 
