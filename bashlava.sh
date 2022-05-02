@@ -22,38 +22,9 @@
    # The package is not installed
 #fi
 
-# TODO
-# Logic is: to be able to run this function
-
-  # Condition_No_Commits_Must_Be_Pending << App_No_Commits_Pending
-  # Condition_Apps_Must_Be_Installed << App_Check_Required_Apps
-  # Condition_Version_Must_Be_Valid << App_Is_Version_Syntax_Valid
-
-  # Condition_Branch_Must_Be_Edge << App_Is_edge
-  # Condition_Branch_Must_Be_Mainbranch
-
-  # Condition_Attr_2_Must_Be_Provided << App_Is_input_2_Provided
-  # Condition_Attr_2_Must_Be_Empty << App_input_2_Is_Empty_As_It_Should
-  # Condition_Attr_3_Must_Be_Provided << App_Is_input_3_Provided
-  # Condition_Attr_3_Must_Be_Empty << App_input_3_Is_Empty_As_It_Should
-  # Condition_Attr_4_Must_Be_Provided << humm ?
-  # Condition_Attr_4_Must_Be_Empty << App_input_4_Is_Empty_As_It_Should
-
-  # Condition_Vars_Must_Be_Equal << App_Are_Var_Equal
-  # Condition_Vars_Must_Be_Not_Equal << App_Are_Var_Not_Equal
-  # Condition_Vars_Must_Be_Empty << App_Does_Var_Empty
-  # Condition_Vars_Must_Be_Not_Empty << 0o0o
-
-# weird ...
-  # Condition_File_Must_Be_Present << App_Check_Are_Files_Exist + App_Does_File_Exist
-  # Condition_File_Optionnally_Present << App_Does_File_Exist_NoStop  returns: _file_do_not_exist="true"
-
-  # Condition_Dir_Must_Be_Present << App_Does_Directory_Exist
-  # Condition_Dir_Optionnally_Present << (does not exist)            returns: _dir_do_not_exist="true"
-
 function mainbranch {
   App_input_2_Is_Empty_As_It_Should
-  App_No_Commits_Pending
+  Condition_No_Commits_Must_Be_Pending
   App_Check_Required_Apps
   App_Is_edge
 
@@ -73,7 +44,7 @@ function edge {
 ### it assumes there will be no conflict with anybody else
 ### as I'm the only person using 'edge'.
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
-  App_No_Commits_Pending
+  Condition_No_Commits_Must_Be_Pending
   App_Check_Required_Apps
 
 ### delete branch
@@ -106,7 +77,7 @@ function pr {
 ### see pr_upstream_issues.md to debug merging
   App_Is_edge
   App_input_2_Is_Empty_As_It_Should
-  App_No_Commits_Pending
+  Condition_No_Commits_Must_Be_Pending
 
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
   _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && App_Does_Var_Empty
@@ -130,7 +101,7 @@ function pr {
 function mrg {
   # merge from edge into main_branch
   App_Is_edge
-  App_No_Commits_Pending
+  Condition_No_Commits_Must_Be_Pending
   App_input_2_Is_Empty_As_It_Should
 
   _doc_name="mrg_info.md" App_Show_Docs
@@ -155,7 +126,7 @@ function mrg {
 function ci {
   # continuous integration status
   App_input_2_Is_Empty_As_It_Should
-  App_No_Commits_Pending
+  Condition_No_Commits_Must_Be_Pending
 
 ### show latest build and open webpage on Github Actions
   #gh run list && sleep 1
@@ -172,7 +143,7 @@ function ci {
 
 function version {
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
-  App_No_Commits_Pending
+  Condition_No_Commits_Must_Be_Pending
   App_Is_input_2_Provided
   App_Is_Version_Syntax_Valid
 
@@ -206,7 +177,7 @@ function version {
 }
 
 function tag {
-  App_No_Commits_Pending
+  Condition_No_Commits_Must_Be_Pending
   App_input_2_Is_Empty_As_It_Should
 
   git tag ${app_release} && git push --tags && echo
@@ -223,7 +194,7 @@ function tag {
 }
 
 function squash {
-  App_No_Commits_Pending
+  Condition_No_Commits_Must_Be_Pending
   App_Is_input_2_Provided # how many steps
   App_Is_input_3_Provided # message
 
@@ -606,9 +577,9 @@ function App_Is_edge {
   App_Are_Var_Equal
 }
 
-function App_No_Commits_Pending {
+function Condition_No_Commits_Must_Be_Pending {
   _compare_me=$(git status | grep -c "nothing to commit")
-  _compare_you="1" _fct_is="App_No_Commits_Pending"
+  _compare_you="1" _fct_is="Condition_No_Commits_Must_Be_Pending"
   App_Are_Var_Equal
 }
 
