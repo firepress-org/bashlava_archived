@@ -57,12 +57,12 @@ function App_Yellow {
 }
 
 ### capture common typo or bad habits
-function invalid {
+function App_invalid_cmd {
   my_message="Invalid command" && App_Warning_Stop
 }
 function sh { 
-  invalid
+  App_invalid_cmd
 }
 function oo { 
-  invalid
+  App_invalid_cmd
 }
