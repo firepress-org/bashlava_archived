@@ -857,8 +857,11 @@ function main() {
   $1
 }
 
-### Calling 'main' function by default
-main "$@"
+# Invoke main with args if not sourced
+# Approach via: https://stackoverflow.com/a/28776166/8787985
+if ! (return 0 2> /dev/null); then
+    main "$@"
+fi
 
 ### If the user do not provide argument, show options
 input_1=$1
