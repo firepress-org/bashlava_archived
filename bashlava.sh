@@ -101,12 +101,12 @@ function ci {
   App_input_2_Is_Empty_As_It_Should
   App_No_Commits_Pending
 
-  gh run list && sleep 1
-  
-  # show latest build and open webpage on Github Actions
+### show latest build and open webpage on Github Actions
+  #gh run list && sleep 1
   _run_id=$(gh run list | head -1 | awk '{print $11}')
   _var_name="_run_id" _is_it_empty=$(echo ${_run_id}) && App_Does_Var_Empty
-  open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
+### Opening the run id cuase issues. Lets stick to /actions/
+  open https://github.com/${github_user}/${app_name}/actions/
 
   # Follow status within the terminal
   gh run watch
