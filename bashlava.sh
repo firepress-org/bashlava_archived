@@ -633,14 +633,14 @@ function Condition_Attr_3_Must_Be_Empty {
     my_message="FATAL: Condition_Attr_3_Must_Be_Empty" && App_Fatal
   fi
 }
-function App_input_4_Is_Empty_As_It_Should {
+function Condition_Attr_4_Must_Be_Empty {
 # Stop if 4 attributes are passed.
   if [[ "${input_4}" != "not_set" ]]; then
-      my_message="You cannot use four attributes. fct: App_input_4_Is_Empty_As_It_Should" && App_Warning && echo
+      my_message="You cannot use four attributes. fct: Condition_Attr_4_Must_Be_Empty" && App_Warning && echo
   elif [[ "${input_4}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: App_input_4_Is_Empty_As_It_Should" && App_Fatal
+    my_message="FATAL: Condition_Attr_4_Must_Be_Empty" && App_Fatal
   fi
 }
 
@@ -840,7 +840,7 @@ function main() {
   colour_init
 
 ### Ensure there are no more than three attrbutes
-  App_input_4_Is_Empty_As_It_Should
+  Condition_Attr_4_Must_Be_Empty
 
 # TODO
 # set as configs ex: debug="true"
