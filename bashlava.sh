@@ -23,17 +23,36 @@
 #fi
 
 # TODO
-# Many Apps are utilities but some are BR (business rules).
-# like 'App_No_Commits_Pending' 'App_Is_edge'
-# Example to be able to run this function ...
-  # App_BR11_No_Commits_Pending
-  # App_BR12_Branch_Is_Edge
-  # App_BR13_Branch_Is_Mainbranch
-  # App_BR14_Attribut_2_Provided
-  # App_BR15_Attribut_2_Not_Provided
+# Logic is: to be able to run this function
+
+  # Condition_No_Commits_Must_Be_Pending << App_No_Commits_Pending
+  # Condition_Apps_Must_Be_Installed << App_Check_Required_Apps
+  # Condition_Version_Must_Be_Valid << App_Is_Version_Syntax_Valid
+
+  # Condition_Branch_Must_Be_Edge << App_Is_edge
+  # Condition_Branch_Must_Be_Mainbranch
+
+  # Condition_Attr_2_Must_Be_Provided << App_Is_input_2_Provided
+  # Condition_Attr_2_Must_Be_Empty << App_input_2_Is_Empty_As_It_Should
+  # Condition_Attr_3_Must_Be_Provided << App_Is_input_3_Provided
+  # Condition_Attr_3_Must_Be_Empty << App_input_3_Is_Empty_As_It_Should
+  # Condition_Attr_4_Must_Be_Provided << humm ?
+  # Condition_Attr_4_Must_Be_Empty << App_input_4_Is_Empty_As_It_Should
+
+  # Condition_Vars_Must_Be_Equal << App_Are_Var_Equal
+  # Condition_Vars_Must_Be_Not_Equal << App_Are_Var_Not_Equal
+  # Condition_Vars_Must_Be_Empty << App_Does_Var_Empty
+  # Condition_Vars_Must_Be_Not_Empty << 0o0o
+
+# weird ...
+  # Condition_File_Must_Be_Present << App_Check_Are_Files_Exist + App_Does_File_Exist
+  # Condition_File_Optionnally_Present << App_Does_File_Exist_NoStop  returns: _file_do_not_exist="true"
+
+  # Condition_Dir_Must_Be_Present << App_Does_Directory_Exist
+  # Condition_Dir_Optionnally_Present << (does not exist)            returns: _dir_do_not_exist="true"
 
 function mainbranch {
-  App_input_2_Is_Empty_As_It_Should       # fct without attributs
+  App_input_2_Is_Empty_As_It_Should
   App_No_Commits_Pending
   App_Check_Required_Apps
   App_Is_edge
@@ -359,144 +378,6 @@ function App_short_url {
   esac
 }
 
-function App_Is_mainbranch {
-  _compare_me=$(git rev-parse --abbrev-ref HEAD)
-  _compare_you="${default_branch}" _fct_is="App_Is_mainbranch"
-  App_Are_Var_Equal
-}
-
-function App_Is_edge {
-  _compare_me=$(git rev-parse --abbrev-ref HEAD)
-  _compare_you="edge" _fct_is="App_Is_edge"
-  App_Are_Var_Equal
-}
-
-function App_No_Commits_Pending {
-  _compare_me=$(git status | grep -c "nothing to commit")
-  _compare_you="1" _fct_is="App_No_Commits_Pending"
-  App_Are_Var_Equal
-}
-
-# TODO 1
-# refactor this function
-# compare var to var
-function App_Is_input_2_Provided {
-### ensure the second attribute is not empty to continue
-  if [[ "${input_2}" == "not_set" ]]; then
-    my_message="You must provide two attributes. fct: App_Is_input_2_Provided" && App_Warning_Stop
-  elif [[ "${input_2}" != "not_set" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="FATAL: App_Is_input_2_Provided" && App_Fatal
-  fi
-}
-
-# TODO 2
-function App_Is_input_3_Provided {
-### ensure the third attribute is not empty to continue
-  if [[ "${input_3}" == "not_set" ]]; then
-    my_message="You must provide three attributes. fct: App_Is_input_3_Provided" && App_Warning_Stop
-  elif [[ "${input_3}" != "not_set" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="FATAL: App_Is_input_3_Provided" && App_Fatal
-  fi
-}
-
-# TODO 3
-function App_input_2_Is_Empty_As_It_Should {
-### Stop if 2 attributes are passed.
-  if [[ "${input_2}" != "not_set" ]]; then
-      my_message="You can NOT use two attributes. fct: App_input_2_Is_Empty_As_It_Should" && App_Warning_Stop
-  elif [[ "${input_2}" == "not_set" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="FATAL: App_input_2_Is_Empty_As_It_Should" && App_Fatal
-  fi
-}
-
-function App_input_3_Is_Empty_As_It_Should {
-# Stop if 3 attributes are passed.
-  if [[ "${input_3}" != "not_set" ]]; then
-      my_message="You can NOT use three attributes. fct: App_input_3_Is_Empty_As_It_Should" && App_Warning_Stop
-  elif [[ "${input_3}" == "not_set" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="FATAL: App_input_3_Is_Empty_As_It_Should" && App_Fatal
-  fi
-}
-function App_input_4_Is_Empty_As_It_Should {
-# Stop if 4 attributes are passed.
-  if [[ "${input_4}" != "not_set" ]]; then
-      my_message="You cannot use four attributes. fct: App_input_4_Is_Empty_As_It_Should" && App_Warning && echo
-  elif [[ "${input_4}" == "not_set" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="FATAL: App_input_4_Is_Empty_As_It_Should" && App_Fatal
-  fi
-}
-
-function App_Is_Version_Syntax_Valid {
-  # Version is limited to these characters: 1234567890.rR-
-  # so we can do: '3.5.13-r3' or '3.5.13-rc3'
-  _compare_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
-  _compare_you="${input_2}" _fct_is="App_Is_Version_Syntax_Valid"
-  App_Are_Var_Equal
-}
-
-function App_Check_Required_Apps {
-### docker running?
-  _compare_me=$(docker version | grep -c "Server: Docker Desktop")
-  _compare_you="1" _fct_is="App_Check_Required_Apps"
-  App_Are_Var_Equal
-  my_message="Docker is installed" && App_Gray
-
-### gh cli installed
-  _compare_me=$(gh --version | grep -c "https://github.com/cli/cli/releases/tag/v")
-  _compare_you="1" _fct_is="App_Check_Required_Apps"
-  App_Are_Var_Equal
-  my_message="gh cli is installed" && App_Gray
-}
-
-function App_Check_Are_Files_Exist {
-
-### List markdown files under /docs
-  arr=( "welcome_to_bashlava" "dev_workflow" "more_commands" "mrg_info" "pr_upstream_issues" "release_workflow" "test" )
-  for action in "${arr[@]}"; do
-    _file_is="${action}" _file_path_is="${_docs_path}/${_file_is}.md" && App_Does_File_Exist
-  done
-
-  _file_is="LICENSE" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
-  fi
-
-  _file_is="README.md" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_readme && exit 1
-  fi
-
-  _file_is=".gitignore" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_gitignore && exit 1
-  fi
-
-  _file_is="Dockerfile" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_dockerfile && exit 1
-  fi
-
-### Warning only
-  _file_is=".dockerignore" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
-
-### Whern it happens, you want to know ASAP
-  _file_is=".git" dir_path_is="${_bashlava_path}/${_file_is}" && App_Does_Directory_Exist
-  if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message=".git directory does not exit" && App_Fatal
-  fi
-
-}
-
 function App_Load_variables {
 ### Default var & path. Customize if need. Usefull if you want
   # to have multiple instance of bashLaVa on your machine
@@ -702,7 +583,7 @@ function App_Fatal {
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# Apps: idempotent checkpoints
+# Conditions (idempotent due diligence)
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -711,6 +592,144 @@ function App_Fatal {
     #
   #
 #
+
+
+function App_Is_mainbranch {
+  _compare_me=$(git rev-parse --abbrev-ref HEAD)
+  _compare_you="${default_branch}" _fct_is="App_Is_mainbranch"
+  App_Are_Var_Equal
+}
+
+function App_Is_edge {
+  _compare_me=$(git rev-parse --abbrev-ref HEAD)
+  _compare_you="edge" _fct_is="App_Is_edge"
+  App_Are_Var_Equal
+}
+
+function App_No_Commits_Pending {
+  _compare_me=$(git status | grep -c "nothing to commit")
+  _compare_you="1" _fct_is="App_No_Commits_Pending"
+  App_Are_Var_Equal
+}
+
+# TODO 1
+# refactor this function
+# compare var to var
+function App_Is_input_2_Provided {
+### ensure the second attribute is not empty to continue
+  if [[ "${input_2}" == "not_set" ]]; then
+    my_message="You must provide two attributes. fct: App_Is_input_2_Provided" && App_Warning_Stop
+  elif [[ "${input_2}" != "not_set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: App_Is_input_2_Provided" && App_Fatal
+  fi
+}
+
+# TODO 2
+function App_Is_input_3_Provided {
+### ensure the third attribute is not empty to continue
+  if [[ "${input_3}" == "not_set" ]]; then
+    my_message="You must provide three attributes. fct: App_Is_input_3_Provided" && App_Warning_Stop
+  elif [[ "${input_3}" != "not_set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: App_Is_input_3_Provided" && App_Fatal
+  fi
+}
+
+# TODO 3
+function App_input_2_Is_Empty_As_It_Should {
+### Stop if 2 attributes are passed.
+  if [[ "${input_2}" != "not_set" ]]; then
+      my_message="You can NOT use two attributes. fct: App_input_2_Is_Empty_As_It_Should" && App_Warning_Stop
+  elif [[ "${input_2}" == "not_set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: App_input_2_Is_Empty_As_It_Should" && App_Fatal
+  fi
+}
+
+function App_input_3_Is_Empty_As_It_Should {
+# Stop if 3 attributes are passed.
+  if [[ "${input_3}" != "not_set" ]]; then
+      my_message="You can NOT use three attributes. fct: App_input_3_Is_Empty_As_It_Should" && App_Warning_Stop
+  elif [[ "${input_3}" == "not_set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: App_input_3_Is_Empty_As_It_Should" && App_Fatal
+  fi
+}
+function App_input_4_Is_Empty_As_It_Should {
+# Stop if 4 attributes are passed.
+  if [[ "${input_4}" != "not_set" ]]; then
+      my_message="You cannot use four attributes. fct: App_input_4_Is_Empty_As_It_Should" && App_Warning && echo
+  elif [[ "${input_4}" == "not_set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: App_input_4_Is_Empty_As_It_Should" && App_Fatal
+  fi
+}
+
+function App_Is_Version_Syntax_Valid {
+  # Version is limited to these characters: 1234567890.rR-
+  # so we can do: '3.5.13-r3' or '3.5.13-rc3'
+  _compare_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
+  _compare_you="${input_2}" _fct_is="App_Is_Version_Syntax_Valid"
+  App_Are_Var_Equal
+}
+
+function App_Check_Required_Apps {
+### docker running?
+  _compare_me=$(docker version | grep -c "Server: Docker Desktop")
+  _compare_you="1" _fct_is="App_Check_Required_Apps"
+  App_Are_Var_Equal
+  my_message="Docker is installed" && App_Gray
+
+### gh cli installed
+  _compare_me=$(gh --version | grep -c "https://github.com/cli/cli/releases/tag/v")
+  _compare_you="1" _fct_is="App_Check_Required_Apps"
+  App_Are_Var_Equal
+  my_message="gh cli is installed" && App_Gray
+}
+
+function App_Check_Are_Files_Exist {
+
+### List markdown files under /docs
+  arr=( "welcome_to_bashlava" "dev_workflow" "more_commands" "mrg_info" "pr_upstream_issues" "release_workflow" "test" )
+  for action in "${arr[@]}"; do
+    _file_is="${action}" _file_path_is="${_docs_path}/${_file_is}.md" && App_Does_File_Exist
+  done
+
+  _file_is="LICENSE" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
+  fi
+
+  _file_is="README.md" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_readme && exit 1
+  fi
+
+  _file_is=".gitignore" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_gitignore && exit 1
+  fi
+
+  _file_is="Dockerfile" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_dockerfile && exit 1
+  fi
+
+### Warning only
+  _file_is=".dockerignore" _file_path_is="${_bashlava_path}/${_file_is}" && App_Does_File_Exist_NoStop
+
+### Whern it happens, you want to know ASAP
+  _file_is=".git" dir_path_is="${_bashlava_path}/${_file_is}" && App_Does_Directory_Exist
+  if [[ "${_file_do_not_exist}" == "true" ]]; then
+    my_message=".git directory does not exit" && App_Fatal
+  fi
+}
 
 function App_Does_File_Exist {
   if [[ -f "${_file_path_is}" ]]; then
@@ -791,11 +810,11 @@ function App_Does_Directory_Exist {
 #
 
 function App_Reset_Custom_path {
-# In file ${my_path}/bashlava_path_tmp, we set an absolute path like: '/Users/pascalandy/Documents/github/firepress-org/bashlava'
+# In file ${my_path}/bashlava_path_tmp, we set an absolute path like: '~/Users/myuser/Documents/github/firepress-org/bashlava'
+# ${my_path}/bashlava_path point to a file on disk (not a variable)
 # It finds and configures it automatically. This way we don't have to hard code it :)
 # Don't confuse it with the symlink which is usually at "/usr/local/bin/bashlava.sh"
-# We write bashlava_path on disk to avoid running this request all the time.
-# Again, ${my_path}/bashlava_path point to a file on disk (not a variable)
+# We write bashlava_path on disk for speed optimization and to avoid running this request all the time.
   if [ ! -f ${my_path}/bashlava_path ]; then
     readlink $(which "${bashlava_executable}") > "${my_path}/bashlava_path_tmp"
     rm ${my_path}/bashlava_path
