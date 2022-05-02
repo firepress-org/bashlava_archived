@@ -8,7 +8,7 @@ function App_random_6 {
   openssl rand -hex 3
 }
 
-function array {
+function App_array {
   arr=( "Hello" "Mr Andy" )
   for i in "${arr[@]}"; do
     my_message="${i}" && App_Gray
