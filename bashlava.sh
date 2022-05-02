@@ -295,7 +295,7 @@ function test_color {
 }
 
 function help {
-  App_input_3_Is_Empty_As_It_Should
+  Condition_Attr_3_Must_Be_Empty
 
   _doc_name="dev_workflow.md" App_Show_Docs
   _doc_name="release_workflow.md" App_Show_Docs
@@ -623,14 +623,14 @@ function Condition_Attr_2_Must_Be_Empty {
   fi
 }
 
-function App_input_3_Is_Empty_As_It_Should {
+function Condition_Attr_3_Must_Be_Empty {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not_set" ]]; then
-      my_message="You can NOT use three attributes. fct: App_input_3_Is_Empty_As_It_Should" && App_Warning_Stop
+      my_message="You can NOT use three attributes. fct: Condition_Attr_3_Must_Be_Empty" && App_Warning_Stop
   elif [[ "${input_3}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: App_input_3_Is_Empty_As_It_Should" && App_Fatal
+    my_message="FATAL: Condition_Attr_3_Must_Be_Empty" && App_Fatal
   fi
 }
 function App_input_4_Is_Empty_As_It_Should {
