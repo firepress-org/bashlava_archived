@@ -125,7 +125,7 @@ function mrg {
   gh pr merge
   App_Show_Version
   # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'v' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'ci' - 'v' " App_Green
 }
 
 function version {
