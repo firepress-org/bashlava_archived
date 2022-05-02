@@ -232,7 +232,7 @@ function test {
 
   echo
   my_message="Check files and directories:" App_Blue
-  App_Check_Are_Files_Exist
+  App_Check_Which_File_Exist
   my_message="All good!" App_Gray
 
   echo
@@ -670,7 +670,7 @@ function Condition_Apps_Must_Be_Installed {
   my_message="gh cli is installed" && App_Gray
 }
 
-function App_Check_Are_Files_Exist {
+function App_Check_Which_File_Exist {
 
 ### List markdown files under /docs
   arr=( "welcome_to_bashlava" "dev_workflow" "more_commands" "mrg_info" "pr_upstream_issues" "release_workflow" "test" )
@@ -813,6 +813,7 @@ function main() {
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
   App_Load_variables
+  App_Check_Which_File_Exist
 
   if [[ -z "$2" ]]; then    #if empty
     input_2="not_set"
