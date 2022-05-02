@@ -8,6 +8,12 @@
 # normalize ERR_ messages
 
 # TODO
+#fct: pr
+#	CASE to ask if the user wants to see 'ci'
+#fct: mrg
+#	CASE to ask if the user wants to see 'ci'
+  
+# TODO
 # better management core vars
 
 # TODO
@@ -67,7 +73,7 @@ function edge {
   git checkout -b edge
   git push --set-upstream origin edge -f
   # UX fun
-  my_message="<edge> was freshly branched out from ${default_branch}" App_Green
+  my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
 }
 
@@ -162,7 +168,7 @@ function version {
   App_Show_Version && sleep 1
   log
   # UX fun
-  echo && my_message="NEXT MOVE suggestion: 't' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'pr' - 't' " App_Green
 }
 
 function tag {
