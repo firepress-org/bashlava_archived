@@ -567,9 +567,11 @@ function App_Fatal {
 #
 
 
-function App_Is_mainbranch {
+function Condition_Branch_Must_Be_Mainbranch {
+  echo "function not required yet"
+  #
   _compare_me=$(git rev-parse --abbrev-ref HEAD)
-  _compare_you="${default_branch}" _fct_is="App_Is_mainbranch"
+  _compare_you="${default_branch}" _fct_is="Condition_Branch_Must_Be_Mainbranch"
   Condition_Vars_Must_Be_Equal
 }
 
