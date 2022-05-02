@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
 
-
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# There is 17 TODO
-
-# TODO
-# normalize WARN_ messages
-# normalize ERR_ messages
+# There are: 0o0o TODO
 
 # TODO
 #fct: m
@@ -257,7 +252,7 @@ function test {
   if [[ $(uname) == "Darwin" ]]; then
     my_message="Running on a Mac (Darwin)" App_Gray
   elif [[ $(uname) != "Darwin" ]]; then
-    my_message="bashLaVa is not tested on other machine than Darmin (Mac). Please let me know if you want to contribute (WARN_901)." && App_Warning
+    my_message="bashLaVa is not tested on other machine than Mac OS (Darmin)." && App_Warning
   else
     my_message="FATAL: Test / Check OS" && App_Fatal
   fi
