@@ -702,7 +702,7 @@ function App_Check_Which_File_Exist {
   _file_is=".dockerignore" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
 
 ### Whern it happens, you want to know ASAP
-  _file_is=".git" dir_path_is="${_bashlava_path}/${_file_is}" && App_Does_Directory_Exist
+  _file_is=".git" dir_path_is="${_bashlava_path}/${_file_is}" && Condition_Dir_Must_Be_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message=".git directory does not exit" && App_Fatal
   fi
@@ -764,13 +764,13 @@ function Condition_Vars_Must_Be_Not_Empty {
 }
 
 # This fct return the flag '_file_do_not_exist'
-function App_Does_Directory_Exist {
+function Condition_Dir_Must_Be_Present {
   if [[ -d "${dir_path_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
   elif [[ ! -d "${dir_path_is}" ]]; then
     my_message="Warning: no directory: ${dir_path_is}" && App_Warning_Stop
   else
-    my_message="FATAL: App_Does_Directory_Exist | ${dir_path_is}" && App_Fatal
+    my_message="FATAL: Condition_Dir_Must_Be_Present | ${dir_path_is}" && App_Fatal
   fi
 }
 
