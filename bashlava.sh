@@ -26,7 +26,7 @@ function mainbranch {
   App_input_2_Is_Empty_As_It_Should
   Condition_No_Commits_Must_Be_Pending
   Condition_Apps_Must_Be_Installed
-  App_Is_edge
+  Condition_Branch_Must_Be_Edge
 
   App_Show_Version
 
@@ -75,7 +75,7 @@ function commit {
 
 function pr {
 ### see pr_upstream_issues.md to debug merging
-  App_Is_edge
+  Condition_Branch_Must_Be_Edge
   App_input_2_Is_Empty_As_It_Should
   Condition_No_Commits_Must_Be_Pending
 
@@ -100,7 +100,7 @@ function pr {
 
 function mrg {
   # merge from edge into main_branch
-  App_Is_edge
+  Condition_Branch_Must_Be_Edge
   Condition_No_Commits_Must_Be_Pending
   App_input_2_Is_Empty_As_It_Should
 
@@ -571,9 +571,9 @@ function App_Is_mainbranch {
   App_Are_Var_Equal
 }
 
-function App_Is_edge {
+function Condition_Branch_Must_Be_Edge {
   _compare_me=$(git rev-parse --abbrev-ref HEAD)
-  _compare_you="edge" _fct_is="App_Is_edge"
+  _compare_you="edge" _fct_is="Condition_Branch_Must_Be_Edge"
   App_Are_Var_Equal
 }
 
