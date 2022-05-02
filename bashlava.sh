@@ -198,7 +198,7 @@ function tag {
 function squash {
   Condition_No_Commits_Must_Be_Pending
   Condition_Attr_2_Must_Be_Provided # how many steps
-  App_Is_input_3_Provided # message
+  Condition_Attr_3_Must_Be_Provided # message
 
   if ! [[ $input_2 =~ ^[0-9]+$ ]] ; then
     my_message="Oups, syntax error." && App_Warning_Stop
@@ -600,14 +600,14 @@ function Condition_Attr_2_Must_Be_Provided {
 }
 
 # TODO 2
-function App_Is_input_3_Provided {
+function Condition_Attr_3_Must_Be_Provided {
 ### ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not_set" ]]; then
-    my_message="You must provide three attributes. fct: App_Is_input_3_Provided" && App_Warning_Stop
+    my_message="You must provide three attributes. fct: Condition_Attr_3_Must_Be_Provided" && App_Warning_Stop
   elif [[ "${input_3}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: App_Is_input_3_Provided" && App_Fatal
+    my_message="FATAL: Condition_Attr_3_Must_Be_Provided" && App_Fatal
   fi
 }
 
