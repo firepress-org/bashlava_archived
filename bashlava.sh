@@ -68,7 +68,7 @@ function edge {
   git checkout -b edge
   git push --set-upstream origin edge -f
   my_message="<edge> was freshly branched out from ${default_branch}" App_Green
-    echo && my_message="Next step: code something and 'c' " App_Green
+  echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
 }
 
 function commit {
@@ -77,7 +77,7 @@ function commit {
   git add -A
   git commit -m "${input_2}"
   git push
-  echo && my_message="Next step: 'c' - 'pr' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " App_Green
 }
 
 function pr {
@@ -90,7 +90,7 @@ function pr {
   
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
   gh pr view --web
-  echo && my_message="Next step: 'ci' - 'mrg' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'ci' - 'mrg' " App_Green
   # see pr_upstream_issues.md to debug merging
 }
 
@@ -105,7 +105,7 @@ function ci {
   _var_name="_run_id" _is_it_empty=$(echo ${_run_id}) && App_Does_Var_Empty
 
   open https://github.com/${github_user}/${app_name}/actions/runs/${run_id}
-  echo && my_message="Next step: 'mrg' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'mrg' " App_Green
   #gh run watch
 }
 
@@ -119,7 +119,7 @@ function mrg {
 
   gh pr merge
   App_Show_Version
-  echo && my_message="Next step: 'v' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'v' " App_Green
 }
 
 function version {
@@ -153,7 +153,7 @@ function version {
   git push && echo
   App_Show_Version && sleep 1
   log
-  echo && my_message="Next step: 't' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 't' " App_Green
 }
 
 function tag {
@@ -169,7 +169,7 @@ function tag {
   gh release create && sleep 4
   App_Show_Version
   App_Show_Release
-  echo && my_message="Next step: start over from 'e' " App_Green
+  echo && my_message="NEXT MOVE suggestion: start over from 'e' " App_Green
 }
 
 function squash {
@@ -189,7 +189,7 @@ function squash {
   git commit -m "${input_3} /sq"
   git push
   log
-  echo && my_message="Next step: 'c' - 'pr' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " App_Green
 }
 
 function test {
@@ -658,7 +658,7 @@ function App_Show_Docs {
 # Define colors / https://www.shellhacks.com/bash-colors/
 function App_Green {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
-  echo -e "\e[1;32m${my_message}\e[0m"
+  echo -e "   💻 \e[1;32m${my_message}\e[0m"
                                 # green
 }
 function App_Blue {

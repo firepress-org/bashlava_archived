@@ -15,6 +15,10 @@ function App_array {
   done
 }
 
+function hello {
+  echo && my_message="NEXT MOVE suggestion: Say hello to a living soul." App_Green
+}
+
 function App_init_readme {
 cat << EOF > README_template.md
 This README is still empty.
