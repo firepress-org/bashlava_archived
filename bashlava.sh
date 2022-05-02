@@ -474,19 +474,6 @@ function App_Check_Are_Files_Exist {
 
 }
 
-function App_Curl_url {
-# must receive var: url_to_check
-  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
-  MATCH_UPTIME_TEST1="OK";
-  MATCH_UPTIME_TEST2="ok";
-  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is online" && App_Green
-  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is offline" && App_Warning
-    my_message="The git up repo URL is not responding." && App_Fatal
-  fi
-}
-
 function App_Load_variables {
 ### Default var & path. Customize if need. Usefull if you want
   # to have multiple instance of bashLaVa on your machine
