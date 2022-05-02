@@ -2,16 +2,16 @@
 
 # Now we use 'App_Does_File_Exist' instead of copy paste this fct
 function idempotent_file_exist {
-  file_is="somefile.sh"
-  if [[ -f "${_components_path}/${file_is}" ]]; then
+  _file_is="somefile.sh"
+  if [[ -f "${_components_path}/${_file_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
-    source "${_components_path}/${file_is}"
+    source "${_components_path}/${_file_is}"
   
-  elif [[ ! -f "${_components_path}/${file_is}" ]]; then
-    my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
+  elif [[ ! -f "${_components_path}/${_file_is}" ]]; then
+    my_message="Warning: no file: ${_file_path_is}" && App_Warning_Stop
 
   else
-    my_message="FATAL: idempotent_file_exist | ${file_is}" && App_Fatal
+    my_message="FATAL: idempotent_file_exist | ${_file_is}" && App_Fatal
   fi
 }
 
