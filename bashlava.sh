@@ -1,18 +1,31 @@
 #!/usr/bin/env bash
 
-# TODO list
+
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
+# TODO list
 # normalize FATAL messages
 # normalize WARN_ messages
 # normalize ERR_ messages
-# manage core vars
-# manage private vars
-# dummy task to commit and test the flow
 
-### Many Apps are utilities but some are BR (business rules).
-### like 'App_No_Commits_Pending' 'App_Is_edge'
-### Example to be able to run this function ...
+# TODO list
+# better management core vars
+
+# TODO list
+# manage private vars https://github.com/firepress-org/bashlava/issues/83
+
+# TODO list
+### App check brew + git-crypt + gnupg
+#if brew ls --versions myformula > /dev/null; then
+   # The package is installed
+#else
+   # The package is not installed
+#fi
+
+# TODO list
+# Many Apps are utilities but some are BR (business rules).
+# like 'App_No_Commits_Pending' 'App_Is_edge'
+# Example to be able to run this function ...
   # App_BR11_No_Commits_Pending
   # App_BR12_Branch_Is_Edge
   # App_BR13_Branch_Is_Mainbranch
@@ -77,7 +90,7 @@ function pr {
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
   gh pr view --web
   echo && my_message="Next step: 'ci' - 'mrg' " App_Green
-  # if needed check ./docs/pr_upstream_issues.md
+  # see pr_upstream_issues.md to debug merging
 }
 
 function ci {
@@ -101,7 +114,7 @@ function mrg {
   App_No_Commits_Pending
   App_input_2_Is_Empty_As_It_Should
 
-  input_2="./docs/mrg_info.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
+  _doc_name="mrg_info.md" App_Show_Docs
 
   gh pr merge
   App_Show_Version
@@ -214,7 +227,7 @@ function test {
   # PRINT OPTION 1
   echo
   my_message="Check App_glow:" && App_Blue
-  input_2="./docs/test.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
+  _doc_name="test.md" App_Show_Docs
 
   # PRINT OPTION 2
   # 'test_color' it bypassed as it does an 'exit 0'
@@ -256,19 +269,20 @@ function test_color {
   App_Fatal
 }
 
-function status {
-  git diff --color-words && git status -s
-}
-
 function help {
   App_input_3_Is_Empty_As_It_Should
-  input_2="./docs/dev_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
-  input_2="./docs/release_workflow.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
-  input_2="./docs/more_commands.md" file_path_is="${input_2}" && App_Does_File_Exist && App_glow
+
+  _doc_name="dev_workflow.md" App_Show_Docs
+  _doc_name="release_workflow.md" App_Show_Docs
+  _doc_name="more_commands.md" App_Show_Docs
 
   ### old code that could be useful in the future
   ### list tag #util> within the code
   # cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
+}
+
+function status {
+  git diff --color-words && git status -s
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -313,20 +327,20 @@ function App_short_url {
 }
 
 function App_Is_mainbranch {
-  _compare_to_me=$(git rev-parse --abbrev-ref HEAD)
-  _compare_to_you="${default_branch}" _fct_is="App_Is_mainbranch"
+  _compare_me=$(git rev-parse --abbrev-ref HEAD)
+  _compare_you="${default_branch}" _fct_is="App_Is_mainbranch"
   App_Are_Var_Equal
 }
 
 function App_Is_edge {
-  _compare_to_me=$(git rev-parse --abbrev-ref HEAD)
-  _compare_to_you="edge" _fct_is="App_Is_edge"
+  _compare_me=$(git rev-parse --abbrev-ref HEAD)
+  _compare_you="edge" _fct_is="App_Is_edge"
   App_Are_Var_Equal
 }
 
 function App_No_Commits_Pending {
-  _compare_to_me=$(git status | grep -c "nothing to commit")
-  _compare_to_you="1" _fct_is="App_No_Commits_Pending"
+  _compare_me=$(git status | grep -c "nothing to commit")
+  _compare_you="1" _fct_is="App_No_Commits_Pending"
   App_Are_Var_Equal
 }
 
@@ -392,32 +406,34 @@ function App_input_4_Is_Empty_As_It_Should {
 function App_Is_Version_Syntax_Valid {
   # Version is limited to these characters: 1234567890.rR-
   # so we can do: '3.5.13-r3' or '3.5.13-rc3'
-  _compare_to_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
-  _compare_to_you="${input_2}" _fct_is="App_Is_Version_Syntax_Valid"
+  _compare_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
+  _compare_you="${input_2}" _fct_is="App_Is_Version_Syntax_Valid"
   App_Are_Var_Equal
 }
 
 function App_Check_Required_Apps {
 ### docker running?
-  _compare_to_me=$(docker version | grep -c "Server: Docker Desktop")
-  _compare_to_you="1" _fct_is="App_Check_Required_Apps"
+  _compare_me=$(docker version | grep -c "Server: Docker Desktop")
+  _compare_you="1" _fct_is="App_Check_Required_Apps"
   App_Are_Var_Equal
   my_message="Docker is installed" && App_Gray
 
 ### gh cli installed
-  _compare_to_me=$(gh --version | grep -c "https://github.com/cli/cli/releases/tag/v")
-  _compare_to_you="1" _fct_is="App_Check_Required_Apps"
+  _compare_me=$(gh --version | grep -c "https://github.com/cli/cli/releases/tag/v")
+  _compare_you="1" _fct_is="App_Check_Required_Apps"
   App_Are_Var_Equal
   my_message="gh cli is installed" && App_Gray
 }
 
 function App_Check_Are_Files_Exist {
 
-### Here, make sure you like all markdown files under /docs
-  arr=( "case_what_do_you_want" "dev_workflow" "more_commands" "mrg_info" "pr_upstream_issues" "release_workflow" "test" )
+### List markdown files under /docs
+  arr=( "welcome_to_bashlava" "dev_workflow" "more_commands" "mrg_info" "pr_upstream_issues" "release_workflow" "test" )
   for action in "${arr[@]}"; do
-    file_path_is="./docs/${action}.md" && App_Does_File_Exist
+    file_is="${action}" file_path_is="${_docs_path}/${file_is}.md" && App_Does_File_Exist
   done
+
+### TODO list check files under /components
 
   file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
@@ -464,44 +480,41 @@ function App_Curl_url {
 }
 
 function App_Load_variables {
-
-# Default var & path. Customize if need. Usefull if you want
-# to have multiple instance of bashLaVa on your machine
+### Default var & path. Customize if need. Usefull if you want
+  # to have multiple instance of bashLaVa on your machine
   bashlava_executable="bashlava.sh"
   my_path="/usr/local/bin"
 
-# Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
-# When buidling docker images it better to not have rc in the version as breaks the pattern.
-# When not working with a docker build, feel free to put this flag as true.
-# default value is false
+### Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
+  # When buidling docker images it better to not have rc in the version as breaks the pattern.
+  # When not working with a docker build, feel free to put this flag as true.
+  # default value is false
   version_with_rc="false"
 
 ### Reset if needed
   App_Reset_Custom_path
   _bashlava_path="$(cat ${my_path}/bashlava_path)"
 
-### Set absolute path for the components scripts
+### Set absolute path for the /components directory
   _components_path="${_bashlava_path}/components"
+
+### Set absolute path for the /docs directory
+  _docs_path="${_bashlava_path}/docs"
 
 # every scripts that are not under the main bashLaVa app, should be threated as an components.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
 
 ### source PUBLIC scripts
-file_is="templates.sh"
-  file_path_is="${_components_path}/${file_is}"
-  App_Does_File_Exist
+  file_is="templates.sh" file_path_is="${_components_path}/${file_is}" && App_Does_File_Exist
   source "${file_path_is}"
 
-file_is="alias.sh"
-  file_path_is="${_components_path}/${file_is}"
-  App_Does_File_Exist
+  file_is="alias.sh" file_path_is="${_components_path}/${file_is}" && App_Does_File_Exist
   source "${file_path_is}"
 
 ### source PRIVATE / custom scripts
-# the user must create /private/_entrypoint.sh file
-file_is="_entrypoint.sh"
-  file_path_is="${_components_path}/private/${file_is}"
-  App_Does_File_Exist
+# TODO create a flag where the default is we don't use private
+  # the user must create /private/_entrypoint.sh file
+  file_is="_entrypoint.sh" file_path_is="${_components_path}/private/${file_is}" && App_Does_File_Exist
   source "${file_path_is}"
 
 ### Set defaults for flags
@@ -551,21 +564,40 @@ file_is="_entrypoint.sh"
 function App_Show_Version {
   echo && my_message="Check versions:" && App_Blue
 
-### dockerfile
+### version in dockerfile
   my_message="${app_version} < VERSION in Dockerfile" App_Gray
   my_message="${app_release} < RELEASE in Dockerfile" App_Gray
+
 ### tag
-  latest_tag="$(git describe --tags --abbrev=0)"
-  _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
+  if [ $(git tag -l "$app_version") ]; then
+    echo "Good, a tag is present" > /dev/null 2>&1
+    latest_tag="$(git describe --tags --abbrev=0)"
+    _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && App_Does_Var_Empty
+  else
+    echo "Logic: new projet don't have any tags. So we must expect that it can be empty" > /dev/null 2>&1
+    latest_tag="none "
+  fi
   my_message="${latest_tag} < TAG     in mainbranch" App_Gray
+
 ### release
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
-  _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
+
+  if [[ -z "$release_latest" ]]; then
+    release_latest="none "
+    echo "Logic: new projet don't have any release. So we must expect that it can be empty" > /dev/null 2>&1
+  elif [[ ! -z "$release_latest" ]]; then
+    echo "Good, a release is present" > /dev/null 2>&1
+    _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
+  else
+    my_message="Fatal error: 'App_Show_Version / release_latest'" && App_Fatal
+  fi
+
   my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray
   echo
 }
 
+# TODO to the refactor, too much duplication
 function App_Show_Release {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
@@ -573,17 +605,42 @@ function App_Show_Release {
   open "https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}"
 }
 
-
 function App_Banner {
   _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && App_Does_Var_Empty
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
   docker run --rm ${docker_img_figlet} ${my_message}
 }
 
+### TODO this is not clean, but it works 'App_glow' / 'App_Show_Docs'
+# we can't provide an abosolute path to the file because the Docker container can't the absolute path
+# I also DONT want to provide two arguments when using glow
+# I might simply stop using a docker container for this
+# but as a priciiple, I like to call a docker container
+
 function App_glow {
+  # markdown viewer (mdv)
   _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && App_Does_Var_Empty
   _var_name="input_2" _is_it_empty=$(echo ${input_2}) && App_Does_Var_Empty
+  my_message="Info: 'mdv' can only read markdown files at the same path level" App_Green
+  sleep 0.5
+
+  _present_path_is=$(pwd)
+  file_is="${input_2}" file_path_is="${_present_path_is}/${input_2}" && App_Does_File_Exist
+
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
+}
+
+function App_Show_Docs {
+  # idempotent checkpoint
+  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && App_Does_Var_Empty
+  _var_name="_doc_name" _is_it_empty=$(echo ${_doc_name}) && App_Does_Var_Empty
+
+  _present_path_is=$(pwd)
+  file_is="${_doc_name}" file_path_is="${_docs_path}/${_doc_name}" && App_Does_File_Exist
+
+  cd ${_docs_path}
+  docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 110 ${_doc_name}
+  cd ${_present_path_is}
 }
 
 # Define colors / https://www.shellhacks.com/bash-colors/
@@ -619,7 +676,85 @@ function App_Fatal {
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# bashLaVa engine & low-level logic
+# Apps: idempotent checkpoints
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+
+function App_Does_File_Exist {
+  if [[ -f "${file_path_is}" ]]; then
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
+  elif [[ ! -f "${file_path_is}" ]]; then
+    my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
+  else
+    my_message="Fatal error: ${file_path_is}" && App_Fatal
+  fi
+}
+
+# This fct return the flag '_file_do_not_exist'
+function App_Does_File_Exist_NoStop {
+  if [[ -f "${file_path_is}" ]]; then
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
+  elif [[ ! -f "${file_path_is}" ]]; then
+    my_message="Warning: no file: ${file_path_is}" && App_Warning
+    _file_do_not_exist="true"
+  else
+    my_message="Fatal error: ${file_path_is}" && App_Fatal
+  fi
+}
+
+# Think, IF vars are EQUAL, continue else fail the process
+function App_Are_Var_Equal {
+  if [[ "${_compare_me}" == "${_compare_you}" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
+    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && App_Warning_Stop
+  else
+    my_message="FATAL — ${_fct_is}" && App_Fatal
+  fi
+}
+# Think, IF vars are NOT equal, continue else fail the process
+function App_Are_Var_Not_Equal {
+  if [[ "${_compare_me}" == "${_compare_you}" ]]; then
+    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && App_Warning_Stop
+  elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL — ${_fct_is}" && App_Fatal
+  fi
+}
+
+# Think, IF vars is not empty, continue else fail
+function App_Does_Var_Empty {
+  # source must send two vars:_is_it_empty AND _var_name
+  if [[ -n "${_is_it_empty}" ]]; then    #if not empty
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
+  elif [[ -z "${_is_it_empty}" ]]; then    #if empty
+    my_message="Warning: variable '${_var_name}' is empty" && App_Warning_Stop
+  else
+    my_message="Fatal error: '${_var_name}'" && App_Fatal
+  fi
+}
+
+# This fct return the flag '_file_do_not_exist'
+function App_Does_Directory_Exist {
+  if [[ -d "${dir_path_is}" ]]; then
+    echo "idempotent checkpoint passed" > /dev/null 2>&1
+  elif [[ ! -d "${dir_path_is}" ]]; then
+    my_message="Warning: no directory: ${dir_path_is}" && App_Warning_Stop
+  else
+    my_message="Fatal error: ${dir_path_is}" && App_Fatal
+  fi
+}
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# bashLaVa engine set up
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -649,71 +784,6 @@ function App_Reset_Custom_path {
   fi
 }
 
-function App_Does_File_Exist {
-  if [[ -f "${file_path_is}" ]]; then
-    echo "idempotent checkpoint passed" > /dev/null 2>&1
-  elif [[ ! -f "${file_path_is}" ]]; then
-    my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
-  else
-    my_message="Fatal error: ${file_path_is}" && App_Fatal
-  fi
-}
-
-# This fct return the flag '_file_do_not_exist'
-function App_Does_File_Exist_NoStop {
-  if [[ -f "${file_path_is}" ]]; then
-    echo "idempotent checkpoint passed" > /dev/null 2>&1
-  elif [[ ! -f "${file_path_is}" ]]; then
-    my_message="Warning: no file: ${file_path_is}" && App_Warning
-    _file_do_not_exist="true"
-  else
-    my_message="Fatal error: ${file_path_is}" && App_Fatal
-  fi
-}
-
-# Think, IF vars are EQUAL, continue else fail the process
-function App_Are_Var_Equal {
-  if [[ "${_compare_to_me}" == "${_compare_to_you}" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  elif [[ "${_compare_to_me}" != "${_compare_to_you}" ]]; then
-    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_to_me} and ${_compare_to_you} )" && App_Warning_Stop
-  else
-    my_message="FATAL — ${_fct_is}" && App_Fatal
-  fi
-}
-# Think, IF vars are NOT equal, continue else fail the process
-function App_Are_Var_Not_Equal {
-  if [[ "${_compare_to_me}" == "${_compare_to_you}" ]]; then
-    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_to_me} and ${_compare_to_you} )" && App_Warning_Stop
-  elif [[ "${_compare_to_me}" != "${_compare_to_you}" ]]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="FATAL — ${_fct_is}" && App_Fatal
-  fi
-}
-
-function App_Does_Var_Empty {
-  # source must send two vars:_is_it_empty AND _var_name
-  if [[ -n "${_is_it_empty}" ]]; then    #if not empty
-    echo "idempotent checkpoint passed" > /dev/null 2>&1
-  elif [[ -z "${_is_it_empty}" ]]; then    #if empty
-    my_message="Warning: variable '${_var_name}' is empty" && App_Warning_Stop
-  else
-    my_message="Fatal error: '${_var_name}'" && App_Fatal
-  fi
-}
-
-# This fct return the flag '_file_do_not_exist'
-function App_Does_Directory_Exist {
-  if [[ -d "${dir_path_is}" ]]; then
-    echo "idempotent checkpoint passed" > /dev/null 2>&1
-  elif [[ ! -d "${dir_path_is}" ]]; then
-    my_message="Warning: no directory: ${dir_path_is}" && App_Warning_Stop
-  else
-    my_message="Fatal error: ${dir_path_is}" && App_Fatal
-  fi
-}
-
 ### Entrypoint
 function main() {
   trap script_trap_err ERR
@@ -724,7 +794,7 @@ function main() {
 
   if [[ -z "$2" ]]; then    #if empty
     input_2="not_set"
-  elif [[ ! -z "$2" ]]; then    #if empty
+  elif [[ ! -z "$2" ]]; then    #if not empty
     input_2=$2
   else
     my_message="Fatal error: 'input_2'" && App_Fatal
@@ -732,7 +802,7 @@ function main() {
 
   if [[ -z "$3" ]]; then    #if empty
     input_3="not_set"
-  elif [[ ! -z "$3" ]]; then    #if empty
+  elif [[ ! -z "$3" ]]; then    #if not empty
     input_3=$3
   else
     my_message="Fatal error: 'input_3'" && App_Fatal
@@ -740,7 +810,7 @@ function main() {
 
   if [[ -z "$4" ]]; then    #if empty
     input_4="not_set"
-  elif [[ ! -z "$4" ]]; then    #if empty
+  elif [[ ! -z "$4" ]]; then    #if not empty
     input_4=$4
   else
     my_message="Fatal error: 'input_4'" && App_Fatal
@@ -765,28 +835,25 @@ function main() {
   $1
 }
 
+### Calling 'main' function by default
 main "$@"
 
-### If the user does not provide any argument, let offer options
+### If the user do not provide argument, show options
 input_1=$1
 if [[ -z "$1" ]]; then
 
   # ensure file are present
   App_Check_Are_Files_Exist
 
-  input_2="./docs/case_what_do_you_want.md" && clear && App_glow
+  _doc_name="welcome_to_bashlava.md" && clear && App_Show_Docs
   read user_input; echo;
   case ${user_input} in
-    1) input_2="./docs/dev_workflow.md" && clear && App_glow;;
-    2) input_2="./docs/release_workflow.md" && clear && App_glow;;
-    3) input_2="./docs/more_commands.md" && clear && App_glow;;
-    4) test;;
-    5) help;;
-    6) input_2="./LICENSE" && clear && App_glow;;
-    7) input_2="./README.md" && clear && App_glow;;
+    1 | t) test;;
+    2 | h) help;;
     *) my_message="Invalid input." App_Fatal;; 
   esac
 
+# TODO add a fatal layer to this logic
 else
   input_1=$1
 fi
