@@ -611,6 +611,10 @@ function Condition_Attr_3_Must_Be_Provided {
   fi
 }
 
+function Condition_Attr_4_Must_Be_Provided {
+  echo "fct: not needed yet"
+}
+
 # TODO 3
 function Condition_Attr_2_Must_Be_Empty {
 ### Stop if 2 attributes are passed.
