@@ -11,7 +11,7 @@ function idempotent_file_exist {
     my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
 
   else
-    my_message="Fatal error: ${file_path_is}" && App_Fatal
+    my_message="FATAL: idempotent_file_exist | ${file_is}" && App_Fatal
   fi
 }
 
@@ -25,7 +25,7 @@ function idempotent_empty_var {
     my_message="Warning: variable is empty" && App_Warning_Stop
 
   else
-    my_message="Fatal error: ${run_id}" && App_Fatal
+    my_message="FATAL: idempotent_empty_var | ${run_id}" && App_Fatal
   fi
 }
 
@@ -39,7 +39,7 @@ function idempotent_compare_var {
     my_message="Warning: variable is empty" && App_Warning_Stop
 
   else
-    my_message="Fatal error: ${run_id}" && App_Fatal
+    my_message="FATAL: idempotent_compare_var | ${input_2}" && App_Fatal
   fi
 }
 

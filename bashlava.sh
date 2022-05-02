@@ -4,7 +4,6 @@
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
 # TODO
-# normalize FATAL messages
 # normalize WARN_ messages
 # normalize ERR_ messages
 
@@ -148,7 +147,7 @@ function version {
   elif [[ "${version_with_rc}" != "false" ]]; then
     version_trim=${input_2}
   else
-    my_message="FATAL: fct version" && App_Fatal
+    my_message="FATAL: version" && App_Fatal
   fi
 
 ### Apply updates
@@ -187,7 +186,7 @@ function squash {
   App_Is_input_3_Provided # message
 
   if ! [[ $input_2 =~ ^[0-9]+$ ]] ; then
-    my_message="Syntax error" && App_Fatal
+    my_message="Oups, syntax error." && App_Warning_Stop
   fi
 
   git reset --hard HEAD~"${input_2}"
@@ -232,7 +231,7 @@ function test {
   elif [[ $(uname) != "Darwin" ]]; then
     my_message="bashLaVa is not tested on other machine than Darmin (Mac). Please let me know if you want to contribute (WARN_901)." && App_Warning
   else
-    my_message="FATAL: Please open an issue for this behavior (Darmin (Mac)" && App_Fatal
+    my_message="FATAL: Test / Check OS" && App_Fatal
   fi
 
   # PRINT OPTION 1
@@ -361,11 +360,11 @@ function App_No_Commits_Pending {
 function App_Is_input_2_Provided {
 ### ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not_set" ]]; then
-    my_message="You must provide two attributes. See help (WARN_109)" && App_Warning_Stop
+    my_message="You must provide two attributes. fct: App_Is_input_2_Provided" && App_Warning_Stop
   elif [[ "${input_2}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_110)" && App_Fatal
+    my_message="FATAL: App_Is_input_2_Provided" && App_Fatal
   fi
 }
 
@@ -373,11 +372,11 @@ function App_Is_input_2_Provided {
 function App_Is_input_3_Provided {
 ### ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not_set" ]]; then
-    my_message="You must provide three attributes. See help (WARN_111)" && App_Warning_Stop
+    my_message="You must provide three attributes. fct: App_Is_input_3_Provided" && App_Warning_Stop
   elif [[ "${input_3}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_112)" && App_Fatal
+    my_message="FATAL: App_Is_input_3_Provided" && App_Fatal
   fi
 }
 
@@ -385,32 +384,32 @@ function App_Is_input_3_Provided {
 function App_input_2_Is_Empty_As_It_Should {
 ### Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not_set" ]]; then
-      my_message="You cannot use two attributes for this fct (WARN_113)" && App_Warning_Stop
+      my_message="You can NOT use two attributes. fct: App_input_2_Is_Empty_As_It_Should" && App_Warning_Stop
   elif [[ "${input_2}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_114)" && App_Fatal
+    my_message="FATAL: App_input_2_Is_Empty_As_It_Should" && App_Fatal
   fi
 }
 
 function App_input_3_Is_Empty_As_It_Should {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not_set" ]]; then
-      my_message="You cannot use three attributes for this fct. See help (ERR_115)" && App_Warning_Stop
+      my_message="You can NOT use three attributes. fct: App_input_3_Is_Empty_As_It_Should" && App_Warning_Stop
   elif [[ "${input_3}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_116)" && App_Fatal
+    my_message="FATAL: App_input_3_Is_Empty_As_It_Should" && App_Fatal
   fi
 }
 function App_input_4_Is_Empty_As_It_Should {
 # Stop if 4 attributes are passed.
   if [[ "${input_4}" != "not_set" ]]; then
-      my_message="You cannot use four attributes with BashLava (WARN_117)" && App_Warning && echo
+      my_message="You cannot use four attributes. fct: App_input_4_Is_Empty_As_It_Should" && App_Warning && echo
   elif [[ "${input_4}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_118)" && App_Fatal
+    my_message="FATAL: App_input_4_Is_Empty_As_It_Should" && App_Fatal
   fi
 }
 
@@ -484,7 +483,7 @@ function App_Curl_url {
     my_message="${url_to_check} <== is online" && App_Green
   elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
     my_message="${url_to_check} <== is offline" && App_Warning
-    my_message="The git up repo is not responding as expected :-/" && App_Fatal
+    my_message="The git up repo URL is not responding." && App_Fatal
   fi
 }
 
@@ -609,7 +608,7 @@ function App_Show_Version {
     echo "Good, a release is present" > /dev/null 2>&1
     _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && App_Does_Var_Empty
   else
-    my_message="Fatal error: 'App_Show_Version / release_latest'" && App_Fatal
+    my_message="FATAL: App_Show_Version | release_latest " && App_Fatal
   fi
 
   my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray
@@ -714,7 +713,7 @@ function App_Does_File_Exist {
   elif [[ ! -f "${file_path_is}" ]]; then
     my_message="Warning: no file: ${file_path_is}" && App_Warning_Stop
   else
-    my_message="Fatal error: ${file_path_is}" && App_Fatal
+    my_message="FATAL: App_Does_File_Exist | ${file_path_is}" && App_Fatal
   fi
 }
 
@@ -726,7 +725,7 @@ function App_Does_File_Exist_NoStop {
     my_message="Warning: no file: ${file_path_is}" && App_Warning
     _file_do_not_exist="true"
   else
-    my_message="Fatal error: ${file_path_is}" && App_Fatal
+    my_message="FATAL: App_Does_File_Exist_NoStop | ${file_path_is}" && App_Fatal
   fi
 }
 
@@ -737,7 +736,7 @@ function App_Are_Var_Equal {
   elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
     my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && App_Warning_Stop
   else
-    my_message="FATAL — ${_fct_is}" && App_Fatal
+    my_message="FATAL: App_Are_Var_Equal | ${_fct_is}" && App_Fatal
   fi
 }
 # Think, IF vars are NOT equal, continue else fail the process
@@ -747,7 +746,7 @@ function App_Are_Var_Not_Equal {
   elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL — ${_fct_is}" && App_Fatal
+    my_message="FATAL: App_Are_Var_Not_Equal | ${_fct_is}" && App_Fatal
   fi
 }
 
@@ -759,7 +758,7 @@ function App_Does_Var_Empty {
   elif [[ -z "${_is_it_empty}" ]]; then    #if empty
     my_message="Warning: variable '${_var_name}' is empty" && App_Warning_Stop
   else
-    my_message="Fatal error: '${_var_name}'" && App_Fatal
+    my_message="FATAL: App_Does_Var_Empty | ${_var_name}" && App_Fatal
   fi
 }
 
@@ -770,7 +769,7 @@ function App_Does_Directory_Exist {
   elif [[ ! -d "${dir_path_is}" ]]; then
     my_message="Warning: no directory: ${dir_path_is}" && App_Warning_Stop
   else
-    my_message="Fatal error: ${dir_path_is}" && App_Fatal
+    my_message="FATAL: App_Does_Directory_Exist | ${dir_path_is}" && App_Fatal
   fi
 }
 
@@ -802,7 +801,7 @@ function App_Reset_Custom_path {
   elif [ -f ${my_path}/bashlava_path ]; then
       echo "Path is valid. Lets continue." > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (ERR_136)" && App_Fatal
+    my_message="FATAL: App_Reset_Custom_path | ${dir_path_is}" && App_Fatal
   fi
 }
 
@@ -819,7 +818,7 @@ function main() {
   elif [[ ! -z "$2" ]]; then    #if not empty
     input_2=$2
   else
-    my_message="Fatal error: 'input_2'" && App_Fatal
+    my_message="FATAL: <input_2> = ${input_2}" && App_Fatal
   fi
 
   if [[ -z "$3" ]]; then    #if empty
@@ -827,7 +826,7 @@ function main() {
   elif [[ ! -z "$3" ]]; then    #if not empty
     input_3=$3
   else
-    my_message="Fatal error: 'input_3'" && App_Fatal
+    my_message="FATAL: <input_3> = ${input_3}" && App_Fatal
   fi
 
   if [[ -z "$4" ]]; then    #if empty
@@ -835,7 +834,7 @@ function main() {
   elif [[ ! -z "$4" ]]; then    #if not empty
     input_4=$4
   else
-    my_message="Fatal error: 'input_4'" && App_Fatal
+    my_message="FATAL: <input_4> = ${input_4}" && App_Fatal
   fi
 
 ### Load fct via .bashcheck.sh
@@ -880,7 +879,7 @@ if [[ -z "$1" ]]; then
   esac
 
 elif [[ ! -z "$1" ]]; then
-  echo "Good, sser did provide argument(s)." > /dev/null 2>&1
+  echo "Good, user did provide argument(s)." > /dev/null 2>&1
 else
-  my_message="FATAL: fct: main (ERR_201) " && App_Fatal
+  my_message="FATAL: main (When no arg are provided)" && App_Fatal
 fi
