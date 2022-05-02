@@ -26,7 +26,7 @@
 #fi
 
 function mainbranch {
-  App_input_2_Is_Empty_As_It_Should
+  Condition_Attr_2_Must_Be_Empty
   Condition_No_Commits_Must_Be_Pending
   Condition_Apps_Must_Be_Installed
 
@@ -45,7 +45,7 @@ function edge {
 
 ### it assumes there will be no conflict with anybody else
 ### as I'm the only person using 'edge'.
-  App_input_2_Is_Empty_As_It_Should       # fct without attributs
+  Condition_Attr_2_Must_Be_Empty       # fct without attributs
   Condition_No_Commits_Must_Be_Pending
   Condition_Apps_Must_Be_Installed
 
@@ -78,7 +78,7 @@ function commit {
 function pr {
 ### see pr_upstream_issues.md to debug merging
   Condition_Branch_Must_Be_Edge
-  App_input_2_Is_Empty_As_It_Should
+  Condition_Attr_2_Must_Be_Empty
   Condition_No_Commits_Must_Be_Pending
 
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
@@ -104,7 +104,7 @@ function mrg {
   # merge from edge into main_branch
   Condition_Branch_Must_Be_Edge
   Condition_No_Commits_Must_Be_Pending
-  App_input_2_Is_Empty_As_It_Should
+  Condition_Attr_2_Must_Be_Empty
 
   _doc_name="mrg_info.md" App_Show_Docs
 
@@ -127,7 +127,7 @@ function mrg {
 
 function ci {
   # continuous integration status
-  App_input_2_Is_Empty_As_It_Should
+  Condition_Attr_2_Must_Be_Empty
   Condition_No_Commits_Must_Be_Pending
 
 ### show latest build and open webpage on Github Actions
@@ -180,7 +180,7 @@ function version {
 
 function tag {
   Condition_No_Commits_Must_Be_Pending
-  App_input_2_Is_Empty_As_It_Should
+  Condition_Attr_2_Must_Be_Empty
 
   git tag ${app_release} && git push --tags && echo
   App_Show_Version && sleep 1 && echo
@@ -612,14 +612,14 @@ function App_Is_input_3_Provided {
 }
 
 # TODO 3
-function App_input_2_Is_Empty_As_It_Should {
+function Condition_Attr_2_Must_Be_Empty {
 ### Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not_set" ]]; then
-      my_message="You can NOT use two attributes. fct: App_input_2_Is_Empty_As_It_Should" && App_Warning_Stop
+      my_message="You can NOT use two attributes. fct: Condition_Attr_2_Must_Be_Empty" && App_Warning_Stop
   elif [[ "${input_2}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: App_input_2_Is_Empty_As_It_Should" && App_Fatal
+    my_message="FATAL: Condition_Attr_2_Must_Be_Empty" && App_Fatal
   fi
 }
 

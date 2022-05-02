@@ -53,7 +53,7 @@ function hash {
 }
 function sv {
 # show version / version read
-  App_input_2_Is_Empty_As_It_Should && App_Show_Version 
+  Condition_Attr_2_Must_Be_Empty && App_Show_Version 
 }
 function gitio {
   App_short_url
