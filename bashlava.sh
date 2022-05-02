@@ -90,14 +90,7 @@ function pr {
   
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}"
   gh pr view --web
-
-### PROMPT
-  echo && my_message="Want to see 'CI' status? (y/n)" && App_Blue
-  read user_input;
-  case ${user_input} in
-    y | Y) ci;;
-    *) my_message="OK, lets not show CI status." && App_Green;;
-  esac
+  Prompt_YesNo_ci
 
   # UX fun
   echo && my_message="NEXT MOVE suggestion: 'ci' - 'mrg' " App_Green
@@ -112,19 +105,8 @@ function mrg {
   _doc_name="mrg_info.md" App_Show_Docs
 
   gh pr merge
-
-### PROMPT
-  echo
-  my_message="Do you want to see CI status? (y/n)" && App_Blue
-  read user_input;
-  case ${user_input} in
-    y | Y) ci;;
-    *) my_message="OK, lets not show CI status." && App_Green;;
-  esac
-
+  Prompt_YesNo_ci
   App_Show_Version
-
-  # UX fun
   echo && my_message="NEXT MOVE suggestion: 'ci' - 'sv' - 'v' - 't' " App_Green
 }
 
@@ -324,6 +306,16 @@ function status {
     #
   #
 #
+
+function Prompt_YesNo_ci {
+  # called by fct like: pr, mrg
+  echo && my_message="Want to see 'ci' status? (y/n)" && App_Blue
+  read user_input;
+  case ${user_input} in
+    y | Y) ci;;
+    *) my_message="Abord 'ci' status" && App_Green;;
+  esac
+}
 
 function App_short_url {
 
