@@ -25,7 +25,7 @@
 function mainbranch {
   App_input_2_Is_Empty_As_It_Should
   Condition_No_Commits_Must_Be_Pending
-  App_Check_Required_Apps
+  Condition_Apps_Must_Be_Installed
   App_Is_edge
 
   App_Show_Version
@@ -45,7 +45,7 @@ function edge {
 ### as I'm the only person using 'edge'.
   App_input_2_Is_Empty_As_It_Should       # fct without attributs
   Condition_No_Commits_Must_Be_Pending
-  App_Check_Required_Apps
+  Condition_Apps_Must_Be_Installed
 
 ### delete branch
   git branch -D edge || true
@@ -226,7 +226,7 @@ function test {
 
   echo
   my_message="Check apps required:" App_Blue
-  App_Check_Required_Apps
+  Condition_Apps_Must_Be_Installed
 
   echo
   my_message="Check files and directories:" App_Blue
@@ -650,16 +650,16 @@ function App_Is_Version_Syntax_Valid {
   App_Are_Var_Equal
 }
 
-function App_Check_Required_Apps {
+function Condition_Apps_Must_Be_Installed {
 ### docker running?
   _compare_me=$(docker version | grep -c "Server: Docker Desktop")
-  _compare_you="1" _fct_is="App_Check_Required_Apps"
+  _compare_you="1" _fct_is="Condition_Apps_Must_Be_Installed"
   App_Are_Var_Equal
   my_message="Docker is installed" && App_Gray
 
 ### gh cli installed
   _compare_me=$(gh --version | grep -c "https://github.com/cli/cli/releases/tag/v")
-  _compare_you="1" _fct_is="App_Check_Required_Apps"
+  _compare_you="1" _fct_is="Condition_Apps_Must_Be_Installed"
   App_Are_Var_Equal
   my_message="gh cli is installed" && App_Gray
 }
