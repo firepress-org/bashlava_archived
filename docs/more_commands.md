@@ -11,6 +11,3 @@
 - `mdv` .......... markdown viewer | usage: mdv README.md
 - `hash` ......... hash from latest hash commit
 - `gitio` ........ git.io shortner, works only with GitHub repos
-
-- Git repo: https://github.com/firepress-org/bashlava
-- Follow me on twitter: https://twitter.com/askpascalandy
