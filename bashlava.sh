@@ -10,11 +10,9 @@
 # normalize ERR_ messages
 
 # TODO
-#fct: pr
-#	CASE to ask if the user wants to see 'ci'
-#fct: mrg
-#	CASE to ask if the user wants to see 'ci'
-  
+#fct: m
+#	CASE ask if the user wants 'e'
+
 # TODO
 # better management core vars
 
@@ -99,10 +97,45 @@ function pr {
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
   _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && App_Does_Var_Empty
   
-  gh pr create --fill --title "${_pr_title}" --base "${default_branch}" &&\
+  gh pr create --fill --title "${_pr_title}" --base "${default_branch}"
   gh pr view --web
+
+### PROMPT
+  echo
+  my_message="Do you want to see CI status? (y/n)" && App_Blue
+  read user_input;
+  case ${user_input} in
+    y | Y) ci;;
+    *) my_message="Operation cancelled" && App_Fatal;;
+  esac
+
   # UX fun
   echo && my_message="NEXT MOVE suggestion: 'ci' - 'mrg' " App_Green
+}
+
+function mrg {
+  # merge from edge into main_branch
+  App_Is_edge
+  App_No_Commits_Pending
+  App_input_2_Is_Empty_As_It_Should
+
+  _doc_name="mrg_info.md" App_Show_Docs
+
+  gh pr merge
+
+### PROMPT
+  echo
+  my_message="Do you want to see CI status? (y/n)" && App_Blue
+  read user_input;
+  case ${user_input} in
+    y | Y) ci;;
+    *) my_message="Operation cancelled" && App_Fatal;;
+  esac
+
+  App_Show_Version
+
+  # UX fun
+  echo && my_message="NEXT MOVE suggestion: 'ci' - 'sv' - 'v' - 't' " App_Green
 }
 
 function ci {
@@ -121,21 +154,6 @@ function ci {
   gh run watch
   # UX fun
   echo && my_message="NEXT MOVE suggestion: 'mrg' " App_Green
-}
-
-function mrg {
-  # merge from edge into main_branch
-  App_Is_edge
-  App_No_Commits_Pending
-  App_input_2_Is_Empty_As_It_Should
-
-  _doc_name="mrg_info.md" App_Show_Docs
-
-  gh pr merge && wait
-  App_Show_Version
-
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'ci' - 'v' " App_Green
 }
 
 function version {
