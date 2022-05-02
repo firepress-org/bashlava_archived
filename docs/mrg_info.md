@@ -1,5 +1,5 @@
-# gh cli will ask 3 questions:
+**gh cli will ask 3 questions**:
 
 1. `rebase` ... (we might want to squash)
-1. `yes` ...... (delete edge branch)
-1. `submit` ... (confirm the merge)
+2. `y` ........ (delete edge branch)
+3. `submit` ... (confirm the merge)

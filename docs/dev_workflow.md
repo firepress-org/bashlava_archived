@@ -1,4 +1,4 @@
-# I) Dev workflow
+**Dev workflow**
 
 - `e` ............ create a branch `edge` from `main branch`
 - `c` ............ commit | usage: c "my feature is great"
