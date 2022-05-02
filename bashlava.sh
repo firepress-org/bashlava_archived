@@ -3,18 +3,18 @@
 
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# TODO list
+# TODO
 # normalize FATAL messages
 # normalize WARN_ messages
 # normalize ERR_ messages
 
-# TODO list
+# TODO
 # better management core vars
 
-# TODO list
+# TODO
 # manage private vars https://github.com/firepress-org/bashlava/issues/83
 
-# TODO list
+# TODO
 ### App check brew + git-crypt + gnupg
 #if brew ls --versions myformula > /dev/null; then
    # The package is installed
@@ -22,7 +22,7 @@
    # The package is not installed
 #fi
 
-# TODO list
+# TODO
 # Many Apps are utilities but some are BR (business rules).
 # like 'App_No_Commits_Pending' 'App_Is_edge'
 # Example to be able to run this function ...
@@ -61,7 +61,8 @@ function edge {
   git branch -D edge || true
 
 ### delete branch so there is no need to use the github GUI to delete it
-# TODO check if branch edge exist (more slick)
+# TODO
+# check if branch edge exist (more slick)
   git push origin --delete edge || true
 
   git checkout -b edge
@@ -211,8 +212,8 @@ function test {
   my_message="All good!" App_Gray
 
   echo
-  my_message="Check source to other files" App_Blue
-  array
+  my_message="Check array from directory components:" App_Blue
+  App_array
 
   echo
   my_message="Check OS" App_Blue
@@ -433,8 +434,6 @@ function App_Check_Are_Files_Exist {
     file_is="${action}" file_path_is="${_docs_path}/${file_is}.md" && App_Does_File_Exist
   done
 
-### TODO list check files under /components
-
   file_is="LICENSE" file_path_is="${_bashlava_path}/${file_is}" && App_Does_File_Exist_NoStop
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
@@ -505,14 +504,24 @@ function App_Load_variables {
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
 
 ### source PUBLIC scripts
-  file_is="templates.sh" file_path_is="${_components_path}/${file_is}" && App_Does_File_Exist
-  source "${file_path_is}"
 
-  file_is="alias.sh" file_path_is="${_components_path}/${file_is}" && App_Does_File_Exist
-  source "${file_path_is}"
+# TODO
+# we have few array that are configs. They should be all together under the same block of code.
+
+### source files under /components
+  arr=( "alias.sh" "code_example.sh" "templates.sh")
+  for action in "${arr[@]}"; do
+    file_is="${action}" file_path_is="${_components_path}/${file_is}" && App_Does_File_Exist
+    source "${file_path_is}"
+  done
+
+### We dont source this file. See example using Mapfile
+  file_is="list.txt" file_path_is="${_components_path}/${file_is}" && App_Does_File_Exist
+
+# TODO
+# create a flag where the default is we don't use private
 
 ### source PRIVATE / custom scripts
-# TODO create a flag where the default is we don't use private
   # the user must create /private/_entrypoint.sh file
   file_is="_entrypoint.sh" file_path_is="${_components_path}/private/${file_is}" && App_Does_File_Exist
   source "${file_path_is}"
@@ -597,7 +606,9 @@ function App_Show_Version {
   echo
 }
 
-# TODO to the refactor, too much duplication
+# TODO
+# to refactor, too much duplication
+
 function App_Show_Release {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
@@ -611,7 +622,8 @@ function App_Banner {
   docker run --rm ${docker_img_figlet} ${my_message}
 }
 
-### TODO this is not clean, but it works 'App_glow' / 'App_Show_Docs'
+### TODO
+# this is not clean, but it works 'App_glow' / 'App_Show_Docs'
 # we can't provide an abosolute path to the file because the Docker container can't the absolute path
 # I also DONT want to provide two arguments when using glow
 # I might simply stop using a docker container for this
@@ -853,7 +865,8 @@ if [[ -z "$1" ]]; then
     *) my_message="Invalid input." App_Fatal;; 
   esac
 
-# TODO add a fatal layer to this logic
+# TODO
+# add a fatal layer to this logic
 else
   input_1=$1
 fi
