@@ -19,6 +19,19 @@ function hello {
   echo && my_message="NEXT MOVE suggestion: Say hello to a living soul." App_Green
 }
 
+function App_Curl_url {
+# must receive var: url_to_check
+  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
+  MATCH_UPTIME_TEST1="OK";
+  MATCH_UPTIME_TEST2="ok";
+  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is online" && App_Green
+  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is offline" && App_Warning
+    my_message="The git up repo URL is not responding." && App_Fatal
+  fi
+}
+
 function App_init_readme {
 cat << EOF > README_template.md
 This README is still empty.
