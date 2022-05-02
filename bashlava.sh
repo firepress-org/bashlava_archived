@@ -145,7 +145,7 @@ function version {
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
   Condition_No_Commits_Must_Be_Pending
   App_Is_input_2_Provided
-  App_Is_Version_Syntax_Valid
+  Condition_Version_Must_Be_Valid
 
   _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && App_Does_Var_Empty
 
@@ -642,11 +642,11 @@ function App_input_4_Is_Empty_As_It_Should {
   fi
 }
 
-function App_Is_Version_Syntax_Valid {
+function Condition_Version_Must_Be_Valid {
   # Version is limited to these characters: 1234567890.rR-
   # so we can do: '3.5.13-r3' or '3.5.13-rc3'
   _compare_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
-  _compare_you="${input_2}" _fct_is="App_Is_Version_Syntax_Valid"
+  _compare_you="${input_2}" _fct_is="Condition_Version_Must_Be_Valid"
   App_Are_Var_Equal
 }
 
