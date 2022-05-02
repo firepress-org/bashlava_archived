@@ -39,6 +39,12 @@ function s {
 function h {
   help
 }
+function 1 {
+  test
+}
+function 2 {
+  help
+}
 function log {
   git log --all --decorate --oneline --graph --pretty=oneline | head -n 10
 }
