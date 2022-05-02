@@ -179,13 +179,13 @@ function tag {
   Condition_No_Commits_Must_Be_Pending
   Condition_Attr_2_Must_Be_Empty
 
-  git tag ${app_release} && git push --tags && echo
+  git tag ${app_version} && git push --tags && echo
   App_Show_Version && sleep 1 && echo
 
   my_message="Next, prepare release" App_Gray
   my_message="To quit the release notes: type ':qa + enter'" App_Gray && echo
 
-  gh release create && sleep 4
+  gh release create && sleep 5
   App_Show_Version
   App_Show_Release
   # UX fun
