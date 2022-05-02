@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# contains only those functions unlikely to need modification
 # from fork: https://github.com/ralish/bash-script-template/blob/main/source.sh
 
 # A best practices Bash script template with many useful functions. This file
