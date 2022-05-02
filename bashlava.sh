@@ -570,19 +570,19 @@ function App_Fatal {
 function App_Is_mainbranch {
   _compare_me=$(git rev-parse --abbrev-ref HEAD)
   _compare_you="${default_branch}" _fct_is="App_Is_mainbranch"
-  App_Are_Var_Equal
+  Condition_Vars_Must_Be_Equal
 }
 
 function Condition_Branch_Must_Be_Edge {
   _compare_me=$(git rev-parse --abbrev-ref HEAD)
   _compare_you="edge" _fct_is="Condition_Branch_Must_Be_Edge"
-  App_Are_Var_Equal
+  Condition_Vars_Must_Be_Equal
 }
 
 function Condition_No_Commits_Must_Be_Pending {
   _compare_me=$(git status | grep -c "nothing to commit")
   _compare_you="1" _fct_is="Condition_No_Commits_Must_Be_Pending"
-  App_Are_Var_Equal
+  Condition_Vars_Must_Be_Equal
 }
 
 # TODO 1
@@ -653,20 +653,20 @@ function Condition_Version_Must_Be_Valid {
   # so we can do: '3.5.13-r3' or '3.5.13-rc3'
   _compare_me=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
   _compare_you="${input_2}" _fct_is="Condition_Version_Must_Be_Valid"
-  App_Are_Var_Equal
+  Condition_Vars_Must_Be_Equal
 }
 
 function Condition_Apps_Must_Be_Installed {
 ### docker running?
   _compare_me=$(docker version | grep -c "Server: Docker Desktop")
   _compare_you="1" _fct_is="Condition_Apps_Must_Be_Installed"
-  App_Are_Var_Equal
+  Condition_Vars_Must_Be_Equal
   my_message="Docker is installed" && App_Gray
 
 ### gh cli installed
   _compare_me=$(gh --version | grep -c "https://github.com/cli/cli/releases/tag/v")
   _compare_you="1" _fct_is="Condition_Apps_Must_Be_Installed"
-  App_Are_Var_Equal
+  Condition_Vars_Must_Be_Equal
   my_message="gh cli is installed" && App_Gray
 }
 
@@ -731,13 +731,13 @@ function App_Does_File_Exist_NoStop {
 }
 
 # Think, IF vars are EQUAL, continue else fail the process
-function App_Are_Var_Equal {
+function Condition_Vars_Must_Be_Equal {
   if [[ "${_compare_me}" == "${_compare_you}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
     my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && App_Warning_Stop
   else
-    my_message="FATAL: App_Are_Var_Equal | ${_fct_is}" && App_Fatal
+    my_message="FATAL: Condition_Vars_Must_Be_Equal | ${_fct_is}" && App_Fatal
   fi
 }
 # Think, IF vars are NOT equal, continue else fail the process
