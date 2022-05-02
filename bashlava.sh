@@ -868,7 +868,7 @@ fi
 ### When no arg are provided
 input_1=$1
 if [[ -z "$1" ]]; then
-  echo "User did not provide argument. Show options" > /dev/null 2>&1
+  echo "OK, user did not provide argument. Show options" > /dev/null 2>&1
   _doc_name="welcome_to_bashlava.md" && clear && App_Show_Docs
 
   read user_input; echo;
@@ -880,8 +880,7 @@ if [[ -z "$1" ]]; then
   esac
 
 elif [[ ! -z "$1" ]]; then
-  my_message="This warning should not happen (WARN_201)." App_Warning
-  input_1=$1
+  echo "Good, sser did provide argument(s)." > /dev/null 2>&1
 else
   my_message="FATAL: fct: main (ERR_201) " && App_Fatal
 fi
