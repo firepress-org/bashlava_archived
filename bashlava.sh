@@ -2,11 +2,18 @@
 
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# There are 15x TODO in the code
+# There are SOME TODO in the code
 
 # TODO
 #fct: m
 #	CASE ask if the user wants 'e'
+
+# TODO
+# when you code a you dont know by heart which condition to call
+# creatge new function that list all function, helpfull 
+#	"Condition_"
+#	"App_"
+#	alias
 
 # TODO
 # better management core vars
@@ -85,8 +92,7 @@ function pr {
   gh pr view --web
 
 ### PROMPT
-  echo
-  my_message="Do you want to see CI status? (y/n)" && App_Blue
+  echo && my_message="Want to see 'CI' status? (y/n)" && App_Blue
   read user_input;
   case ${user_input} in
     y | Y) ci;;
@@ -346,98 +352,6 @@ function App_short_url {
     y | Y) sub_short_url;;
     *) my_message="Operation cancelled" && App_Fatal;;
   esac
-}
-
-function App_Load_variables {
-### Default var & path. Customize if need. Usefull if you want
-  # to have multiple instance of bashLaVa on your machine
-  bashlava_executable="bashlava.sh"
-  my_path="/usr/local/bin"
-
-### Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
-  # When buidling docker images it better to not have rc in the version as breaks the pattern.
-  # When not working with a docker build, feel free to put this flag as true.
-  # default value is false
-  version_with_rc="false"
-
-### Reset if needed
-  App_Reset_Custom_path
-  _bashlava_path="$(cat ${my_path}/bashlava_path)"
-
-### Set absolute path for the /components directory
-  _components_path="${_bashlava_path}/components"
-
-### Set absolute path for the /docs directory
-  _docs_path="${_bashlava_path}/docs"
-
-# every scripts that are not under the main bashLaVa app, should be threated as an components.
-# It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
-
-### source PUBLIC scripts
-
-# TODO
-# we have few array that are configs. They should be all together under the same block of code.
-
-### source files under /components
-  arr=( "alias.sh" "code_example.sh" "templates.sh")
-  for action in "${arr[@]}"; do
-    _file_is="${action}" _file_path_is="${_components_path}/${_file_is}" && Condition_File_Must_Be_Present
-    source "${_file_path_is}"
-  done
-
-### We dont source this file. See example using Mapfile
-  _file_is="list.txt" _file_path_is="${_components_path}/${_file_is}" && Condition_File_Must_Be_Present
-
-# TODO
-# create a flag where the default is we don't use private
-
-### source PRIVATE / custom scripts
-  # the user must create /private/_entrypoint.sh file
-  _file_is="_entrypoint.sh" _file_path_is="${_components_path}/private/${_file_is}" && Condition_File_Must_Be_Present
-  source "${_file_path_is}"
-
-### Set defaults for flags
-  _flag_deploy_commit_message="not_set"
-  _commit_message="not_set"
-
-###	docker images
-  docker_img_figlet="devmtl/figlet:1.1"
-  docker_img_glow="devmtl/glow:1.4.1"
-
-###	Date generators
-  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
-    date_sec="$(date +%Y-%m-%d_%HH%Ms%S)"
-    date_min="$(date +%Y-%m-%d_%HH%M)"
-
-  date_hour="$(date +%Y-%m-%d_%HH)XX"
-    date_day="$(date +%Y-%m-%d)"
-  date_month="$(date +%Y-%m)-XX"
-  date_year="$(date +%Y)-XX-XX"
-
-# Define vars from Dockerfile
-  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  default_branch=$(cat Dockerfile | grep DEFAULT_BRANCH= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  dockerhub_user=$(cat Dockerfile | grep DOCKERHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  github_registry=$(cat Dockerfile | grep GITHUB_REGISTRY= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-
-  _url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
-  _url_to_check="https://github.com/${github_user}/${app_name}"
-
-# idempotent checkpoints
-  _var_name="app_name" _is_it_empty=$(echo ${app_name}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="app_version" _is_it_empty=$(echo ${app_version}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="app_release" _is_it_empty=$(echo ${app_release}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="github_user" _is_it_empty=$(echo ${github_user}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="default_branch" _is_it_empty=$(echo ${default_branch}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="github_org" _is_it_empty=$(echo ${github_org}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="dockerhub_user" _is_it_empty=$(echo ${dockerhub_user}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="github_registry" _is_it_empty=$(echo ${github_registry}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="_url_to_release" _is_it_empty=$(echo ${_url_to_release}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="_url_to_check" _is_it_empty=$(echo ${_url_to_check}) && Condition_Vars_Must_Be_Not_Empty
 }
 
 function App_Show_Version {
@@ -809,13 +723,105 @@ function App_Reset_Custom_path {
   fi
 }
 
+function App_Load_Vars {
+### Default var & path. Customize if need. Usefull if you want
+  # to have multiple instance of bashLaVa on your machine
+  bashlava_executable="bashlava.sh"
+  my_path="/usr/local/bin"
+
+### Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
+  # When buidling docker images it better to not have rc in the version as breaks the pattern.
+  # When not working with a docker build, feel free to put this flag as true.
+  # default value is false
+  version_with_rc="false"
+
+### Reset if needed
+  App_Reset_Custom_path
+  _bashlava_path="$(cat ${my_path}/bashlava_path)"
+
+### Set absolute path for the /components directory
+  _components_path="${_bashlava_path}/components"
+
+### Set absolute path for the /docs directory
+  _docs_path="${_bashlava_path}/docs"
+
+# every scripts that are not under the main bashLaVa app, should be threated as an components.
+# It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
+
+### source PUBLIC scripts
+
+# TODO
+# we have few array that are configs. They should be all together under the same block of code.
+
+### source files under /components
+  arr=( "alias.sh" "code_example.sh" "templates.sh")
+  for action in "${arr[@]}"; do
+    _file_is="${action}" _file_path_is="${_components_path}/${_file_is}" && Condition_File_Must_Be_Present
+    source "${_file_path_is}"
+  done
+
+### We dont source this file. See example using Mapfile
+  _file_is="list.txt" _file_path_is="${_components_path}/${_file_is}" && Condition_File_Must_Be_Present
+
+# TODO
+# create a flag where the default is we don't use private
+
+### source PRIVATE / custom scripts
+  # the user must create /private/_entrypoint.sh file
+  _file_is="_entrypoint.sh" _file_path_is="${_components_path}/private/${_file_is}" && Condition_File_Must_Be_Present
+  source "${_file_path_is}"
+
+### Set defaults for flags
+  _flag_deploy_commit_message="not_set"
+  _commit_message="not_set"
+
+###	docker images
+  docker_img_figlet="devmtl/figlet:1.1"
+  docker_img_glow="devmtl/glow:1.4.1"
+
+###	Date generators
+  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
+    date_sec="$(date +%Y-%m-%d_%HH%Ms%S)"
+    date_min="$(date +%Y-%m-%d_%HH%M)"
+
+  date_hour="$(date +%Y-%m-%d_%HH)XX"
+    date_day="$(date +%Y-%m-%d)"
+  date_month="$(date +%Y-%m)-XX"
+  date_year="$(date +%Y)-XX-XX"
+
+# Define vars from Dockerfile
+  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  default_branch=$(cat Dockerfile | grep DEFAULT_BRANCH= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  dockerhub_user=$(cat Dockerfile | grep DOCKERHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_registry=$(cat Dockerfile | grep GITHUB_REGISTRY= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+
+  _url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
+  _url_to_check="https://github.com/${github_user}/${app_name}"
+
+# idempotent checkpoints
+  _var_name="app_name" _is_it_empty=$(echo ${app_name}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="app_version" _is_it_empty=$(echo ${app_version}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="app_release" _is_it_empty=$(echo ${app_release}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_user" _is_it_empty=$(echo ${github_user}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="default_branch" _is_it_empty=$(echo ${default_branch}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_org" _is_it_empty=$(echo ${github_org}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="dockerhub_user" _is_it_empty=$(echo ${dockerhub_user}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_registry" _is_it_empty=$(echo ${github_registry}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_url_to_release" _is_it_empty=$(echo ${_url_to_release}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_url_to_check" _is_it_empty=$(echo ${_url_to_check}) && Condition_Vars_Must_Be_Not_Empty
+}
+
 ### Entrypoint
 function main() {
   trap script_trap_err ERR
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-  App_Load_variables
+  App_Load_Vars
   App_Check_Which_File_Exist
 
   if [[ -z "$2" ]]; then    #if empty
