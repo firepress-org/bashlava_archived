@@ -19,7 +19,7 @@ function t {
   tag
 }
 function mdv {
-  clear && App_Is_input_2 && App_glow
+  clear && App_Is_input_2_Provided && App_glow
 }
 function om {
   git checkout ${default_branch}
