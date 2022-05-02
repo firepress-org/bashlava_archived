@@ -1,9 +1,16 @@
-# What do you want to do next?
+# What do you want to do next? (1/2 or t/h)
 
-- 1, t ..... `test` your set up
-- 2, h ..... `help`
+- 1 ..... `test`
+- 2 ..... `help`
 
-# About
+<br>
+
+**Suggestion**
+
+- `bashlava test`
+- `bashlava help` _or_ `bashlava h`
+
+**About**
 
 - https://github.com/firepress-org/bashlava
 - Follow me on twitter: https://twitter.com/askpascalandy

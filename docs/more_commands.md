@@ -1,4 +1,4 @@
-# III) More commands
+**More commands**
 
 - `h` ............ help
 - `test` ......... test if requirements for bashLaVa are meet
@@ -10,4 +10,5 @@
 - `om` ........... checkout to mainbranch
 - `mdv` .......... markdown viewer | usage: mdv README.md
 - `hash` ......... hash from latest hash commit
-- `gitio` ........ git.io shortner, works only with GitHub repos
+- `gitio` ........ git.io shortner, works only with GitHub URLs
+- `bashlava` ..... _(without any attributs)_, shows welcome screen

@@ -692,7 +692,7 @@ function App_Warning_Stop {
 }
 function App_Fatal {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
-  echo -e "\e[1;31m${my_message}\e[0m" && exit 1
+  echo -e "🚨 \e[1;31m${my_message}\e[0m 🚨" && exit 1
                                 # red
 }
 
@@ -846,6 +846,9 @@ function main() {
 ### Ensure there are no more than three attrbutes
   App_input_4_Is_Empty_As_It_Should
 
+# TODO
+# set as configs ex: debug="true"
+
 ### optional
   # lock_init system
 
@@ -857,29 +860,28 @@ function main() {
   $1
 }
 
-# Invoke main with args if not sourced
-# Approach via: https://stackoverflow.com/a/28776166/8787985
+### Invoke main with args if not sourced. Approach via: https://stackoverflow.com/a/28776166/8787985
 if ! (return 0 2> /dev/null); then
     main "$@"
 fi
 
-### If the user do not provide argument, show options
+### When no arg are provided
 input_1=$1
 if [[ -z "$1" ]]; then
-
-  # ensure file are present
-  App_Check_Are_Files_Exist
-
+  echo "User did not provide argument. Show options" > /dev/null 2>&1
   _doc_name="welcome_to_bashlava.md" && clear && App_Show_Docs
+
   read user_input; echo;
   case ${user_input} in
-    1 | t) test;;
-    2 | h) help;;
-    *) my_message="Invalid input." App_Fatal;; 
+    # Dont use the shortcut 't' here! Its used for fct 'tag'
+    1) clear && test;;
+    2 | h) clear && help;;
+    *) my_message="Invalid input" App_Fatal;; 
   esac
 
-# TODO
-# add a fatal layer to this logic
-else
+elif [[ ! -z "$1" ]]; then
+  my_message="This warning should not happen (WARN_201)." App_Warning
   input_1=$1
+else
+  my_message="FATAL: fct: main (ERR_201) " && App_Fatal
 fi

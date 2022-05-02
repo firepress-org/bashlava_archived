@@ -1,4 +1,4 @@
-# bashlava test
+**bashlava test**
 
 Test from a **markdown file**. This text is used as a placeholder. Words that will follow won't make any sense and this is fine. _At the moment, the goal is to build a structure for our site :-p_
 
