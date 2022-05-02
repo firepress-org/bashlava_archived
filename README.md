@@ -20,22 +20,25 @@ In other word, the the **agile release cycle** should be something you master. B
 
 &nbsp;
 
-## BashLaVa Demo
+## See BashLaVa in Action
 
-Videos WIP
+**This section in not done yet**. 2022-05-01_21h44
+
+- Feature
+- How to Installation
+- Using git-crypt + gnupg
+- /private directory
+- Go thru the code
 
 **It also allows you**:
 
-- quickly set your custom scripts (Videos WIP)
+- quickly set your custom scripts
 - quickly write help function
 - hack around as it's all built with bash
 
 ## Installation
 
-Step-by-step on YouTube (video wip)
-
 - 1. git **clone** this repo
-
 - 2. **create a symlink** to your PATH for both files.
 
 ```
