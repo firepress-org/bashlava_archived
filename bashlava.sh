@@ -654,7 +654,7 @@ function App_Show_Docs {
 # Define colors / https://www.shellhacks.com/bash-colors/
 function App_Green {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
-  echo -e "   💻 \e[1;32m${my_message}\e[0m"
+  echo -e "✨ \e[1;32m${my_message}\e[0m"
 }
 function App_Blue {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && App_Does_Var_Empty
