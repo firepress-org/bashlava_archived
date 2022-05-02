@@ -2,10 +2,7 @@
 
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# There are: 0o0o TODO
-
-# Logic is: to be able to run this function
-  # Condition_Branch_Must_Be_Mainbranch << needed ?
+# There are 15x TODO in the code
 
 # TODO
 #fct: m
