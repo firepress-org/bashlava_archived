@@ -741,13 +741,13 @@ function Condition_Vars_Must_Be_Equal {
   fi
 }
 # Think, IF vars are NOT equal, continue else fail the process
-function App_Are_Var_Not_Equal {
+function Condition_Vars_Must_Be_Not_Equal {
   if [[ "${_compare_me}" == "${_compare_you}" ]]; then
     my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && App_Warning_Stop
   elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: App_Are_Var_Not_Equal | ${_fct_is}" && App_Fatal
+    my_message="FATAL: Condition_Vars_Must_Be_Not_Equal | ${_fct_is}" && App_Fatal
   fi
 }
 
