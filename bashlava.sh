@@ -90,7 +90,7 @@ function pr {
   read user_input;
   case ${user_input} in
     y | Y) ci;;
-    *) my_message="Operation cancelled" && App_Fatal;;
+    *) my_message="OK, lets not show CI status." && App_Green;;
   esac
 
   # UX fun
@@ -113,7 +113,7 @@ function mrg {
   read user_input;
   case ${user_input} in
     y | Y) ci;;
-    *) my_message="Operation cancelled" && App_Fatal;;
+    *) my_message="OK, lets not show CI status." && App_Green;;
   esac
 
   App_Show_Version
