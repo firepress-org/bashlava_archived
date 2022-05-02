@@ -122,8 +122,10 @@ function mrg {
 
   _doc_name="mrg_info.md" App_Show_Docs
 
-  gh pr merge
+  gh pr merge && wait
   App_Show_Version
+  my_message="CI completed" && App_Banner
+
   # UX fun
   echo && my_message="NEXT MOVE suggestion: 'ci' - 'v' " App_Green
 }
