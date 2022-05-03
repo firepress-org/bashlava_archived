@@ -53,7 +53,7 @@
    # The package is not installed
 #fi
 
-function mainbranch {
+function mainbranch { # User_
   Condition_Attr_2_Must_Be_Empty
   Condition_No_Commits_Must_Be_Pending
   Condition_Apps_Must_Be_Installed
@@ -67,7 +67,7 @@ function mainbranch {
   log
 }
 
-function edge {
+function edge { # User_
 # TODO
 # have this branch created with a unique ID to avoid conflicts with other developers edge_sunny
 
@@ -93,7 +93,7 @@ function edge {
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " Print_Green
 }
 
-function commit {
+function commit { # User_
   Condition_Attr_2_Must_Be_Provided
   git status
   git add -A
@@ -103,7 +103,7 @@ function commit {
   echo && my_message="NEXT MOVE suggestion: 1) 'c' 2) 'pr' " Print_Green
 }
 
-function pr {
+function pr { # User_
   Condition_Branch_Must_Be_Edge
   Condition_Attr_2_Must_Be_Empty
   Condition_No_Commits_Must_Be_Pending
@@ -127,7 +127,7 @@ function pr {
   #see debug_upstream.md
 }
 
-function mrg {
+function mrg { # User_
   # merge from edge into main_branch
   Condition_Branch_Must_Be_Edge
   Condition_No_Commits_Must_Be_Pending
@@ -149,7 +149,7 @@ function mrg {
   esac
 }
 
-function ci {
+function ci { # User_
   # continuous integration status
   Condition_Attr_2_Must_Be_Empty
   Condition_No_Commits_Must_Be_Pending
@@ -173,7 +173,7 @@ function ci {
   esac
 }
 
-function version {
+function version { # User_
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
   Condition_No_Commits_Must_Be_Pending
   App_Show_Version
@@ -218,7 +218,7 @@ function version {
   esac
 }
 
-function tag {
+function tag { # User_
   Condition_No_Commits_Must_Be_Pending
   Condition_Attr_2_Must_Be_Empty
 
@@ -241,7 +241,7 @@ function tag {
   esac
 }
 
-function squash {
+function squash { # User_
   Condition_No_Commits_Must_Be_Pending
   Condition_Attr_2_Must_Be_Provided # how many steps
   Condition_Attr_3_Must_Be_Provided # message
@@ -262,7 +262,7 @@ function squash {
   echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " Print_Green
 }
 
-function test {
+function test { # User_
 # test our script & fct. Idempotent bash script
 
   echo
@@ -301,7 +301,7 @@ function test {
   _doc_name="test.md" App_Show_Docs
 
   # PRINT OPTION 2
-  # 'test_color' it bypassed as it does an 'exit 0'
+  # 'App_test_color' it bypassed as it does an 'exit 0'
   my_message="Check colors options:" && Print_Blue && echo
   my_message="bashlava test"
   Print_Green
@@ -330,16 +330,7 @@ function test {
   App_Show_Version
 }
 
-function test_color {
-  my_message="bashlava test"
-  Print_Green
-  Print_Blue
-  Print_Warning
-  Print_Gray
-  Print_Fatal
-}
-
-function help {
+function help { # User_
   Condition_Attr_3_Must_Be_Empty
 
   _doc_name="help.md" App_Show_Docs
@@ -347,6 +338,11 @@ function help {
   ### old code that could be useful in the future
   ### list tag #util> within the code
   # cat ${_path_user}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
+}
+
+# TODO
+function show { # User_
+  echo "WIP 2022-05-03_10h43"
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -361,6 +357,15 @@ function help {
   #
 #
 
+function App_test_color {
+  my_message="bashlava test"
+  Print_Green
+  Print_Blue
+  Print_Warning
+  Print_Gray
+  Print_Fatal
+}
+
 function Prompt_YesNo_ci {
   # called by fct like: pr, mrg
   echo && my_message="Want to see 'ci' status? (y/n)" && Print_Blue
@@ -372,16 +377,12 @@ function Prompt_YesNo_ci {
 }
 
 # TODO
-function Show_ {
-  echo && my_message="List stuff to show here (y/n)" && Print_Blue
-  read user_input;
-  case ${user_input} in
-    y | Y) echo "wip";;
-    *) my_message="Abord" && Print_Green;;
-  esac
+function Show_ { # User_
+  echo "call: version ..."
+  echo "call: App_List_All_Fct"
 }
 
-function App_short_url {
+function gitio { # User_
 
 ### CMD EXECUTION
   function sub_short_url {
