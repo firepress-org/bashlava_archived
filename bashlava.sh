@@ -235,7 +235,7 @@ function squash { # User_
   fi
 
   git reset --hard HEAD~"${input_2}"
-  git merge --squash HEAD"@{1}"
+  git merge --squash HEAD@{1}
   git push origin HEAD --force
   git status
   git add -A
