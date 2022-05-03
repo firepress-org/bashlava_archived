@@ -58,7 +58,7 @@ function mainbranch { # User_
   Condition_No_Commits_Pending
   Condition_Apps_Must_Be_Installed
 
-  App_Show_Version
+  Show_Version
 
 ### Update our local state
   git checkout ${default_branch}
@@ -87,7 +87,7 @@ function edge { # User_
 
   git checkout -b edge
   git push --set-upstream origin edge -f
-  App_Show_Version
+  Show_Version
   # UX fun
   my_message="Done! checkout edge from ${default_branch}" Print_Gray
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " Print_Green
@@ -135,7 +135,7 @@ function mrg { # User_
 
   gh pr merge
   Prompt_YesNo_ci
-  App_Show_Version
+  Show_Version
 
   echo && my_message="NEXT MOVE suggestion: 1='ci' 2='sv' 3='v' 4='t' 9=cancel (or any key)" && Print_Green
   input_2="not_set"   #reset input_2
@@ -176,7 +176,7 @@ function ci { # User_
 function version { # User_
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
   Condition_No_Commits_Pending
-  App_Show_Version
+  Show_Version
 
   if [[ "${input_2}" == "not_set" ]]; then
     # The user did not provide a version
@@ -206,7 +206,7 @@ function version { # User_
   git add .
   git commit . -m "Update ${app_name} to version ${input_2}"
   git push && echo
-  App_Show_Version
+  Show_Version
 
   echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && Print_Green
   input_2="not_set"   #reset input_2
@@ -223,13 +223,13 @@ function tag { # User_
   Condition_Attr_2_Must_Be_Empty
 
   git tag ${app_version} && git push --tags && echo
-  App_Show_Version
+  Show_Version
 
   echo && my_message="Next, prepare release" Print_Gray
   my_message="To quit the release notes: type ':qa + enter'" Print_Gray && echo
 
   gh release create && sleep 5
-  App_Show_Version
+  Show_Version
   App_Show_Release
 
   echo && my_message="NEXT MOVE suggestion: 'e' (y/n)" && Print_Green
@@ -327,7 +327,7 @@ function test { # User_
   my_message="${_path_user} < _path_user" Print_Gray
 
   input_2="not_set"
-  App_Show_Version
+  Show_Version
 }
 
 function help { # User_
@@ -377,7 +377,8 @@ function Prompt_YesNo_ci {
 }
 
 # TODO
-function Show_ { # User_
+# this is an APP
+function Show_ { 
   echo "call: version ..."
   echo "call: App_List_All_Fct"
 }
@@ -411,7 +412,7 @@ function gitio { # User_
   esac
 }
 
-function App_Show_Version {
+function Show_Version {
   echo && my_message="Check versions:" && Print_Blue
 
   Core_Load_Vars_Dockerfile
@@ -441,7 +442,7 @@ function App_Show_Version {
     echo "Good, a release is present" > /dev/null 2>&1
     _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && Condition_Vars_Must_Be_Not_Empty
   else
-    my_message="FATAL: App_Show_Version | release_latest " && Print_Fatal
+    my_message="FATAL: Show_Version | release_latest " && Print_Fatal
   fi
 
   my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && Print_Gray

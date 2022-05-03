@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function App_List_All_Fct {
+function App_List_All_Fct { #Side_
   # help advanced
   # it also helps me to see all functions at high level
   # useful to debug
@@ -9,6 +9,17 @@ function App_List_All_Fct {
   echo
 
   # code optimization 0o0o CASE per function's category
+
+  my_message="sidecars" && Print_Blue && echo
+  my_message="$(cat ${_path_components}/sidecars.sh | grep "{ #Side_" | awk '{print $2}')" && Print_Gray && echo
+
+  my_message="alias" && Print_Blue && echo
+  my_message="$(cat ${_path_components}/alias.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
+
+  my_message="example" && Print_Blue && echo
+  my_message="$(cat ${_path_components}/example.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
+
+  my_message="See help standard basic functions" && Print_Blue && echo
 
   my_message="User" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "{ # User_" | awk '{print $2}')" && Print_Gray && echo
@@ -31,42 +42,29 @@ function App_List_All_Fct {
   my_message="Core" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Core_" | awk '{print $2}')" && Print_Gray && echo
 
-### 
-
-  my_message="sidecars" && Print_Blue && echo
-  my_message="$(cat ${_path_components}/sidecars.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
-
-  my_message="alias" && Print_Blue && echo
-  my_message="$(cat ${_path_components}/alias.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
-
-  my_message="example" && Print_Blue && echo
-  my_message="$(cat ${_path_components}/example.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
-
-  my_message="See help standard basic functions" && Print_Blue && echo
-
   # code optimization 0o0o / Add logic for private script
 }
 
-function passgen {
+function passgen { #Side_
   docker run --rm devmtl/alpine:3.11_2020-02-26_08H42s20_dec5798 sh "random7.sh"
 }
 
-function App_random_6 {
+function App_random_6 { #Side_
   openssl rand -hex 3
 }
 
-function App_array {
+function App_array { #Side_
   arr=( "Hello" "Mr Andy" )
   for i in "${arr[@]}"; do
     my_message="${i}" && Print_Gray
   done
 }
 
-function hello {
+function hello { #Side_
   echo && my_message="NEXT MOVE suggestion: Say hello to a living soul." Print_Green
 }
 
-function App_Curl_url {
+function App_Curl_url { #Side_
 # must receive var: url_to_check
   UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
   MATCH_UPTIME_TEST1="OK";
@@ -79,14 +77,14 @@ function App_Curl_url {
   fi
 }
 
-function App_init_readme {
+function App_init_readme { #Side_
 cat << EOF > README_template.md
 This README is still empty.
 EOF
 }
 
 # optional as not everyone needs this option
-function App_init_dockerignore {
+function App_init_dockerignore { #Side_
 cat << EOF > .dockerignore_template
 .cache
 coverage
@@ -97,7 +95,7 @@ npm-debug
 EOF
 }
 
-function App_init_license {
+function App_init_license { #Side_
 # two things two update here
 # project URL
 # URL to LICENSE.md (you should fork it)
@@ -118,7 +116,7 @@ EOF
 my_message="File created: ${local_path_bashlava}/LICENSE_template" Print_Green
 }
 
-function App_init_dockerfile {
+function App_init_dockerfile { #Side_
 cat << EOF > Dockerfile_template
 ###################################
 # REQUIRED for bashLaVa https://github.com/firepress-org/bashlava
@@ -142,7 +140,7 @@ EOF
 my_message="File created: ${local_path_bashlava}/Dockerfile_template" Print_Green
 }
 
-function App_init_gitignore {
+function App_init_gitignore { #Side_
 cat <<EOF > .gitignore_template
 # Files
 ############
