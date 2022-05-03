@@ -97,7 +97,7 @@ function pr { # User_
   Condition_Attr_2_Must_Be_Empty
   Condition_No_Commits_Pending
 
-  _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
+  _pr_title=$(git log --format=%B -n 1 "$(git log -1 --pretty=format:"%h")" | cat -)
   _var_name="_pr_title" _is_it_empty="${_pr_title}" && Condition_Vars_Must_Be_Not_Empty
   
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}"
@@ -459,19 +459,17 @@ function Show_Release {
   # I might simply stop using a docker container for this
   # but as a priciiple, I like to call a docker container
 
-
-
 function Show_Docs {
   # idempotent checkpoint
   _var_name="docker_img_glow" _is_it_empty="${docker_img_glow}" && Condition_Vars_Must_Be_Not_Empty
   _var_name="_doc_name" _is_it_empty="${_doc_name}" && Condition_Vars_Must_Be_Not_Empty
 
-  _present_path_is=$(pwd)
+  _present_path_is="$(pwd)"
   _file_is="${_doc_name}" _file_path_is="${_path_docs}/${_doc_name}" && Condition_File_Must_Be_Present
 
-  cd ${_path_docs}
+  cd ${_path_docs} || { echo "FATAL: Show_Docs / cd"; exit 1; }
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 110 ${_doc_name}
-  cd ${_present_path_is}
+  cd ${_present_path_is} || { echo "FATAL: Show_Docs / cd"; exit 1; }
 }
 
 function Print_mdv {
