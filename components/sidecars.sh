@@ -58,7 +58,7 @@ function App_array {
 }
 
 function hello {
-  echo && my_message="NEXT MOVE suggestion: Say hello to a living soul." App_Green
+  echo && my_message="NEXT MOVE suggestion: Say hello to a living soul." Print_Green
 }
 
 function App_Curl_url {
@@ -67,7 +67,7 @@ function App_Curl_url {
   MATCH_UPTIME_TEST1="OK";
   MATCH_UPTIME_TEST2="ok";
   if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is online" && App_Green
+    my_message="${url_to_check} <== is online" && Print_Green
   elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
     my_message="${url_to_check} <== is offline" && App_Warning
     my_message="The git up repo URL is not responding." && App_Fatal
@@ -110,7 +110,7 @@ cannot repackage this code for any commercial endeavour.
 Find the GNU General Public License V3 at:
 https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
 EOF
-my_message="File created: ${local_path_bashlava}/LICENSE_template" App_Green
+my_message="File created: ${local_path_bashlava}/LICENSE_template" Print_Green
 }
 
 function App_init_dockerfile {
@@ -134,7 +134,7 @@ ARG GITHUB_REGISTRY="notset"
 ###################################
 
 EOF
-my_message="File created: ${local_path_bashlava}/Dockerfile_template" App_Green
+my_message="File created: ${local_path_bashlava}/Dockerfile_template" Print_Green
 }
 
 function App_init_gitignore {
@@ -245,5 +245,5 @@ TheVolumeSettingsFolder
 .FBCSemaphoreFile
 .FBCLockFolder
 EOF
-my_message="File created: ${local_path_bashlava}/App_init_gitignore" App_Green
+my_message="File created: ${local_path_bashlava}/App_init_gitignore" Print_Green
 }
