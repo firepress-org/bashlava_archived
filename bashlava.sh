@@ -2,11 +2,11 @@
 
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# There are SOME TODO in the code
+# There are 17 flags TODO in the code
 
 # TODO
-#fct: m
-#	CASE ask if the user wants 'e'
+# delete var 'version_with_rc'
+# this is an old logic when my release flow was not great
 
 # TODO
 # when you code a you dont know by heart which condition to call
@@ -14,6 +14,9 @@
 #	"Condition_"
 #	"App_"
 #	alias
+
+# TODO
+# release function is not stable when we tag. Sometimes it show the older release
 
 # TODO
 # better management core vars
