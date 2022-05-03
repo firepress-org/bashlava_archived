@@ -53,7 +53,7 @@ function hash {
 }
 function sv {
 # show version / version read
-  Condition_Attr_2_Must_Be_Empty && App_Show_Version 
+  Condition_Attr_2_Must_Be_Empty && Show_Version 
 }
 function App_Yellow {
   Print_Warning
