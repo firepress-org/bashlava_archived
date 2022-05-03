@@ -247,7 +247,7 @@ function squash {
   Condition_Attr_3_Must_Be_Provided # message
 
   if ! [[ $input_2 =~ ^[0-9]+$ ]] ; then
-    my_message="Oups, syntax error." && App_Warning_Stop
+    my_message="Oups, syntax error." && Print_Warning_Stop
   fi
 
   git reset --hard HEAD~"${input_2}"
@@ -290,7 +290,7 @@ function test {
   if [[ $(uname) == "Darwin" ]]; then
     my_message="Running on a Mac (Darwin)" Print_Gray
   elif [[ $(uname) != "Darwin" ]]; then
-    my_message="bashLaVa is not tested on other machine than Mac OS (Darmin)." && App_Warning
+    my_message="bashLaVa is not tested on other machine than Mac OS (Darmin)." && Print_Warning
   else
     my_message="FATAL: Test / Check OS" && App_Fatal
   fi
@@ -306,7 +306,7 @@ function test {
   my_message="bashlava test"
   Print_Green
   #Print_Blue
-  App_Warning
+  Print_Warning
   Print_Gray
   #App_Fatal
 
@@ -334,7 +334,7 @@ function test_color {
   my_message="bashlava test"
   Print_Green
   Print_Blue
-  App_Warning
+  Print_Warning
   Print_Gray
   App_Fatal
 }
@@ -512,11 +512,15 @@ function Print_Blue {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "👋 \e[1;34m${my_message}\e[0m"
 }
-function App_Warning {
+
+### Why do we have Print_Warning and Print_Warning_Stop here ?
+  # Fatal is usually reverse for unexpected erros within bashlava
+  # Warning are expected - sometimes we want to stop the function, sometimes we want to continue
+function Print_Warning {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "🚨 \e[1;33m${my_message}\e[0m"
 }
-function App_Warning_Stop {
+function Print_Warning_Stop {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;33m${my_message}\e[0m 🚨" && exit 1
 }
@@ -564,7 +568,7 @@ function Condition_No_Commits_Must_Be_Pending {
 function Condition_Attr_2_Must_Be_Provided {
 ### ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not_set" ]]; then
-    my_message="You must provide two attributes. fct: Condition_Attr_2_Must_Be_Provided" && App_Warning_Stop
+    my_message="You must provide two attributes. fct: Condition_Attr_2_Must_Be_Provided" && Print_Warning_Stop
   elif [[ "${input_2}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -576,7 +580,7 @@ function Condition_Attr_2_Must_Be_Provided {
 function Condition_Attr_3_Must_Be_Provided {
 ### ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not_set" ]]; then
-    my_message="You must provide three attributes. fct: Condition_Attr_3_Must_Be_Provided" && App_Warning_Stop
+    my_message="You must provide three attributes. fct: Condition_Attr_3_Must_Be_Provided" && Print_Warning_Stop
   elif [[ "${input_3}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -592,7 +596,7 @@ function Condition_Attr_4_Must_Be_Provided {
 function Condition_Attr_2_Must_Be_Empty {
 ### Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not_set" ]]; then
-      my_message="You can NOT use two attributes. fct: Condition_Attr_2_Must_Be_Empty" && App_Warning_Stop
+      my_message="You can NOT use two attributes. fct: Condition_Attr_2_Must_Be_Empty" && Print_Warning_Stop
   elif [[ "${input_2}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -603,7 +607,7 @@ function Condition_Attr_2_Must_Be_Empty {
 function Condition_Attr_3_Must_Be_Empty {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not_set" ]]; then
-      my_message="You can NOT use three attributes. fct: Condition_Attr_3_Must_Be_Empty" && App_Warning_Stop
+      my_message="You can NOT use three attributes. fct: Condition_Attr_3_Must_Be_Empty" && Print_Warning_Stop
   elif [[ "${input_3}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -613,7 +617,7 @@ function Condition_Attr_3_Must_Be_Empty {
 function Condition_Attr_4_Must_Be_Empty {
 # Stop if 4 attributes are passed.
   if [[ "${input_4}" != "not_set" ]]; then
-      my_message="You cannot use four attributes. fct: Condition_Attr_4_Must_Be_Empty" && App_Warning && echo
+      my_message="You cannot use four attributes. fct: Condition_Attr_4_Must_Be_Empty" && Print_Warning && echo
   elif [[ "${input_4}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -659,22 +663,22 @@ function App_Check_Which_File_Exist {
 
   _file_is="LICENSE" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
+    my_message="Dockerfile does not exit, let's generate one" && Print_Warning && sleep 2 && App_init_license && exit 1
   fi
 
   _file_is="README.md" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_readme && exit 1
+    my_message="Dockerfile does not exit, let's generate one" && Print_Warning && sleep 2 && App_init_readme && exit 1
   fi
 
   _file_is=".gitignore" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_gitignore && exit 1
+    my_message="Dockerfile does not exit, let's generate one" && Print_Warning && sleep 2 && App_init_gitignore && exit 1
   fi
 
   _file_is="Dockerfile" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_dockerfile && exit 1
+    my_message="Dockerfile does not exit, let's generate one" && Print_Warning && sleep 2 && App_init_dockerfile && exit 1
   fi
 
 ### Warning only
@@ -691,7 +695,7 @@ function Condition_File_Must_Be_Present {
   if [[ -f "${_file_path_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
   elif [[ ! -f "${_file_path_is}" ]]; then
-    my_message="Warning: no file: ${_file_path_is}" && App_Warning_Stop
+    my_message="Warning: no file: ${_file_path_is}" && Print_Warning_Stop
   else
     my_message="FATAL: Condition_File_Must_Be_Present | ${_file_path_is}" && App_Fatal
   fi
@@ -702,7 +706,7 @@ function Condition_File_Optionnally_Present {
   if [[ -f "${_file_path_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
   elif [[ ! -f "${_file_path_is}" ]]; then
-    my_message="Warning: no file: ${_file_path_is}" && App_Warning
+    my_message="Warning: no file: ${_file_path_is}" && Print_Warning
     _file_do_not_exist="true"
   else
     my_message="FATAL: Condition_File_Optionnally_Present | ${_file_path_is}" && App_Fatal
@@ -714,7 +718,7 @@ function Condition_Vars_Must_Be_Equal {
   if [[ "${_compare_me}" == "${_compare_you}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
-    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && App_Warning_Stop
+    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && Print_Warning_Stop
   else
     my_message="FATAL: Condition_Vars_Must_Be_Equal | ${_fct_is}" && App_Fatal
   fi
@@ -722,7 +726,7 @@ function Condition_Vars_Must_Be_Equal {
 # Think, IF vars are NOT equal, continue else fail the process
 function Condition_Vars_Must_Be_Not_Equal {
   if [[ "${_compare_me}" == "${_compare_you}" ]]; then
-    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && App_Warning_Stop
+    my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && Print_Warning_Stop
   elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -736,7 +740,7 @@ function Condition_Vars_Must_Be_Not_Empty {
   if [[ -n "${_is_it_empty}" ]]; then    #if not empty
     echo "idempotent checkpoint passed" > /dev/null 2>&1
   elif [[ -z "${_is_it_empty}" ]]; then    #if empty
-    my_message="Warning: variable '${_var_name}' is empty" && App_Warning_Stop
+    my_message="Warning: variable '${_var_name}' is empty" && Print_Warning_Stop
   else
     my_message="FATAL: Condition_Vars_Must_Be_Not_Empty | ${_var_name}" && App_Fatal
   fi
@@ -747,7 +751,7 @@ function Condition_Dir_Must_Be_Present {
   if [[ -d "${dir_path_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
   elif [[ ! -d "${dir_path_is}" ]]; then
-    my_message="Warning: no directory: ${dir_path_is}" && App_Warning_Stop
+    my_message="Warning: no directory: ${dir_path_is}" && Print_Warning_Stop
   else
     my_message="FATAL: Condition_Dir_Must_Be_Present | ${dir_path_is}" && App_Fatal
   fi

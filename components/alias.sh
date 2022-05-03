@@ -56,7 +56,7 @@ function gitio {
   App_short_url
 }
 function App_Yellow {
-  App_Warning
+  Print_Warning
 }
 
 ### capture common typo or bad habits
@@ -67,5 +67,5 @@ function oo {
   App_invalid_cmd
 }
 function App_invalid_cmd {
-  my_message="Invalid command" && App_Warning_Stop
+  my_message="Invalid command" && Print_Warning_Stop
 }
