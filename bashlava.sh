@@ -5,10 +5,6 @@
 # There are 17 flags TODO in the code
 
 # TODO
-# delete var 'version_with_rc'
-# this is an old logic when my release flow was not great
-
-# TODO
 # when you code a you dont know by heart which condition to call
 # creatge new function that list all function, helpfull 
 #	"Condition_"
@@ -180,25 +176,8 @@ function version {
   Condition_Attr_2_Must_Be_Provided
   Condition_Version_Must_Be_Valid
 
-  _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && Condition_Vars_Must_Be_Not_Empty
-
-### Logic between 'version' and 'release'.
-  # For docker projects like https://github.com/firepress-org/ghostfire,
-  # there is a conflict where defining a version like 3.11-rc2 doesn't work because the dockerfile will try to build 'alpine 3.11-rc2'.
-  # Therefore, we need to have a release flag. This allows us to have a clean release cycle.
-  # sed will trim '-rc2'
-
-  if [[ "${version_with_rc}" == "false" ]]; then
-    version_trim=$(echo ${input_2} | sed 's/-r.*//g')
-  elif [[ "${version_with_rc}" != "false" ]]; then
-    version_trim=${input_2}
-  else
-    my_message="FATAL: version" && App_Fatal
-  fi
-
 ### Apply updates in Dockerfile
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${version_trim}\"/" Dockerfile
-  sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${input_2}\"/" Dockerfile
 
   git add .
   git commit . -m "Update ${app_name} to version ${input_2}"
@@ -315,7 +294,6 @@ function test {
   my_message="Check configs:" App_Blue
   my_message="${app_name} < app_name" App_Gray
   #my_message="${app_version} < app_version" App_Gray
-  #my_message="${app_release} < app_release" App_Gray
   my_message="${github_user} < github_user" App_Gray
   my_message="${default_branch} < default_branch" App_Gray
   my_message="${github_org} < github_org" App_Gray
@@ -411,7 +389,6 @@ function App_Show_Version {
 
 ### version in dockerfile
   my_message="${app_version} < VERSION in Dockerfile" App_Gray
-  my_message="${app_release} < RELEASE in Dockerfile" App_Gray
 
 ### tag
   if [ $(git tag -l "$app_version") ]; then
@@ -781,12 +758,6 @@ function App_Load_Vars_General {
   bashlava_executable="bashlava.sh"
   my_path="/usr/local/bin"
 
-### Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
-  # When buidling docker images it better to not have rc in the version as breaks the pattern.
-  # When not working with a docker build, feel free to put this flag as true.
-  # default value is false
-  version_with_rc="false"
-
 ### Reset if needed
   App_Reset_Custom_path
   _bashlava_path="$(cat ${my_path}/bashlava_path)"
@@ -846,7 +817,6 @@ function App_Load_Vars_Dockerfile {
 # Define vars from Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   default_branch=$(cat Dockerfile | grep DEFAULT_BRANCH= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -859,7 +829,6 @@ function App_Load_Vars_Dockerfile {
 # idempotent checkpoints
   _var_name="app_name" _is_it_empty=$(echo ${app_name}) && Condition_Vars_Must_Be_Not_Empty
   _var_name="app_version" _is_it_empty=$(echo ${app_version}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="app_release" _is_it_empty=$(echo ${app_release}) && Condition_Vars_Must_Be_Not_Empty
   _var_name="github_user" _is_it_empty=$(echo ${github_user}) && Condition_Vars_Must_Be_Not_Empty
   _var_name="default_branch" _is_it_empty=$(echo ${default_branch}) && Condition_Vars_Must_Be_Not_Empty
   _var_name="github_org" _is_it_empty=$(echo ${github_org}) && Condition_Vars_Must_Be_Not_Empty
