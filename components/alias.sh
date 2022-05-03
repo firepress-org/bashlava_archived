@@ -33,9 +33,6 @@ function l {
 function sq { 
   squash
 }
-function s {
-  status
-}
 function h {
   help
 }
@@ -63,12 +60,12 @@ function App_Yellow {
 }
 
 ### capture common typo or bad habits
-function App_invalid_cmd {
-  my_message="Invalid command" && App_Warning_Stop
-}
 function sh { 
   App_invalid_cmd
 }
 function oo { 
   App_invalid_cmd
+}
+function App_invalid_cmd {
+  my_message="Invalid command" && App_Warning_Stop
 }
