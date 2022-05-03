@@ -162,7 +162,7 @@ function version {
     input_2="${user_input}"
     #
     echo && my_message="You confirm version: ${user_input} is right? (y/n)" && App_Green
-    input_2="not_set"   #reset input_2
+    # warning: dont reset input_2
     read user_input;
     case ${user_input} in
       1 | y) echo "Good, lets continue" > /dev/null 2>&1;;
