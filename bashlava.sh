@@ -431,7 +431,7 @@ function Show_Version {
   if [[ -z "$release_latest" ]]; then
     release_latest="none "
     echo "Logic: new projet don't have any release. So we must expect that it can be empty" > /dev/null 2>&1
-  elif [[ ! -z "$release_latest" ]]; then
+  elif [[ -n "$release_latest" ]]; then
     echo "Good, a release is present" > /dev/null 2>&1
     _var_name="release_latest" _is_it_empty="${release_latest}" && Condition_Vars_Must_Be_Not_Empty
   else
@@ -485,7 +485,7 @@ function Print_mdv {
   _present_path_is=$(pwd)
   _file_is="${input_2}" _file_path_is="${_present_path_is}/${input_2}" && Condition_File_Must_Be_Present
 
-  docker run --rm -it -v "$(pwd)":/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
+  docker run --rm -it -v "$(pwd)":/sandbox -w /sandbox ${docker_img_glow} glow -w 120 "${input_2}"
 }
 
 function Print_Banner {
@@ -802,7 +802,7 @@ function Core_Load_Vars_General {
   Core_Reset_Bashlava_Path
 
 ### Set absolute path for the project root ./
-  _path_bashlava="$(cat ${_path_user}/bashlava_path)"
+  _path_bashlava="$(cat "${_path_user}"/bashlava_path)"
 
 ### Set absolute path for the ./components directory
   _path_components="${_path_bashlava}/components"
@@ -889,7 +889,7 @@ function main() {
 
   if [[ -z "$2" ]]; then    #if empty
     input_2="not_set"
-  elif [[ ! -z "$2" ]]; then    #if not empty
+  elif [[ -n "$2" ]]; then    #if not empty
     input_2=$2
   else
     my_message="FATAL: <input_2> = ${input_2}" && Print_Fatal
@@ -897,7 +897,7 @@ function main() {
 
   if [[ -z "$3" ]]; then    #if empty
     input_3="not_set"
-  elif [[ ! -z "$3" ]]; then    #if not empty
+  elif [[ -n "$3" ]]; then    #if not empty
     input_3=$3
   else
     my_message="FATAL: <input_3> = ${input_3}" && Print_Fatal
@@ -905,7 +905,7 @@ function main() {
 
   if [[ -z "$4" ]]; then    #if empty
     input_4="not_set"
-  elif [[ ! -z "$4" ]]; then    #if not empty
+  elif [[ -n "$4" ]]; then    #if not empty
     input_4=$4
   else
     my_message="FATAL: <input_4> = ${input_4}" && Print_Fatal
@@ -956,7 +956,7 @@ if [[ -z "$1" ]]; then
     *) my_message="Invalid input" Print_Fatal;; 
   esac
 
-elif [[ ! -z "$1" ]]; then
+elif [[ -n "$1" ]]; then
   echo "Good, user did provide argument(s)." > /dev/null 2>&1
 else
   my_message="FATAL: main (When no arg are provided)" && Print_Fatal
