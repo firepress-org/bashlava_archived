@@ -413,7 +413,7 @@ function App_short_url {
 function App_Show_Version {
   echo && my_message="Check versions:" && Print_Blue
 
-  App_Load_Vars_Dockerfile
+  Core_Load_Vars_Dockerfile
 
 ### version in dockerfile
   my_message="${app_version} < VERSION in Dockerfile" Print_Gray
@@ -857,7 +857,7 @@ function Core_Load_Vars_General {
   date_year="$(date +%Y)-XX-XX"
 }
 
-function App_Load_Vars_Dockerfile {
+function Core_Load_Vars_Dockerfile {
 # Define vars from Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -889,7 +889,7 @@ function main() {
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
   Core_Load_Vars_General
-  App_Load_Vars_Dockerfile
+  Core_Load_Vars_Dockerfile
   App_Check_Which_File_Exist
 
   if [[ -z "$2" ]]; then    #if empty
