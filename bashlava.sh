@@ -297,7 +297,7 @@ function test { # User_
   # PRINT OPTION 1
   echo
   my_message="Check mdv:" && Print_Blue
-  _doc_name="test.md" App_Show_Docs
+  _doc_name="test.md" Show_Docs
 
   # PRINT OPTION 2
   # 'App_test_color' it bypassed as it does an 'exit 0'
@@ -332,7 +332,7 @@ function test { # User_
 function help { # User_
   Condition_Attr_3_Must_Be_Empty
 
-  _doc_name="help.md" App_Show_Docs
+  _doc_name="help.md" Show_Docs
 
   ### old code that could be useful in the future
   ### list tag #util> within the code
@@ -341,7 +341,11 @@ function help { # User_
 
 # TODO
 function show { # User_
-  echo "WIP 2022-05-03_10h43"
+  Show_All
+}
+
+function mdv { # User_
+  Print_mdv
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -376,10 +380,9 @@ function Prompt_YesNo_ci {
 }
 
 # TODO
-# this is an APP
-function Show_ { 
-  echo "call: version ..."
-  echo "call: App_List_All_Fct"
+function Show_All { 
+  Show_Version
+  echo "WIP"
 }
 
 function gitio { # User_
@@ -459,18 +462,15 @@ function Show_Release {
 }
 
 # TODO
-# this is not clean, but it works 'mdv' / 'App_Show_Docs'
+# this is not clean, but it works 'mdv' / 'Show_Docs'
   # we can't provide an abosolute path to the file because the Docker container can't the absolute path
   # I also DONT want to provide two arguments when using glow
   # I might simply stop using a docker container for this
   # but as a priciiple, I like to call a docker container
 
 
-function mdv { # User_
-  Print_mdv
-}
 
-function App_Show_Docs {
+function Show_Docs {
   # idempotent checkpoint
   _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
   _var_name="_doc_name" _is_it_empty=$(echo ${_doc_name}) && Condition_Vars_Must_Be_Not_Empty
@@ -957,7 +957,7 @@ main "$@"
 input_1=$1
 if [[ -z "$1" ]]; then
   echo "OK, user did not provide argument. Show options" > /dev/null 2>&1
-  _doc_name="welcome_to_bashlava.md" && clear && App_Show_Docs
+  _doc_name="welcome_to_bashlava.md" && clear && Show_Docs
 
   read user_input; echo;
   case ${user_input} in
