@@ -57,7 +57,7 @@ function case_a {
   case ${user_input} in
     1) my_message="Blue is a primary color." && Print_Blue;;
     2) echo "Red is a primary color.";;
-    3) my_message="Yellow is a primary color." && App_Yellow;;
+    3) my_message="Yellow is a primary color." && Print_Yellow;;
     4) my_message="Green is a secondary color." && Print_Green;;
     5) echo "Orange is a secondary color.";;
     *) echo "This color is not available. Please choose a different one.";; 
@@ -173,4 +173,10 @@ function lint {
   docker run -it --rm \
     -v $(pwd)/Dockerfile:/Dockerfile:ro \
     redcoolbeans/dockerlint
+}
+
+function { demo_set_var_if_empty
+  #Setting variable value (if unset)
+  echo ${country:-Greenland}
+  echo ${country:=Greenland}
 }

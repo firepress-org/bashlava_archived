@@ -12,5 +12,5 @@
 
 - `a`,`f` ..... show `files` and sourced
 - `b`,`fns` ... show files but not sourced
-- `c`,`af` .... show all functions
-- `q`,`q` ..... quit _(q or any key)_
+- `a` ......... show all functions
+- `q` ......... quit _(q or any key)_

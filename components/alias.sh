@@ -45,7 +45,7 @@ function 2 {
 function hash {
   git rev-parse HEAD && git rev-parse --short HEAD
 }
-function App_Yellow {
+function Print_Yellow {
   Print_Warning
 }
 ### capture common typos
@@ -56,5 +56,5 @@ function oo {
   App_invalid_cmd
 }
 function App_invalid_cmd {
-  my_message="Invalid command" && Print_Warning_Stop
+  export my_message="Invalid command" && Print_Warning_Stop
 }
