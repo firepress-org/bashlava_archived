@@ -196,7 +196,6 @@ function version {
   git add .
   git commit . -m "Update ${app_name} to version ${input_2}"
   git push && echo
-  sleep 1
   App_Show_Version
 
   echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && App_Green
@@ -213,9 +212,9 @@ function tag {
   Condition_Attr_2_Must_Be_Empty
 
   git tag ${app_version} && git push --tags && echo
-  App_Show_Version && sleep 1 && echo
+  App_Show_Version
 
-  my_message="Next, prepare release" App_Gray
+  echo && my_message="Next, prepare release" App_Gray
   my_message="To quit the release notes: type ':qa + enter'" App_Gray && echo
 
   gh release create && sleep 5
@@ -398,6 +397,8 @@ function App_short_url {
 
 function App_Show_Version {
   echo && my_message="Check versions:" && App_Blue
+
+  App_Load_Vars_Dockerfile
 
 ### version in dockerfile
   my_message="${app_version} < VERSION in Dockerfile" App_Gray
@@ -765,7 +766,7 @@ function App_Reset_Custom_path {
   fi
 }
 
-function App_Load_Vars {
+function App_Load_Vars_General {
 ### Default var & path. Customize if need. Usefull if you want
   # to have multiple instance of bashLaVa on your machine
   bashlava_executable="bashlava.sh"
@@ -830,7 +831,9 @@ function App_Load_Vars {
     date_day="$(date +%Y-%m-%d)"
   date_month="$(date +%Y-%m)-XX"
   date_year="$(date +%Y)-XX-XX"
+}
 
+function App_Load_Vars_Dockerfile {
 # Define vars from Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -863,7 +866,8 @@ function main() {
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-  App_Load_Vars
+  App_Load_Vars_General
+  App_Load_Vars_Dockerfile
   App_Check_Which_File_Exist
 
   if [[ -z "$2" ]]; then    #if empty
