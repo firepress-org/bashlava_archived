@@ -246,6 +246,10 @@ function squash { # User_
   echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " Print_Green
 }
 
+function log { # User_
+  git log --all --decorate --oneline --graph --pretty=oneline | head -n 10
+}
+
 function test { # User_
 # test our script & fct. Idempotent bash script
 
@@ -378,10 +382,6 @@ function App_test_color {
   Print_Warning
   Print_Gray
   Print_Fatal
-}
-
-function App_log {
-  git log --all --decorate --oneline --graph --pretty=oneline | head -n 10
 }
 
 function Prompt_YesNo_ci {

@@ -25,7 +25,7 @@ function oe {
   git checkout edge
 }
 function l {
-  App_log
+  log
 }
 function sq { 
   squash
