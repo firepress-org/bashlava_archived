@@ -76,7 +76,7 @@ function commit {
   git commit -m "${input_2}"
   git push
   # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 1) 'c' 2) 'pr' " App_Green
 }
 
 function pr {
@@ -92,11 +92,11 @@ function pr {
   gh pr view --web
   Prompt_YesNo_ci
 
-  echo && my_message="NEXT MOVE suggestion: 'ci' - 'mrg' (or any to move on)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='ci' 2='mrg' 9=cancel (or any key)" && App_Green
   read user_input;
   case ${user_input} in
-    ci) ci;;
-    mrg) mrg;;
+    1 | ci) ci;;
+    2 | mrg) mrg;;
     *) my_message="Cancelled" && App_Gray;;
   esac
 }
@@ -113,13 +113,13 @@ function mrg {
   Prompt_YesNo_ci
   App_Show_Version
 
-  echo && my_message="NEXT MOVE suggestion: (ci) (sv) (v) (t) (or any to move on)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='ci' 2='sv' 3='v' 4='t' 9=cancel (or any key)" && App_Green
   read user_input;
   case ${user_input} in
-    ci) ci;;
-    sv) sv;;
-    v) version;;
-    t) tag;;
+    1 | ci) ci;;
+    2 | sv) sv;;
+    3 | v) version;;
+    4 | t) tag;;
     *) my_message="Cancelled" && App_Gray;;
   esac
 }
@@ -139,10 +139,10 @@ function ci {
   # Follow status within the terminal
   gh run watch
 
-  echo && my_message="NEXT MOVE suggestion: 'mrg' (y/n)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='mrg' 9=cancel (y/n)" && App_Green
   read user_input;
   case ${user_input} in
-    y | mrg) mrg;;
+    1 | y | mrg) mrg;;
     *) my_message="Cancelled" && App_Gray;;
   esac
 }
@@ -150,7 +150,21 @@ function ci {
 function version {
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
   Condition_No_Commits_Must_Be_Pending
-  Condition_Attr_2_Must_Be_Provided
+
+### ensure the second attribute is not empty to continue
+  if [[ "${input_2}" == "not_set" ]]; then
+    echo && my_message="What is the version number (ex: 1.12.4)?" && App_Green
+    read ${input_2};
+    echo "test me input_2 = ${input_2}"
+    sleep 9
+
+  elif [[ "${input_2}" != "not_set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: Condition_Attr_2_Must_Be_Provided" && App_Fatal
+  fi
+
+  #Condition_Attr_2_Must_Be_Provided
   Condition_Version_Must_Be_Valid
 
   _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && Condition_Vars_Must_Be_Not_Empty
@@ -179,7 +193,7 @@ function version {
   App_Show_Version && sleep 1
   log
 
-  echo && my_message="NEXT MOVE suggestion: 'pr', 't' (or any to move on)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && App_Green
   read user_input;
   case ${user_input} in
     pr) pr;;
@@ -202,10 +216,10 @@ function tag {
   App_Show_Version
   App_Show_Release
 
-  echo && my_message="NEXT MOVE suggestion: start over from edge 'e' ? (y/n)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 'e' (type /e /y /1) 9=cancel (or any key)" && App_Green
   read user_input;
   case ${user_input} in
-    y | e) edge;;
+    1 | y | e) edge;;
     *) my_message="Abord" && App_Gray;;
   esac
 }
