@@ -53,7 +53,7 @@ function case_a {
   my_message="3 - Yellow" && Print_Warning
   my_message="4 - Green" && Print_Green
   echo "5 - Orange"
-  read user_input;
+  read -r user_input;
   case ${user_input} in
     1) my_message="Blue is a primary color." && Print_Blue;;
     2) echo "Red is a primary color.";;
@@ -68,7 +68,7 @@ function case_a {
 function case_b {
   shopt -s nocasematch
   echo "Enter the name of a month."
-  read month
+  read -r month
   case ${month} in
     February | Feb)
       echo "There are 28/29 days in ${month}.";;
@@ -98,7 +98,7 @@ function case_d {
   echo "[J]ames Gardner"
   echo "[S]arah Snyder"
   echo "[R]ose Armstrong"
-  read person
+  read -r person
   case "$person" in
     "C" | "c" ) echo "Chris Ramsey"
   echo "cramsey@email.com"
@@ -119,7 +119,7 @@ function case_d {
 # Read: Asking input from the User
 function case_ex1 {
   echo "What is your name?"
-  read name
+  read -r name
   echo "Your name is ${name}!"
 }
 
@@ -135,7 +135,7 @@ function case_ex2 {
 # Setting the value when a variable isn't set
 function case_ex3 {
   echo "What is your name?"
-  read name
+  read -r name
   echo "Your name is ${name}!"
 }
 
@@ -163,12 +163,12 @@ function rlwrap_example {
 
 function lint {
   docker run -it --rm \
-    -v $(pwd)/Dockerfile:/Dockerfile:ro \
+    -v "$(pwd)"/Dockerfile:/Dockerfile:ro \
     redcoolbeans/dockerlint
 }
 
-function { demo_set_var_if_empty
-  #Setting variable value (if unset)
+function demo_set_var_if_empty {
+  # Setting variable value (if unset)
   echo ${country:-Greenland}
   echo ${country:=Greenland}
 }

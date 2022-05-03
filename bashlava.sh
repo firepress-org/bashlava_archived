@@ -28,9 +28,8 @@
 # glitch, release function is not stable when we tag. Sometimes it show the older release
 
 # TODO
-# create ci for using shellcheckrc on the bash scripts
-
-
+# create ci for using shellcheck
+# define which warning to ignore
 
 # TODO
 # manage private vars https://github.com/firepress-org/bashlava/issues/83
@@ -107,7 +106,7 @@ function pr { # User_
 
   echo && my_message="NEXT MOVE suggestion: 1='ci' 2='mrg' 9=cancel (or any key)" && Print_Green
   input_2="not_set"   #reset input_2
-  read user_input;
+  read -r user_input;
   case ${user_input} in
     1 | ci) ci;;
     2 | mrg) mrg;;
@@ -129,7 +128,7 @@ function mrg { # User_
 
   echo && my_message="NEXT MOVE suggestion: 1='ci' 2='sv' 3='v' 4='t' 9=cancel (or any key)" && Print_Green
   input_2="not_set"   #reset input_2
-  read user_input;
+  read -r user_input;
   case ${user_input} in
     1 | ci) ci;;
     2 | sv) sv;;
@@ -156,7 +155,7 @@ function ci { # User_
 
   echo && my_message="NEXT MOVE suggestion: 1='mrg' 9=cancel (y/n)" && Print_Green
   input_2="not_set"   #reset input_2
-  read user_input;
+  read -r user_input;
   case ${user_input} in
     1 | y | mrg) mrg;;
     *) my_message="Cancelled" && Print_Gray;;
@@ -171,12 +170,12 @@ function version { # User_
   if [[ "${input_2}" == "not_set" ]]; then
     # The user did not provide a version
     echo && my_message="What is the version number (ex: 1.12.4)?" && Print_Green
-    read user_input;
+    read -r user_input;
     input_2="${user_input}"
     #
     echo && my_message="You confirm version: ${user_input} is right? (y/n)" && Print_Green
     # warning: dont reset input_2
-    read user_input;
+    read -r user_input;
     case ${user_input} in
       1 | y) echo "Good, lets continue" > /dev/null 2>&1;;
       *) my_message="Cancelled" && Print_Gray;;
@@ -200,7 +199,7 @@ function version { # User_
 
   echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && Print_Green
   input_2="not_set"   #reset input_2
-  read user_input;
+  read -r user_input;
   case ${user_input} in
     1 | pr) pr;;
     2 | t) tag;;
@@ -224,7 +223,7 @@ function tag { # User_
 
   echo && my_message="NEXT MOVE suggestion: 'e' (y/n)" && Print_Green
   input_2="not_set"   #reset input_2
-  read user_input;
+  read -r user_input;
   case ${user_input} in
     1 | y | e) edge;;
     *) my_message="Abord" && Print_Gray;;
@@ -358,7 +357,7 @@ function gitio { # User_
 ### PROMPT CONFIRMATION
   echo
   my_message="Do you want to continue? (y/n)" && Print_Gray
-  read user_input;
+  read -r user_input;
   case ${user_input} in
     y | Y) sub_short_url;;
     *) my_message="Operation cancelled" && Print_Fatal;;
@@ -393,7 +392,7 @@ function App_log {
 function Prompt_YesNo_ci {
   # called by fct like: pr, mrg
   echo && my_message="Want to see 'ci' status? (y/n)" && Print_Blue
-  read user_input;
+  read -r user_input;
   case ${user_input} in
     y | Y) ci;;
     *) my_message="Abord 'ci' status" && Print_Green;;
@@ -951,7 +950,7 @@ if [[ -z "$1" ]]; then
   echo "OK, user did not provide argument. Show options" > /dev/null 2>&1
   _doc_name="welcome_to_bashlava.md" && clear && Show_Docs
 
-  read user_input; echo;
+  read -r user_input; echo;
   case ${user_input} in
     # Dont use the shortcut 't' here! Its used for fct 'tag'
     1) clear && test;;
