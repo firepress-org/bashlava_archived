@@ -151,20 +151,26 @@ function version {
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
   Condition_No_Commits_Must_Be_Pending
 
-### ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not_set" ]]; then
+    # The user did not provide a version
     echo && my_message="What is the version number (ex: 1.12.4)?" && App_Green
-    read ${input_2};
-    echo "test me input_2 = ${input_2}"
-    sleep 9
-
+    read user_input;
+    input_2="${user_input}"
+    App_Show_Version
+    #
+    echo && my_message="You confirm version: ${user_input} is right? (y/n)" && App_Green
+    read user_input;
+    case ${user_input} in
+      y) echo "Good, lets continue" > /dev/null 2>&1;;
+      *) my_message="Cancelled" && App_Gray;;
+    esac
   elif [[ "${input_2}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="FATAL: Condition_Attr_2_Must_Be_Provided" && App_Fatal
   fi
 
-  #Condition_Attr_2_Must_Be_Provided
+  Condition_Attr_2_Must_Be_Provided
   Condition_Version_Must_Be_Valid
 
   _var_name="version_with_rc" _is_it_empty=$(echo ${version_with_rc}) && Condition_Vars_Must_Be_Not_Empty
@@ -183,15 +189,15 @@ function version {
     my_message="FATAL: version" && App_Fatal
   fi
 
-### Apply updates
+### Apply updates in Dockerfile
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${version_trim}\"/" Dockerfile
   sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
 
   git add .
   git commit . -m "Update ${app_name} to version ${input_2}"
   git push && echo
-  App_Show_Version && sleep 1
-  log
+  sleep 1
+  App_Show_Version
 
   echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && App_Green
   read user_input;
