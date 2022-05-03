@@ -98,7 +98,7 @@ function pr { # User_
   Condition_No_Commits_Pending
 
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
-  _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_pr_title" _is_it_empty="${_pr_title}" && Condition_Vars_Must_Be_Not_Empty
   
   gh pr create --fill --title "${_pr_title}" --base "${default_branch}"
   gh pr view --web
@@ -146,7 +146,7 @@ function ci { # User_
 ### show latest build and open webpage on Github Actions
   #gh run list && sleep 1
   _run_id=$(gh run list | head -1 | awk '{print $11}')
-  _var_name="_run_id" _is_it_empty=$(echo ${_run_id}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_run_id" _is_it_empty="${_run_id}" && Condition_Vars_Must_Be_Not_Empty
 ### Opening the run id cuase issues. Lets stick to /actions/
   open https://github.com/${github_user}/${app_name}/actions/
 
@@ -417,7 +417,7 @@ function Show_Version {
   if [ $(git tag -l "$app_version") ]; then
     echo "Good, a tag is present" > /dev/null 2>&1
     latest_tag="$(git describe --tags --abbrev=0)"
-    _var_name="latest_tag" _is_it_empty=$(echo ${latest_tag}) && Condition_Vars_Must_Be_Not_Empty
+    _var_name="latest_tag" _is_it_empty="${latest_tag}" && Condition_Vars_Must_Be_Not_Empty
   else
     echo "Logic: new projet don't have any tags. So we must expect that it can be empty" > /dev/null 2>&1
     latest_tag="none "
@@ -433,7 +433,7 @@ function Show_Version {
     echo "Logic: new projet don't have any release. So we must expect that it can be empty" > /dev/null 2>&1
   elif [[ ! -z "$release_latest" ]]; then
     echo "Good, a release is present" > /dev/null 2>&1
-    _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && Condition_Vars_Must_Be_Not_Empty
+    _var_name="release_latest" _is_it_empty="${release_latest}" && Condition_Vars_Must_Be_Not_Empty
   else
     my_message="FATAL: Show_Version | release_latest " && Print_Fatal
   fi
@@ -448,7 +448,7 @@ function Show_Version {
 function Show_Release {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
-  _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="release_latest" _is_it_empty="${release_latest}" && Condition_Vars_Must_Be_Not_Empty
   open "https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}"
 }
 
@@ -463,8 +463,8 @@ function Show_Release {
 
 function Show_Docs {
   # idempotent checkpoint
-  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="_doc_name" _is_it_empty=$(echo ${_doc_name}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="docker_img_glow" _is_it_empty="${docker_img_glow}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_doc_name" _is_it_empty="${_doc_name}" && Condition_Vars_Must_Be_Not_Empty
 
   _present_path_is=$(pwd)
   _file_is="${_doc_name}" _file_path_is="${_path_docs}/${_doc_name}" && Condition_File_Must_Be_Present
@@ -479,8 +479,8 @@ function Print_mdv {
   Condition_Attr_2_Must_Be_Provided
 
   # markdown viewer (mdv)
-  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="input_2" _is_it_empty=$(echo ${input_2}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="docker_img_glow" _is_it_empty="${docker_img_glow}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="input_2" _is_it_empty="${input_2}" && Condition_Vars_Must_Be_Not_Empty
   my_message="Info: 'mdv' can only read markdown files at the same path level" Print_Green
   sleep 0.5
 
@@ -491,22 +491,22 @@ function Print_mdv {
 }
 
 function Print_Banner {
-  _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="docker_img_figlet" _is_it_empty="${docker_img_figlet}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty="${my_message}" && Condition_Vars_Must_Be_Not_Empty
   docker run --rm ${docker_img_figlet} ${my_message}
 }
 
 # Define colors / https://www.shellhacks.com/bash-colors/
 function Print_Gray {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty="${my_message}" && Condition_Vars_Must_Be_Not_Empty
   echo -e "\e[1;37m${my_message}\e[0m"
 }
 function Print_Green {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty="${my_message}" && Condition_Vars_Must_Be_Not_Empty
   echo -e "✨ \e[1;32m${my_message}\e[0m"
 }
 function Print_Blue {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty="${my_message}" && Condition_Vars_Must_Be_Not_Empty
   echo -e "👋 \e[1;34m${my_message}\e[0m"
 }
 
@@ -514,19 +514,19 @@ function Print_Blue {
   # Fatal is usually reverse for unexpected erros within bashlava
   # Warning are expected - sometimes we want to stop the function, sometimes we want to continue
 function Print_Warning {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty="${my_message}" && Condition_Vars_Must_Be_Not_Empty
   echo -e "🚨 \e[1;33m${my_message}\e[0m"
 }
 function Print_Warning_Stop {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty="${my_message}" && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;33m${my_message}\e[0m 🚨" && exit 1
 }
 function Print_Red {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty="${my_message}" && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;31m${my_message}\e[0m 🚨"
 }
 function Print_Fatal {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty="${my_message}" && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;31m${my_message}\e[0m 🚨" && exit 1
 }
 
@@ -868,15 +868,15 @@ function Core_Load_Vars_Dockerfile {
   _url_to_check="https://github.com/${github_user}/${app_name}"
 
 # idempotent checkpoints
-  _var_name="app_name" _is_it_empty=$(echo ${app_name}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="app_version" _is_it_empty=$(echo ${app_version}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="github_user" _is_it_empty=$(echo ${github_user}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="default_branch" _is_it_empty=$(echo ${default_branch}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="github_org" _is_it_empty=$(echo ${github_org}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="dockerhub_user" _is_it_empty=$(echo ${dockerhub_user}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="github_registry" _is_it_empty=$(echo ${github_registry}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="_url_to_release" _is_it_empty=$(echo ${_url_to_release}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="_url_to_check" _is_it_empty=$(echo ${_url_to_check}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="app_name" _is_it_empty="${app_name}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="app_version" _is_it_empty="${app_version}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_user" _is_it_empty="${github_user}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="default_branch" _is_it_empty="${default_branch}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_org" _is_it_empty="${github_org}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="dockerhub_user" _is_it_empty="${dockerhub_user}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="github_registry" _is_it_empty="${github_registry}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_url_to_release" _is_it_empty="${_url_to_release}" && Condition_Vars_Must_Be_Not_Empty
+  _var_name="_url_to_check" _is_it_empty="${_url_to_check}" && Condition_Vars_Must_Be_Not_Empty
 }
 
 ### Entrypoint
