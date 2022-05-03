@@ -10,7 +10,7 @@ function idempotent_file_exist {
     source "${_path_components}/${_file_is}"
   
   elif [[ ! -f "${_path_components}/${_file_is}" ]]; then
-    my_message="Warning: no file: ${_file_path_is}" && App_Warning_Stop
+    my_message="Warning: no file: ${_file_path_is}" && Print_Warning_Stop
 
   else
     my_message="FATAL: idempotent_file_exist | ${_file_is}" && App_Fatal
@@ -24,7 +24,7 @@ function idempotent_empty_var {
     my_message="SOME_MESSAGE_HERE" && Print_Blue
 
   elif [[ -z "${run_id}" ]]; then    #if empty
-    my_message="Warning: variable is empty" && App_Warning_Stop
+    my_message="Warning: variable is empty" && Print_Warning_Stop
 
   else
     my_message="FATAL: idempotent_empty_var | ${run_id}" && App_Fatal
@@ -38,7 +38,7 @@ function idempotent_compare_var {
     my_message="SOME_MESSAGE_HERE" && Print_Blue
 
   elif [[ "${input_2}" == "not_set" ]]; then
-    my_message="Warning: variable is empty" && App_Warning_Stop
+    my_message="Warning: variable is empty" && Print_Warning_Stop
 
   else
     my_message="FATAL: idempotent_compare_var | ${input_2}" && App_Fatal
@@ -50,7 +50,7 @@ function case_a {
   echo && echo "Which color do you like best?"
   my_message="1 - Blue" && Print_Blue
   echo "2 - Red"
-  my_message="3 - Yellow" && App_Warning
+  my_message="3 - Yellow" && Print_Warning
   my_message="4 - Green" && Print_Green
   echo "5 - Orange"
   read user_input;
