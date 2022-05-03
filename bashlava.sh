@@ -524,6 +524,10 @@ function Print_Warning_Stop {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;33m${my_message}\e[0m 🚨" && exit 1
 }
+function Print_Red {
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  echo -e "   🚨 \e[1;31m${my_message}\e[0m 🚨"
+}
 function Print_Fatal {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;31m${my_message}\e[0m 🚨" && exit 1
@@ -793,7 +797,7 @@ function App_Reset_Custom_path {
   fi
 }
 
-function App_Load_Vars_General {
+function Core_Load_Vars_General {
 ### Default var & path. Customize if need. Usefull if you want
   # to have multiple instance of bashLaVa on your machine
   bashlava_executable="bashlava.sh"
@@ -884,7 +888,7 @@ function main() {
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-  App_Load_Vars_General
+  Core_Load_Vars_General
   App_Load_Vars_Dockerfile
   App_Check_Which_File_Exist
 
