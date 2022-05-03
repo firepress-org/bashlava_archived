@@ -31,6 +31,8 @@ function App_List_All_Fct {
   my_message="Core" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Core_" | awk '{print $2}')" && Print_Gray && echo
 
+### 
+
   my_message="sidecars" && Print_Blue && echo
   my_message="$(cat ${_path_components}/sidecars.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
 
