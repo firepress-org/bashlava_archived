@@ -5,7 +5,7 @@ function App_List_All_Fct {
   # it also helps me to see all functions at high level
   # useful to debug
 
-  App_Check_Which_File_Exist
+  Core_Check_Which_File_Exist
   echo
 
   # code optimization 0o0o CASE per function's category

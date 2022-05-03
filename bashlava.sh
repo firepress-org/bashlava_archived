@@ -278,7 +278,7 @@ function test {
 
   echo
   my_message="Check files and directories:" Print_Blue
-  App_Check_Which_File_Exist
+  Core_Check_Which_File_Exist
   my_message="All good!" Print_Gray
 
   echo
@@ -651,7 +651,7 @@ function Condition_Apps_Must_Be_Installed {
   my_message="gh cli is installed" && Print_Gray
 }
 
-function App_Check_Which_File_Exist {
+function Core_Check_Which_File_Exist {
 
 ### List markdown files under /docs/*
   arr=( "welcome_to_bashlava" "help" "test" "debug_upstream" )
@@ -890,7 +890,7 @@ function main() {
 
   Core_Load_Vars_General
   Core_Load_Vars_Dockerfile
-  App_Check_Which_File_Exist
+  Core_Check_Which_File_Exist
 
   if [[ -z "$2" ]]; then    #if empty
     input_2="not_set"
