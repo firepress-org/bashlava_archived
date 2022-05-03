@@ -4,8 +4,6 @@
 
 # There are 0o0o flags TODO in the code
 
-
-
 # TODO
 # better management core vars
 # rename DEFAULT_BRANCH to MAIN_BRANCH_NAME="master"
@@ -22,14 +20,11 @@
 
 # Core_Reset_Custom_Path << Core_Reset_Bashlava_Path
 
-# 
-
 # TODO
 # glitch, release function is not stable when we tag. Sometimes it show the older release
 
 # TODO
 # create ci for using shellcheck
-# define which warning to ignore
 
 # TODO
 # manage private vars https://github.com/firepress-org/bashlava/issues/83
