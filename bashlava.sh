@@ -2,7 +2,12 @@
 
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# There are 0o0o flags TODO in the code /
+# There are 20 flags TODO in the code /
+
+# the idea was to create App_List_All_Fct
+# it had many impacts on the code and I renamed a lot of fct
+# one of the ripple effect is that we now have a fct show().
+# show() is work in progress.
 
 # TODO
 # better management core vars
