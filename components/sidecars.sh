@@ -10,6 +10,9 @@ function App_List_All_Fct {
 
   # code optimization 0o0o CASE per function's category
 
+  my_message="User" && Print_Blue && echo
+  my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "{ # User_" | awk '{print $2}')" && Print_Gray && echo
+
   my_message="Condition" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Condition_" | awk '{print $2}')" && Print_Gray && echo
 
