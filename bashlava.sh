@@ -414,7 +414,7 @@ function Show_Version {
   my_message="${app_version} < VERSION in Dockerfile" Print_Gray
 
 ### tag
-  if [ $(git tag -l "$app_version") ]; then
+  if [[ -n $(git tag -l "$app_version") ]]; then
     echo "Good, a tag is present" > /dev/null 2>&1
     latest_tag="$(git describe --tags --abbrev=0)"
     _var_name="latest_tag" _is_it_empty="${latest_tag}" && Condition_Vars_Must_Be_Not_Empty
@@ -468,7 +468,7 @@ function Show_Docs {
   _file_is="${_doc_name}" _file_path_is="${_path_docs}/${_doc_name}" && Condition_File_Must_Be_Present
 
   cd ${_path_docs} || { echo "FATAL: Show_Docs / cd"; exit 1; }
-  docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 110 ${_doc_name}
+  docker run --rm -it -v "$(pwd)":/sandbox -w /sandbox ${docker_img_glow} glow -w 110 ${_doc_name}
   cd ${_present_path_is} || { echo "FATAL: Show_Docs / cd"; exit 1; }
 }
 
@@ -485,7 +485,7 @@ function Print_mdv {
   _present_path_is=$(pwd)
   _file_is="${input_2}" _file_path_is="${_present_path_is}/${input_2}" && Condition_File_Must_Be_Present
 
-  docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
+  docker run --rm -it -v "$(pwd)":/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
 }
 
 function Print_Banner {
