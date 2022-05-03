@@ -89,7 +89,7 @@ function edge {
   git push --set-upstream origin edge -f
   App_Show_Version
   # UX fun
-  my_message="Done! checkout edge from ${default_branch}" App_Gray
+  my_message="Done! checkout edge from ${default_branch}" Print_Gray
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
 }
 
@@ -121,7 +121,7 @@ function pr {
   case ${user_input} in
     1 | ci) ci;;
     2 | mrg) mrg;;
-    *) my_message="Cancelled" && App_Gray;;
+    *) my_message="Cancelled" && Print_Gray;;
   esac
 
   #see debug_upstream.md
@@ -145,7 +145,7 @@ function mrg {
     2 | sv) sv;;
     3 | v) version;;
     4 | t) tag;;
-    *) my_message="Cancelled" && App_Gray;;
+    *) my_message="Cancelled" && Print_Gray;;
   esac
 }
 
@@ -169,7 +169,7 @@ function ci {
   read user_input;
   case ${user_input} in
     1 | y | mrg) mrg;;
-    *) my_message="Cancelled" && App_Gray;;
+    *) my_message="Cancelled" && Print_Gray;;
   esac
 }
 
@@ -189,7 +189,7 @@ function version {
     read user_input;
     case ${user_input} in
       1 | y) echo "Good, lets continue" > /dev/null 2>&1;;
-      *) my_message="Cancelled" && App_Gray;;
+      *) my_message="Cancelled" && Print_Gray;;
     esac
   elif [[ "${input_2}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
@@ -214,7 +214,7 @@ function version {
   case ${user_input} in
     1 | pr) pr;;
     2 | t) tag;;
-    *) my_message="Cancelled" && App_Gray;;
+    *) my_message="Cancelled" && Print_Gray;;
   esac
 }
 
@@ -225,8 +225,8 @@ function tag {
   git tag ${app_version} && git push --tags && echo
   App_Show_Version
 
-  echo && my_message="Next, prepare release" App_Gray
-  my_message="To quit the release notes: type ':qa + enter'" App_Gray && echo
+  echo && my_message="Next, prepare release" Print_Gray
+  my_message="To quit the release notes: type ':qa + enter'" Print_Gray && echo
 
   gh release create && sleep 5
   App_Show_Version
@@ -237,7 +237,7 @@ function tag {
   read user_input;
   case ${user_input} in
     1 | y | e) edge;;
-    *) my_message="Abord" && App_Gray;;
+    *) my_message="Abord" && Print_Gray;;
   esac
 }
 
@@ -267,10 +267,10 @@ function test {
 
   echo
   my_message="Check attributes:" App_Blue
-  my_message="\$1 value is: ${input_1}" App_Gray
-  my_message="\$2 value is: ${input_2}" App_Gray
-  my_message="\$3 value is: ${input_3}" App_Gray
-  my_message="\$4 value is: ${input_4}" App_Gray
+  my_message="\$1 value is: ${input_1}" Print_Gray
+  my_message="\$2 value is: ${input_2}" Print_Gray
+  my_message="\$3 value is: ${input_3}" Print_Gray
+  my_message="\$4 value is: ${input_4}" Print_Gray
 
   echo
   my_message="Check apps required:" App_Blue
@@ -279,7 +279,7 @@ function test {
   echo
   my_message="Check files and directories:" App_Blue
   App_Check_Which_File_Exist
-  my_message="All good!" App_Gray
+  my_message="All good!" Print_Gray
 
   echo
   my_message="Check array from directory components:" App_Blue
@@ -288,7 +288,7 @@ function test {
   echo
   my_message="Check OS" App_Blue
   if [[ $(uname) == "Darwin" ]]; then
-    my_message="Running on a Mac (Darwin)" App_Gray
+    my_message="Running on a Mac (Darwin)" Print_Gray
   elif [[ $(uname) != "Darwin" ]]; then
     my_message="bashLaVa is not tested on other machine than Mac OS (Darmin)." && App_Warning
   else
@@ -307,7 +307,7 @@ function test {
   App_Green
   #App_Blue
   App_Warning
-  App_Gray
+  Print_Gray
   #App_Fatal
 
   # PRINT OPTION 3
@@ -316,15 +316,15 @@ function test {
   my_message="bashLaVa test" && App_Banner
 
   my_message="Check configs:" App_Blue
-  my_message="${app_name} < app_name" App_Gray
-  #my_message="${app_version} < app_version" App_Gray
-  my_message="${github_user} < github_user" App_Gray
-  my_message="${default_branch} < default_branch" App_Gray
-  my_message="${github_org} < github_org" App_Gray
-  my_message="${dockerhub_user} < dockerhub_user" App_Gray
-  my_message="${github_registry} < github_registry" App_Gray
-  my_message="${bashlava_executable} < bashlava_executable" App_Gray
-  my_message="${_path_user} < _path_user" App_Gray
+  my_message="${app_name} < app_name" Print_Gray
+  #my_message="${app_version} < app_version" Print_Gray
+  my_message="${github_user} < github_user" Print_Gray
+  my_message="${default_branch} < default_branch" Print_Gray
+  my_message="${github_org} < github_org" Print_Gray
+  my_message="${dockerhub_user} < dockerhub_user" Print_Gray
+  my_message="${github_registry} < github_registry" Print_Gray
+  my_message="${bashlava_executable} < bashlava_executable" Print_Gray
+  my_message="${_path_user} < _path_user" Print_Gray
 
   input_2="not_set"
   App_Show_Version
@@ -335,7 +335,7 @@ function test_color {
   App_Green
   App_Blue
   App_Warning
-  App_Gray
+  Print_Gray
   App_Fatal
 }
 
@@ -396,13 +396,13 @@ function App_short_url {
   }
 
   echo
-  my_message="URL ........ : https://git.io/${app_name}" && App_Gray
-  my_message="will point to: https://github.com/${github_user}/${app_name}" && App_Gray
+  my_message="URL ........ : https://git.io/${app_name}" && Print_Gray
+  my_message="will point to: https://github.com/${github_user}/${app_name}" && Print_Gray
   #output example: https://git.io/bashlava
 
 ### PROMPT CONFIRMATION
   echo
-  my_message="Do you want to continue? (y/n)" && App_Gray
+  my_message="Do you want to continue? (y/n)" && Print_Gray
   read user_input;
   case ${user_input} in
     y | Y) sub_short_url;;
@@ -416,7 +416,7 @@ function App_Show_Version {
   App_Load_Vars_Dockerfile
 
 ### version in dockerfile
-  my_message="${app_version} < VERSION in Dockerfile" App_Gray
+  my_message="${app_version} < VERSION in Dockerfile" Print_Gray
 
 ### tag
   if [ $(git tag -l "$app_version") ]; then
@@ -427,7 +427,7 @@ function App_Show_Version {
     echo "Logic: new projet don't have any tags. So we must expect that it can be empty" > /dev/null 2>&1
     latest_tag="none "
   fi
-  my_message="${latest_tag} < TAG     in mainbranch" App_Gray
+  my_message="${latest_tag} < TAG     in mainbranch" Print_Gray
 
 ### release
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
@@ -443,7 +443,7 @@ function App_Show_Version {
     my_message="FATAL: App_Show_Version | release_latest " && App_Fatal
   fi
 
-  my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Gray
+  my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && Print_Gray
   echo
 }
 
@@ -500,7 +500,7 @@ function App_Show_Docs {
 #	"Condition_", "App_", List_ alias
 
 # Define colors / https://www.shellhacks.com/bash-colors/
-function App_Gray {
+function Print_Gray {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "\e[1;37m${my_message}\e[0m"
 }
@@ -634,13 +634,13 @@ function Condition_Apps_Must_Be_Installed {
   _compare_me=$(docker version | grep -c "Server: Docker Desktop")
   _compare_you="1" _fct_is="Condition_Apps_Must_Be_Installed"
   Condition_Vars_Must_Be_Equal
-  my_message="Docker is installed" && App_Gray
+  my_message="Docker is installed" && Print_Gray
 
 ### gh cli installed
   _compare_me=$(gh --version | grep -c "https://github.com/cli/cli/releases/tag/v")
   _compare_you="1" _fct_is="Condition_Apps_Must_Be_Installed"
   Condition_Vars_Must_Be_Equal
-  my_message="gh cli is installed" && App_Gray
+  my_message="gh cli is installed" && Print_Gray
 }
 
 function App_Check_Which_File_Exist {
