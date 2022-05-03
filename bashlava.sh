@@ -778,14 +778,14 @@ function Core_Reset_Bashlava_Path {
 # It finds and configures it automatically. This way we don't have to hard code it :)
 # Don't confuse it with the symlink which is usually at "/usr/local/bin/bashlava.sh"
 # We write bashlava_path on disk for speed optimization and to avoid running this request all the time.
-  if [ ! -f ${_path_user}/bashlava_path ]; then
-    readlink $(which "${bashlava_executable}") > "${_path_user}/bashlava_path_tmp"
+  if [[ ! -f ${_path_user}/bashlava_path ]]; then
+    readlink "$(which "${bashlava_executable}")" > "${_path_user}/bashlava_path_tmp"
     rm ${_path_user}/bashlava_path
 # this will strip "/bashlava.sh" from the absolute path
     cat "${_path_user}/bashlava_path_tmp" | sed "s/\/${bashlava_executable}//g" > "${_path_user}/bashlava_path"
 # clean up
     rm ${_path_user}/bashlava_path_tmp
-  elif [ -f ${_path_user}/bashlava_path ]; then
+  elif [[ -f ${_path_user}/bashlava_path ]]; then
       echo "Path is valid. Lets continue." > /dev/null 2>&1
   else
     my_message="FATAL: Core_Reset_Bashlava_Path | ${dir_path_is}" && Print_Fatal
