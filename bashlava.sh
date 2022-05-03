@@ -2,20 +2,45 @@
 
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# There are 17 flags TODO in the code
+# There are 0o0o flags TODO in the code
 
 # TODO
-# when you code a you dont know by heart which condition to call
-# creatge new function that list all function, helpfull 
-#	"Condition_"
-#	"App_"
-#	alias
-
-# TODO
-# release function is not stable when we tag. Sometimes it show the older release
+# fct: show (CASE option)
+  # Show => functions / Show_All_Fct
+  # Show => files that are tracked  and source
+  # Show => files that are tracked but not source
+  # Show => version (Dockerfile, Tag, Release)
+  # Show => tag
+  # Show => release
+  # Show => help
+  # Show => test
 
 # TODO
 # better management core vars
+# rename DEFAULT_BRANCH to MAIN_BRANCH_NAME="master"
+# file to check VS file to source
+# logical flags to manage under /private/*
+# source "${_path_components}/private/
+# Need to check if files exist
+
+# TODO
+# dummy to create a dummy commit as test quickly the whole workflow
+
+# TODO
+# rename color Print_Green << App_Green
+
+# Core_Reset_Custom_Path << App_Reset_Custom_path
+
+# rename App with capital letters like App_glow to App_Glow
+# 
+
+# TODO
+# glitch, release function is not stable when we tag. Sometimes it show the older release
+
+# TODO
+# create ci for using shellcheckrc on the bash scripts
+
+
 
 # TODO
 # manage private vars https://github.com/firepress-org/bashlava/issues/83
@@ -79,7 +104,6 @@ function commit {
 }
 
 function pr {
-### see pr_upstream_issues.md to debug merging
   Condition_Branch_Must_Be_Edge
   Condition_Attr_2_Must_Be_Empty
   Condition_No_Commits_Must_Be_Pending
@@ -99,6 +123,8 @@ function pr {
     2 | mrg) mrg;;
     *) my_message="Cancelled" && App_Gray;;
   esac
+
+  #see debug_upstream.md
 }
 
 function mrg {
@@ -106,8 +132,6 @@ function mrg {
   Condition_Branch_Must_Be_Edge
   Condition_No_Commits_Must_Be_Pending
   Condition_Attr_2_Must_Be_Empty
-
-  _doc_name="mrg_info.md" App_Show_Docs
 
   gh pr merge
   Prompt_YesNo_ci
@@ -300,7 +324,7 @@ function test {
   my_message="${dockerhub_user} < dockerhub_user" App_Gray
   my_message="${github_registry} < github_registry" App_Gray
   my_message="${bashlava_executable} < bashlava_executable" App_Gray
-  my_message="${my_path} < my_path" App_Gray
+  my_message="${_path_user} < _path_user" App_Gray
 
   input_2="not_set"
   App_Show_Version
@@ -318,17 +342,11 @@ function test_color {
 function help {
   Condition_Attr_3_Must_Be_Empty
 
-  _doc_name="dev_workflow.md" App_Show_Docs
-  _doc_name="release_workflow.md" App_Show_Docs
-  _doc_name="more_commands.md" App_Show_Docs
+  _doc_name="help.md" App_Show_Docs
 
   ### old code that could be useful in the future
   ### list tag #util> within the code
-  # cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
-}
-
-function status {
-  git diff --color-words && git status -s
+  # cat ${_path_user}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -350,6 +368,16 @@ function Prompt_YesNo_ci {
   case ${user_input} in
     y | Y) ci;;
     *) my_message="Abord 'ci' status" && App_Green;;
+  esac
+}
+
+# TODO
+function Show_ {
+  echo && my_message="List stuff to show here (y/n)" && App_Blue
+  read user_input;
+  case ${user_input} in
+    y | Y) echo "wip";;
+    *) my_message="Abord" && App_Green;;
   esac
 }
 
@@ -435,13 +463,12 @@ function App_Banner {
   docker run --rm ${docker_img_figlet} ${my_message}
 }
 
-### TODO
+# TODO
 # this is not clean, but it works 'App_glow' / 'App_Show_Docs'
-# we can't provide an abosolute path to the file because the Docker container can't the absolute path
-# I also DONT want to provide two arguments when using glow
-# I might simply stop using a docker container for this
-# but as a priciiple, I like to call a docker container
-
+  # we can't provide an abosolute path to the file because the Docker container can't the absolute path
+  # I also DONT want to provide two arguments when using glow
+  # I might simply stop using a docker container for this
+  # but as a priciiple, I like to call a docker container
 function App_glow {
   # markdown viewer (mdv)
   _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
@@ -461,14 +488,22 @@ function App_Show_Docs {
   _var_name="_doc_name" _is_it_empty=$(echo ${_doc_name}) && Condition_Vars_Must_Be_Not_Empty
 
   _present_path_is=$(pwd)
-  _file_is="${_doc_name}" _file_path_is="${_docs_path}/${_doc_name}" && Condition_File_Must_Be_Present
+  _file_is="${_doc_name}" _file_path_is="${_path_docs}/${_doc_name}" && Condition_File_Must_Be_Present
 
-  cd ${_docs_path}
+  cd ${_path_docs}
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 110 ${_doc_name}
   cd ${_present_path_is}
 }
 
+# when you code a fct, often you dont know by heart condition name
+# will be part of help "advanced"
+#	"Condition_", "App_", List_ alias
+
 # Define colors / https://www.shellhacks.com/bash-colors/
+function App_Gray {
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  echo -e "\e[1;37m${my_message}\e[0m"
+}
 function App_Green {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "✨ \e[1;32m${my_message}\e[0m"
@@ -480,10 +515,6 @@ function App_Blue {
 function App_Warning {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "🚨 \e[1;33m${my_message}\e[0m"
-}
-function App_Gray {
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
-  echo -e "\e[1;37m${my_message}\e[0m"
 }
 function App_Warning_Stop {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
@@ -614,37 +645,43 @@ function Condition_Apps_Must_Be_Installed {
 
 function App_Check_Which_File_Exist {
 
-### List markdown files under /docs
-  arr=( "welcome_to_bashlava" "dev_workflow" "more_commands" "mrg_info" "pr_upstream_issues" "release_workflow" "test" )
+### List markdown files under /docs/*
+  arr=( "welcome_to_bashlava" "help" "test" "debug_upstream" )
   for action in "${arr[@]}"; do
-    _file_is="${action}" _file_path_is="${_docs_path}/${_file_is}.md" && Condition_File_Must_Be_Present
+    _file_is="${action}" _file_path_is="${_path_docs}/${_file_is}.md" && Condition_File_Must_Be_Present
   done
 
-  _file_is="LICENSE" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
+### List files under /components/*
+  arr=( "sidecars.sh" "alias.sh" "example.sh" "list.txt" )
+  for action in "${arr[@]}"; do
+    _file_is="${action}" _file_path_is="${_path_components}/${_file_is}" && Condition_File_Must_Be_Present
+  done
+
+  _file_is="LICENSE" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_license && exit 1
   fi
 
-  _file_is="README.md" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
+  _file_is="README.md" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_readme && exit 1
   fi
 
-  _file_is=".gitignore" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
+  _file_is=".gitignore" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_gitignore && exit 1
   fi
 
-  _file_is="Dockerfile" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
+  _file_is="Dockerfile" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message="Dockerfile does not exit, let's generate one" && App_Warning && sleep 2 && App_init_dockerfile && exit 1
   fi
 
 ### Warning only
-  _file_is=".dockerignore" _file_path_is="${_bashlava_path}/${_file_is}" && Condition_File_Optionnally_Present
+  _file_is=".dockerignore" _file_path_is="${_path_bashlava}/${_file_is}" && Condition_File_Optionnally_Present
 
 ### Whern it happens, you want to know ASAP
-  _file_is=".git" dir_path_is="${_bashlava_path}/${_file_is}" && Condition_Dir_Must_Be_Present
+  _file_is=".git" dir_path_is="${_path_bashlava}/${_file_is}" && Condition_Dir_Must_Be_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
     my_message=".git directory does not exit" && App_Fatal
   fi
@@ -733,19 +770,19 @@ function Condition_Dir_Optionnally_Present {
 #
 
 function App_Reset_Custom_path {
-# In file ${my_path}/bashlava_path_tmp, we set an absolute path like: '~/Users/myuser/Documents/github/firepress-org/bashlava'
-# ${my_path}/bashlava_path point to a file on disk (not a variable)
+# In file ${_path_user}/bashlava_path_tmp, we set an absolute path like: '~/Users/myuser/Documents/github/firepress-org/bashlava'
+# bashlava_path is a file on disk (not a variable)
 # It finds and configures it automatically. This way we don't have to hard code it :)
 # Don't confuse it with the symlink which is usually at "/usr/local/bin/bashlava.sh"
 # We write bashlava_path on disk for speed optimization and to avoid running this request all the time.
-  if [ ! -f ${my_path}/bashlava_path ]; then
-    readlink $(which "${bashlava_executable}") > "${my_path}/bashlava_path_tmp"
-    rm ${my_path}/bashlava_path
+  if [ ! -f ${_path_user}/bashlava_path ]; then
+    readlink $(which "${bashlava_executable}") > "${_path_user}/bashlava_path_tmp"
+    rm ${_path_user}/bashlava_path
 # this will strip "/bashlava.sh" from the absolute path
-    cat "${my_path}/bashlava_path_tmp" | sed "s/\/${bashlava_executable}//g" > "${my_path}/bashlava_path"
+    cat "${_path_user}/bashlava_path_tmp" | sed "s/\/${bashlava_executable}//g" > "${_path_user}/bashlava_path"
 # clean up
-    rm ${my_path}/bashlava_path_tmp
-  elif [ -f ${my_path}/bashlava_path ]; then
+    rm ${_path_user}/bashlava_path_tmp
+  elif [ -f ${_path_user}/bashlava_path ]; then
       echo "Path is valid. Lets continue." > /dev/null 2>&1
   else
     my_message="FATAL: App_Reset_Custom_path | ${dir_path_is}" && App_Fatal
@@ -756,17 +793,19 @@ function App_Load_Vars_General {
 ### Default var & path. Customize if need. Usefull if you want
   # to have multiple instance of bashLaVa on your machine
   bashlava_executable="bashlava.sh"
-  my_path="/usr/local/bin"
+  _path_user="/usr/local/bin"
 
 ### Reset if needed
   App_Reset_Custom_path
-  _bashlava_path="$(cat ${my_path}/bashlava_path)"
 
-### Set absolute path for the /components directory
-  _components_path="${_bashlava_path}/components"
+### Set absolute path for the project root ./
+  _path_bashlava="$(cat ${_path_user}/bashlava_path)"
 
-### Set absolute path for the /docs directory
-  _docs_path="${_bashlava_path}/docs"
+### Set absolute path for the ./components directory
+  _path_components="${_path_bashlava}/components"
+
+### Set absolute path for the ./docs directory
+  _path_docs="${_path_bashlava}/docs"
 
 # every scripts that are not under the main bashLaVa app, should be threated as an components.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
@@ -775,23 +814,20 @@ function App_Load_Vars_General {
 
 # TODO
 # we have few array that are configs. They should be all together under the same block of code.
-
 ### source files under /components
-  arr=( "alias.sh" "code_example.sh" "templates.sh")
+  arr=( "alias.sh" "sidecars.sh")
   for action in "${arr[@]}"; do
-    _file_is="${action}" _file_path_is="${_components_path}/${_file_is}" && Condition_File_Must_Be_Present
+    _file_is="${action}" _file_path_is="${_path_components}/${_file_is}" && Condition_File_Must_Be_Present
+    # code optimization 0o0o, add logic: _to_source="true"
     source "${_file_path_is}"
   done
 
-### We dont source this file. See example using Mapfile
-  _file_is="list.txt" _file_path_is="${_components_path}/${_file_is}" && Condition_File_Must_Be_Present
-
 # TODO
-# create a flag where the default is we don't use private
+# code optimization 0o0o / Need logic to manage file under /private/* 
 
 ### source PRIVATE / custom scripts
   # the user must create /private/_entrypoint.sh file
-  _file_is="_entrypoint.sh" _file_path_is="${_components_path}/private/${_file_is}" && Condition_File_Must_Be_Present
+  _file_is="_entrypoint.sh" _file_path_is="${_path_components}/private/${_file_is}" && Condition_File_Must_Be_Present
   source "${_file_path_is}"
 
 ### Set defaults for flags

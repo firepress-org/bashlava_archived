@@ -5,11 +5,11 @@
 # Now we use 'Condition_File_Must_Be_Present' instead of copy paste this fct
 function idempotent_file_exist {
   _file_is="somefile.sh"
-  if [[ -f "${_components_path}/${_file_is}" ]]; then
+  if [[ -f "${_path_components}/${_file_is}" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
-    source "${_components_path}/${_file_is}"
+    source "${_path_components}/${_file_is}"
   
-  elif [[ ! -f "${_components_path}/${_file_is}" ]]; then
+  elif [[ ! -f "${_path_components}/${_file_is}" ]]; then
     my_message="Warning: no file: ${_file_path_is}" && App_Warning_Stop
 
   else
@@ -133,7 +133,7 @@ function case_ex1 {
 
 # Mapfile: Assigning a variable the values of a file's lines
 function case_ex2 {
-  mapfile -t file_var < ${_components_path}/list.txt
+  mapfile -t file_var < ${_path_components}/list.txt
 
   for i in "${file_var[@]}"; do
     echo "${i}"

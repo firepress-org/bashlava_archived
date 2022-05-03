@@ -1,5 +1,47 @@
 #!/usr/bin/env bash
 
+function App_List_All_Fct {
+  # help advanced
+  # it also helps me to see all functions at high level
+  # useful to debug
+
+  App_Check_Which_File_Exist
+  echo
+
+  # code optimization 0o0o CASE per function's category
+
+  my_message="Condition" && App_Blue && echo
+  my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Condition_" | awk '{print $2}')" && App_Gray && echo
+
+  my_message="Show" && App_Blue && echo
+  my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Show_" | awk '{print $2}')" && App_Gray && echo
+
+  my_message="Print" && App_Blue && echo
+  my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Print_" | awk '{print $2}')" && App_Gray && echo
+
+  my_message="Prompt" && App_Blue && echo
+  my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Prompt_" | awk '{print $2}')" && App_Gray && echo
+
+  my_message="App" && App_Blue && echo
+  my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function App_" | awk '{print $2}')" && App_Gray && echo
+
+  my_message="Core" && App_Blue && echo
+  my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Core_" | awk '{print $2}')" && App_Gray && echo
+
+  my_message="sidecars" && App_Blue && echo
+  my_message="$(cat ${_path_components}/sidecars.sh | grep "function " | awk '{print $2}')" && App_Gray && echo
+
+  my_message="alias" && App_Blue && echo
+  my_message="$(cat ${_path_components}/alias.sh | grep "function " | awk '{print $2}')" && App_Gray && echo
+
+  my_message="example" && App_Blue && echo
+  my_message="$(cat ${_path_components}/example.sh | grep "function " | awk '{print $2}')" && App_Gray && echo
+
+  my_message="See help standard basic functions" && App_Blue && echo
+
+  # code optimization 0o0o / Add logic for private script
+}
+
 function passgen {
   docker run --rm devmtl/alpine:3.11_2020-02-26_08H42s20_dec5798 sh "random7.sh"
 }
@@ -68,7 +110,7 @@ cannot repackage this code for any commercial endeavour.
 Find the GNU General Public License V3 at:
 https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
 EOF
-my_message="File created: ${local_bashlava_path}/LICENSE_template" App_Green
+my_message="File created: ${local_path_bashlava}/LICENSE_template" App_Green
 }
 
 function App_init_dockerfile {
@@ -92,7 +134,7 @@ ARG GITHUB_REGISTRY="notset"
 ###################################
 
 EOF
-my_message="File created: ${local_bashlava_path}/Dockerfile_template" App_Green
+my_message="File created: ${local_path_bashlava}/Dockerfile_template" App_Green
 }
 
 function App_init_gitignore {
@@ -203,5 +245,5 @@ TheVolumeSettingsFolder
 .FBCSemaphoreFile
 .FBCLockFolder
 EOF
-my_message="File created: ${local_bashlava_path}/App_init_gitignore" App_Green
+my_message="File created: ${local_path_bashlava}/App_init_gitignore" App_Green
 }
