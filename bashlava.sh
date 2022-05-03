@@ -2,7 +2,7 @@
 
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# There are 0o0o flags TODO in the code 
+# There are 0o0o flags TODO in the code /
 
 # TODO
 # better management core vars
