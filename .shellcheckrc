@@ -7,6 +7,7 @@ source-path=SCRIPTDIR
 enable=all
 
 # Disable some checks
+disable=SC1083
 disable=SC1090
 disable=SC1091
 disable=SC2001
