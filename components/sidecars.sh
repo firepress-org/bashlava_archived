@@ -11,7 +11,7 @@ function Prompt_All_Available_Fct { #Side_
   _doc_name="Prompt_All_Available_Fct.md" && clear && Show_Docs && sleep 1
   echo
 
-  read month
+  read -r month
   case ${month} in
     1 | a)
       echo "0o0o";;
