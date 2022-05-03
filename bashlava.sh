@@ -31,7 +31,6 @@
 
 # Core_Reset_Custom_Path << App_Reset_Custom_path
 
-# rename App with capital letters like App_mdv to App_Glow
 # 
 
 # TODO
@@ -312,8 +311,8 @@ function test { # User_
 
   # PRINT OPTION 3
   echo
-  my_message="Check App_Banner:" && Print_Blue
-  my_message="bashLaVa test" && App_Banner
+  my_message="Check Print_Banner:" && Print_Blue
+  my_message="bashLaVa test" && Print_Banner
 
   my_message="Check configs:" Print_Blue
   my_message="${app_name} < app_name" Print_Gray
@@ -459,19 +458,13 @@ function Show_Release {
   open "https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}"
 }
 
-function App_Banner {
-  _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
-  docker run --rm ${docker_img_figlet} ${my_message}
-}
-
 # TODO
 # this is not clean, but it works 'mdv' / 'App_Show_Docs'
   # we can't provide an abosolute path to the file because the Docker container can't the absolute path
   # I also DONT want to provide two arguments when using glow
   # I might simply stop using a docker container for this
   # but as a priciiple, I like to call a docker container
-function mdv {
+function mdv { # User_
 
   clear
   Condition_Attr_2_Must_Be_Provided
@@ -501,9 +494,11 @@ function App_Show_Docs {
   cd ${_present_path_is}
 }
 
-# when you code a fct, often you dont know by heart condition name
-# will be part of help "advanced"
-#	"Condition_", "App_", List_ alias
+function Print_Banner {
+  _var_name="docker_img_figlet" _is_it_empty=$(echo ${docker_img_figlet}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
+  docker run --rm ${docker_img_figlet} ${my_message}
+}
 
 # Define colors / https://www.shellhacks.com/bash-colors/
 function Print_Gray {
