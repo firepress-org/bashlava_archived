@@ -234,6 +234,9 @@ function squash { # User_
     my_message="Oups, syntax error." && Print_Warning_Stop
   fi
 
+  #git config pull.rebase true
+  #git pull
+
   git reset --hard HEAD~"${input_2}"
   git merge --squash HEAD@{1}
   git push origin HEAD --force
