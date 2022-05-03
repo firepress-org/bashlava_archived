@@ -266,27 +266,27 @@ function test {
 # test our script & fct. Idempotent bash script
 
   echo
-  my_message="Check attributes:" App_Blue
+  my_message="Check attributes:" Print_Blue
   my_message="\$1 value is: ${input_1}" Print_Gray
   my_message="\$2 value is: ${input_2}" Print_Gray
   my_message="\$3 value is: ${input_3}" Print_Gray
   my_message="\$4 value is: ${input_4}" Print_Gray
 
   echo
-  my_message="Check apps required:" App_Blue
+  my_message="Check apps required:" Print_Blue
   Condition_Apps_Must_Be_Installed
 
   echo
-  my_message="Check files and directories:" App_Blue
+  my_message="Check files and directories:" Print_Blue
   App_Check_Which_File_Exist
   my_message="All good!" Print_Gray
 
   echo
-  my_message="Check array from directory components:" App_Blue
+  my_message="Check array from directory components:" Print_Blue
   App_array
 
   echo
-  my_message="Check OS" App_Blue
+  my_message="Check OS" Print_Blue
   if [[ $(uname) == "Darwin" ]]; then
     my_message="Running on a Mac (Darwin)" Print_Gray
   elif [[ $(uname) != "Darwin" ]]; then
@@ -297,25 +297,25 @@ function test {
 
   # PRINT OPTION 1
   echo
-  my_message="Check App_glow:" && App_Blue
+  my_message="Check App_glow:" && Print_Blue
   _doc_name="test.md" App_Show_Docs
 
   # PRINT OPTION 2
   # 'test_color' it bypassed as it does an 'exit 0'
-  my_message="Check colors options:" && App_Blue && echo
+  my_message="Check colors options:" && Print_Blue && echo
   my_message="bashlava test"
   Print_Green
-  #App_Blue
+  #Print_Blue
   App_Warning
   Print_Gray
   #App_Fatal
 
   # PRINT OPTION 3
   echo
-  my_message="Check App_Banner:" && App_Blue
+  my_message="Check App_Banner:" && Print_Blue
   my_message="bashLaVa test" && App_Banner
 
-  my_message="Check configs:" App_Blue
+  my_message="Check configs:" Print_Blue
   my_message="${app_name} < app_name" Print_Gray
   #my_message="${app_version} < app_version" Print_Gray
   my_message="${github_user} < github_user" Print_Gray
@@ -333,7 +333,7 @@ function test {
 function test_color {
   my_message="bashlava test"
   Print_Green
-  App_Blue
+  Print_Blue
   App_Warning
   Print_Gray
   App_Fatal
@@ -363,7 +363,7 @@ function help {
 
 function Prompt_YesNo_ci {
   # called by fct like: pr, mrg
-  echo && my_message="Want to see 'ci' status? (y/n)" && App_Blue
+  echo && my_message="Want to see 'ci' status? (y/n)" && Print_Blue
   read user_input;
   case ${user_input} in
     y | Y) ci;;
@@ -373,7 +373,7 @@ function Prompt_YesNo_ci {
 
 # TODO
 function Show_ {
-  echo && my_message="List stuff to show here (y/n)" && App_Blue
+  echo && my_message="List stuff to show here (y/n)" && Print_Blue
   read user_input;
   case ${user_input} in
     y | Y) echo "wip";;
@@ -391,7 +391,7 @@ function App_short_url {
     -F "code=${input_3}" &&\
 
 ### PREVIEW
-  echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
+  echo && my_message="Let's open: https://git.io/${input_3}" && Print_Blue && sleep 2 &&\
   open https://git.io/${input_3}
   }
 
@@ -411,7 +411,7 @@ function App_short_url {
 }
 
 function App_Show_Version {
-  echo && my_message="Check versions:" && App_Blue
+  echo && my_message="Check versions:" && Print_Blue
 
   App_Load_Vars_Dockerfile
 
@@ -508,7 +508,7 @@ function Print_Green {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "✨ \e[1;32m${my_message}\e[0m"
 }
-function App_Blue {
+function Print_Blue {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "👋 \e[1;34m${my_message}\e[0m"
 }

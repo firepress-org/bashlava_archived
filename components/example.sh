@@ -21,7 +21,7 @@ function idempotent_file_exist {
 function idempotent_empty_var {
   if [[ -n "${run_id}" ]]; then    #if not empty
     echo "idempotent checkpoint passed" > /dev/null 2>&1
-    my_message="SOME_MESSAGE_HERE" && App_Blue
+    my_message="SOME_MESSAGE_HERE" && Print_Blue
 
   elif [[ -z "${run_id}" ]]; then    #if empty
     my_message="Warning: variable is empty" && App_Warning_Stop
@@ -35,7 +35,7 @@ function idempotent_empty_var {
 function idempotent_compare_var {
   if [[ "${input_2}" != "not_set" ]]; then
     echo "idempotent checkpoint passed" > /dev/null 2>&1
-    my_message="SOME_MESSAGE_HERE" && App_Blue
+    my_message="SOME_MESSAGE_HERE" && Print_Blue
 
   elif [[ "${input_2}" == "not_set" ]]; then
     my_message="Warning: variable is empty" && App_Warning_Stop
@@ -48,14 +48,14 @@ function idempotent_compare_var {
 # Example 1: Output a Description for Each Option
 function case_a {
   echo && echo "Which color do you like best?"
-  my_message="1 - Blue" && App_Blue
+  my_message="1 - Blue" && Print_Blue
   echo "2 - Red"
   my_message="3 - Yellow" && App_Warning
   my_message="4 - Green" && Print_Green
   echo "5 - Orange"
   read user_input;
   case ${user_input} in
-    1) my_message="Blue is a primary color." && App_Blue;;
+    1) my_message="Blue is a primary color." && Print_Blue;;
     2) echo "Red is a primary color.";;
     3) my_message="Yellow is a primary color." && App_Yellow;;
     4) my_message="Green is a secondary color." && Print_Green;;
