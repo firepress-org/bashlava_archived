@@ -2,11 +2,11 @@
 
 # See bashlava for all details https://github.com/firepress-org/bashlava
 
-# There are SOME TODO in the code
+# There are 17 flags TODO in the code
 
 # TODO
-#fct: m
-#	CASE ask if the user wants 'e'
+# delete var 'version_with_rc'
+# this is an old logic when my release flow was not great
 
 # TODO
 # when you code a you dont know by heart which condition to call
@@ -14,6 +14,9 @@
 #	"Condition_"
 #	"App_"
 #	alias
+
+# TODO
+# release function is not stable when we tag. Sometimes it show the older release
 
 # TODO
 # better management core vars
@@ -65,7 +68,7 @@ function edge {
   git push --set-upstream origin edge -f
   App_Show_Version
   # UX fun
-  my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
+  my_message="Done! checkout edge from ${default_branch}" App_Gray
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
 }
 
@@ -76,7 +79,7 @@ function commit {
   git commit -m "${input_2}"
   git push
   # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 1) 'c' 2) 'pr' " App_Green
 }
 
 function pr {
@@ -92,8 +95,14 @@ function pr {
   gh pr view --web
   Prompt_YesNo_ci
 
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'ci' - 'mrg' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='ci' 2='mrg' 9=cancel (or any key)" && App_Green
+  input_2="not_set"   #reset input_2
+  read user_input;
+  case ${user_input} in
+    1 | ci) ci;;
+    2 | mrg) mrg;;
+    *) my_message="Cancelled" && App_Gray;;
+  esac
 }
 
 function mrg {
@@ -107,7 +116,17 @@ function mrg {
   gh pr merge
   Prompt_YesNo_ci
   App_Show_Version
-  echo && my_message="NEXT MOVE suggestion: 'ci' - 'sv' - 'v' - 't' " App_Green
+
+  echo && my_message="NEXT MOVE suggestion: 1='ci' 2='sv' 3='v' 4='t' 9=cancel (or any key)" && App_Green
+  input_2="not_set"   #reset input_2
+  read user_input;
+  case ${user_input} in
+    1 | ci) ci;;
+    2 | sv) sv;;
+    3 | v) version;;
+    4 | t) tag;;
+    *) my_message="Cancelled" && App_Gray;;
+  esac
 }
 
 function ci {
@@ -124,13 +143,40 @@ function ci {
 
   # Follow status within the terminal
   gh run watch
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'mrg' " App_Green
+
+  echo && my_message="NEXT MOVE suggestion: 1='mrg' 9=cancel (y/n)" && App_Green
+  input_2="not_set"   #reset input_2
+  read user_input;
+  case ${user_input} in
+    1 | y | mrg) mrg;;
+    *) my_message="Cancelled" && App_Gray;;
+  esac
 }
 
 function version {
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
   Condition_No_Commits_Must_Be_Pending
+  App_Show_Version
+
+  if [[ "${input_2}" == "not_set" ]]; then
+    # The user did not provide a version
+    echo && my_message="What is the version number (ex: 1.12.4)?" && App_Green
+    read user_input;
+    input_2="${user_input}"
+    #
+    echo && my_message="You confirm version: ${user_input} is right? (y/n)" && App_Green
+    # warning: dont reset input_2
+    read user_input;
+    case ${user_input} in
+      1 | y) echo "Good, lets continue" > /dev/null 2>&1;;
+      *) my_message="Cancelled" && App_Gray;;
+    esac
+  elif [[ "${input_2}" != "not_set" ]]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="FATAL: Condition_Attr_2_Must_Be_Provided" && App_Fatal
+  fi
+
   Condition_Attr_2_Must_Be_Provided
   Condition_Version_Must_Be_Valid
 
@@ -150,17 +196,23 @@ function version {
     my_message="FATAL: version" && App_Fatal
   fi
 
-### Apply updates
+### Apply updates in Dockerfile
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${version_trim}\"/" Dockerfile
   sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
 
   git add .
   git commit . -m "Update ${app_name} to version ${input_2}"
   git push && echo
-  App_Show_Version && sleep 1
-  log
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'pr' - 't' " App_Green
+  App_Show_Version
+
+  echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && App_Green
+  input_2="not_set"   #reset input_2
+  read user_input;
+  case ${user_input} in
+    1 | pr) pr;;
+    2 | t) tag;;
+    *) my_message="Cancelled" && App_Gray;;
+  esac
 }
 
 function tag {
@@ -168,16 +220,22 @@ function tag {
   Condition_Attr_2_Must_Be_Empty
 
   git tag ${app_version} && git push --tags && echo
-  App_Show_Version && sleep 1 && echo
+  App_Show_Version
 
-  my_message="Next, prepare release" App_Gray
+  echo && my_message="Next, prepare release" App_Gray
   my_message="To quit the release notes: type ':qa + enter'" App_Gray && echo
 
   gh release create && sleep 5
   App_Show_Version
   App_Show_Release
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: start over from 'e' " App_Green
+
+  echo && my_message="NEXT MOVE suggestion: 'e' (y/n)" && App_Green
+  input_2="not_set"   #reset input_2
+  read user_input;
+  case ${user_input} in
+    1 | y | e) edge;;
+    *) my_message="Abord" && App_Gray;;
+  esac
 }
 
 function squash {
@@ -348,6 +406,8 @@ function App_short_url {
 
 function App_Show_Version {
   echo && my_message="Check versions:" && App_Blue
+
+  App_Load_Vars_Dockerfile
 
 ### version in dockerfile
   my_message="${app_version} < VERSION in Dockerfile" App_Gray
@@ -715,7 +775,7 @@ function App_Reset_Custom_path {
   fi
 }
 
-function App_Load_Vars {
+function App_Load_Vars_General {
 ### Default var & path. Customize if need. Usefull if you want
   # to have multiple instance of bashLaVa on your machine
   bashlava_executable="bashlava.sh"
@@ -780,7 +840,9 @@ function App_Load_Vars {
     date_day="$(date +%Y-%m-%d)"
   date_month="$(date +%Y-%m)-XX"
   date_year="$(date +%Y)-XX-XX"
+}
 
+function App_Load_Vars_Dockerfile {
 # Define vars from Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -813,7 +875,8 @@ function main() {
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-  App_Load_Vars
+  App_Load_Vars_General
+  App_Load_Vars_Dockerfile
   App_Check_Which_File_Exist
 
   if [[ -z "$2" ]]; then    #if empty
