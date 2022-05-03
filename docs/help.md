@@ -1,29 +1,24 @@
 # help
 
-**Dev workflow**
+**Classic workflow**
 
-- `e` ............ create a branch `edge` from `main branch`
-- `c` ............ commit | usage: c "my feature is great"
-- `pr` ........... create pull request
-- `ci` ........... view CI status on GitHub Actions
-- `mrg` .......... merge (gh cli)
-- `m` ............ checkout to `main branch` + fetch updates from remote
-- `s` ............ show various utilities
-
-**Release workflow**
-
-- `v 1.2.3` ...... version code and write to the Dockerfile
-- `t` ............ tag + opens the release page GUI on GitHub
+- `e` ............ create a branch `edge` from main_branch (no attribut)
+- `c` ............ `commit` | usage: c "my feature is great"
+- `sq` ........... `squash` commits | usage: sq 3 "Add: feat xyz - issue 123"
+- `pr` ........... create `pull request` (no attribut)
+- `ci` ........... show `ci status` on GitHub Actions (no attribut)
+- `mrg` .......... `merge` to mainbranch (no attribut)
+- `m` ............ checkout to `main_branch` (no attribut)
+- `v` ............ `version` code | usage: v 1.12.4 | (works without attributs)
+- `t` ............ `tag` and opens the release page on GitHub (no attribut)
 
 **More commands**
 
-- `h` ............ help
-- `test` ......... test if requirements for bashLaVa are meet
-- `sq` ........... squash commits | usage: sq 3 "my feature is great"
-- `l` ............ log - show me the latest commits
-- `oe` ........... checkout to branch edge
-- `om` ........... checkout to mainbranch
+- `s` ............ `show` every functions per categories (no attribut)
+- `h` ............ `help` (no attribut)
+- `test` ......... `test` if bashLaVa works properly (no attribut)
+- `l` ............ show `log` (no attribut)
+- `oe` ........... check`out` to branch edge
+- `om` ........... check`out` to main_branch
 - `mdv` .......... markdown viewer | usage: mdv README.md
-- `hash` ......... hash from latest hash commit
 - `gitio` ........ git.io shortner, works only with GitHub URLs
-- `bashlava` ..... _(without any attributs)_, shows welcome screen

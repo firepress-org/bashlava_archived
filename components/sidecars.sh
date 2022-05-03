@@ -1,14 +1,28 @@
 #!/usr/bin/env bash
 
-function App_List_All_Fct { #Side_
+function Prompt_All_Available_Fct { #Side_
+  # when you code a fct, often you dont know by heart condition name
   # help advanced
   # it also helps me to see all functions at high level
   # useful to debug
 
-  # cat ${_path_bashlava}/bashlava.sh | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
-
   Core_Check_Which_File_Exist
+
+  _doc_name="Prompt_All_Available_Fct.md" && clear && Show_Docs && sleep 1
   echo
+
+  read month
+  case ${month} in
+    1 | 0o0o)
+      echo "0o0o";;
+    2 | 0o0o)
+      echo "0o0o";;
+    3 | 0o0o)
+      echo "0o0o";;
+    *)
+      echo "cancel" && exit 1;;
+  esac
+  
 
   # code optimization 0o0o CASE per function's category
 
@@ -20,8 +34,6 @@ function App_List_All_Fct { #Side_
 
   my_message="example" && Print_Blue && echo
   my_message="$(cat ${_path_components}/example.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
-
-  my_message="See help standard basic functions" && Print_Blue && echo
 
   my_message="User" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "{ # User_" | awk '{print $2}')" && Print_Gray && echo
@@ -43,6 +55,8 @@ function App_List_All_Fct { #Side_
 
   my_message="Core" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Core_" | awk '{print $2}')" && Print_Gray && echo
+
+  # cat ${_path_bashlava}/bashlava.sh | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 
   # code optimization 0o0o / Add logic for private script
 }

@@ -4,16 +4,7 @@
 
 # There are 0o0o flags TODO in the code
 
-# TODO
-# fct: show (CASE option)
-  # Show => functions / Show_All_Fct
-  # Show => files that are tracked  and source
-  # Show => files that are tracked but not source
-  # Show => version (Dockerfile, Tag, Release)
-  # Show => tag
-  # Show => release
-  # Show => help
-  # Show => test
+
 
 # TODO
 # better management core vars
@@ -337,7 +328,8 @@ function help { # User_
 
 # TODO
 function show { # User_
-  Show_All
+  Prompt_All_Available_Fct
+    #Show_Version
 }
 
 function mdv { # User_
@@ -392,6 +384,10 @@ function App_test_color {
   Print_Warning
   Print_Gray
   Print_Fatal
+}
+
+function App_log {
+  git log --all --decorate --oneline --graph --pretty=oneline | head -n 10
 }
 
 function Prompt_YesNo_ci {
@@ -769,7 +765,7 @@ function Condition_Dir_Optionnally_Present {
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# bashLaVa engine set up
+# Core engine
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #

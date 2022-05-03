@@ -25,7 +25,7 @@ function oe {
   git checkout edge
 }
 function l {
-  log
+  App_log
 }
 function sq { 
   squash
@@ -41,9 +41,6 @@ function 1 {
 }
 function 2 {
   help
-}
-function log {
-  git log --all --decorate --oneline --graph --pretty=oneline | head -n 10
 }
 function hash {
   git rev-parse HEAD && git rev-parse --short HEAD
