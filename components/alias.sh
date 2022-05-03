@@ -48,15 +48,10 @@ function log {
 function hash {
   git rev-parse HEAD && git rev-parse --short HEAD
 }
-function sv {
-# show version / version read
-  Condition_Attr_2_Must_Be_Empty && Show_Version 
-}
 function App_Yellow {
   Print_Warning
 }
-
-### capture common typo or bad habits
+### capture common typos
 function sh { 
   App_invalid_cmd
 }
