@@ -55,7 +55,7 @@
 
 function mainbranch { # User_
   Condition_Attr_2_Must_Be_Empty
-  Condition_No_Commits_Must_Be_Pending
+  Condition_No_Commits_Pending
   Condition_Apps_Must_Be_Installed
 
   App_Show_Version
@@ -74,7 +74,7 @@ function edge { # User_
 ### it assumes there will be no conflict with anybody else
 ### as I'm the only person using 'edge'.
   Condition_Attr_2_Must_Be_Empty       # fct without attributs
-  Condition_No_Commits_Must_Be_Pending
+  Condition_No_Commits_Pending
   Condition_Apps_Must_Be_Installed
 
 ### delete branch
@@ -106,7 +106,7 @@ function commit { # User_
 function pr { # User_
   Condition_Branch_Must_Be_Edge
   Condition_Attr_2_Must_Be_Empty
-  Condition_No_Commits_Must_Be_Pending
+  Condition_No_Commits_Pending
 
   _pr_title=$(git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat -)
   _var_name="_pr_title" _is_it_empty=$(echo ${_pr_title}) && Condition_Vars_Must_Be_Not_Empty
@@ -130,7 +130,7 @@ function pr { # User_
 function mrg { # User_
   # merge from edge into main_branch
   Condition_Branch_Must_Be_Edge
-  Condition_No_Commits_Must_Be_Pending
+  Condition_No_Commits_Pending
   Condition_Attr_2_Must_Be_Empty
 
   gh pr merge
@@ -152,7 +152,7 @@ function mrg { # User_
 function ci { # User_
   # continuous integration status
   Condition_Attr_2_Must_Be_Empty
-  Condition_No_Commits_Must_Be_Pending
+  Condition_No_Commits_Pending
 
 ### show latest build and open webpage on Github Actions
   #gh run list && sleep 1
@@ -175,7 +175,7 @@ function ci { # User_
 
 function version { # User_
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
-  Condition_No_Commits_Must_Be_Pending
+  Condition_No_Commits_Pending
   App_Show_Version
 
   if [[ "${input_2}" == "not_set" ]]; then
@@ -219,7 +219,7 @@ function version { # User_
 }
 
 function tag { # User_
-  Condition_No_Commits_Must_Be_Pending
+  Condition_No_Commits_Pending
   Condition_Attr_2_Must_Be_Empty
 
   git tag ${app_version} && git push --tags && echo
@@ -242,7 +242,7 @@ function tag { # User_
 }
 
 function squash { # User_
-  Condition_No_Commits_Must_Be_Pending
+  Condition_No_Commits_Pending
   Condition_Attr_2_Must_Be_Provided # how many steps
   Condition_Attr_3_Must_Be_Provided # message
 
@@ -561,9 +561,9 @@ function Condition_Branch_Must_Be_Edge {
   Condition_Vars_Must_Be_Equal
 }
 
-function Condition_No_Commits_Must_Be_Pending {
+function Condition_No_Commits_Pending {
   _compare_me=$(git status | grep -c "nothing to commit")
-  _compare_you="1" _fct_is="Condition_No_Commits_Must_Be_Pending"
+  _compare_you="1" _fct_is="Condition_No_Commits_Pending"
   Condition_Vars_Must_Be_Equal
 }
 
