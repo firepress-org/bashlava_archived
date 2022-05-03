@@ -65,7 +65,7 @@ function edge {
   git push --set-upstream origin edge -f
   App_Show_Version
   # UX fun
-  my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
+  my_message="checked out a new edge from ${default_branch}" App_Blue
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
 }
 
@@ -92,8 +92,13 @@ function pr {
   gh pr view --web
   Prompt_YesNo_ci
 
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'ci' - 'mrg' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'ci' - 'mrg' (or any to move on)" && App_Green
+  read user_input;
+  case ${user_input} in
+    ci) ci;;
+    mrg) mrg;;
+    *) my_message="Cancelled" && App_Gray;;
+  esac
 }
 
 function mrg {
@@ -107,7 +112,16 @@ function mrg {
   gh pr merge
   Prompt_YesNo_ci
   App_Show_Version
-  echo && my_message="NEXT MOVE suggestion: 'ci' - 'sv' - 'v' - 't' " App_Green
+
+  echo && my_message="NEXT MOVE suggestion: (ci) (sv) (v) (t) (or any to move on)" && App_Green
+  read user_input;
+  case ${user_input} in
+    ci) ci;;
+    sv) sv;;
+    v) version;;
+    t) tag;;
+    *) my_message="Cancelled" && App_Gray;;
+  esac
 }
 
 function ci {
@@ -124,8 +138,13 @@ function ci {
 
   # Follow status within the terminal
   gh run watch
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'mrg' " App_Green
+
+  echo && my_message="NEXT MOVE suggestion: 'mrg' (y/n)" && App_Green
+  read user_input;
+  case ${user_input} in
+    y | mrg) mrg;;
+    *) my_message="Cancelled" && App_Gray;;
+  esac
 }
 
 function version {
@@ -159,8 +178,14 @@ function version {
   git push && echo
   App_Show_Version && sleep 1
   log
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'pr' - 't' " App_Green
+
+  echo && my_message="NEXT MOVE suggestion: 'pr', 't' (or any to move on)" && App_Green
+  read user_input;
+  case ${user_input} in
+    pr) pr;;
+    t) tag;;
+    *) my_message="Cancelled" && App_Gray;;
+  esac
 }
 
 function tag {
@@ -176,8 +201,13 @@ function tag {
   gh release create && sleep 5
   App_Show_Version
   App_Show_Release
-  # UX fun
-  echo && my_message="NEXT MOVE suggestion: start over from 'e' " App_Green
+
+  echo && my_message="NEXT MOVE suggestion: start over from edge 'e' ? (y/n)" && App_Green
+  read user_input;
+  case ${user_input} in
+    y | e) edge;;
+    *) my_message="Abord" && App_Gray;;
+  esac
 }
 
 function squash {
