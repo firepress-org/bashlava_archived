@@ -65,7 +65,7 @@ function edge {
   git push --set-upstream origin edge -f
   App_Show_Version
   # UX fun
-  my_message="checked out a new edge from ${default_branch}" App_Blue
+  my_message="Done! checkout edge from ${default_branch}" App_Gray
   echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
 }
 
@@ -93,6 +93,7 @@ function pr {
   Prompt_YesNo_ci
 
   echo && my_message="NEXT MOVE suggestion: 1='ci' 2='mrg' 9=cancel (or any key)" && App_Green
+  input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
     1 | ci) ci;;
@@ -114,6 +115,7 @@ function mrg {
   App_Show_Version
 
   echo && my_message="NEXT MOVE suggestion: 1='ci' 2='sv' 3='v' 4='t' 9=cancel (or any key)" && App_Green
+  input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
     1 | ci) ci;;
@@ -140,6 +142,7 @@ function ci {
   gh run watch
 
   echo && my_message="NEXT MOVE suggestion: 1='mrg' 9=cancel (y/n)" && App_Green
+  input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
     1 | y | mrg) mrg;;
@@ -150,18 +153,19 @@ function ci {
 function version {
 ### The version is stored within the Dockerfile. For BashLaVa, this Dockerfile is just a config-env file
   Condition_No_Commits_Must_Be_Pending
+  App_Show_Version
 
   if [[ "${input_2}" == "not_set" ]]; then
     # The user did not provide a version
     echo && my_message="What is the version number (ex: 1.12.4)?" && App_Green
     read user_input;
     input_2="${user_input}"
-    App_Show_Version
     #
     echo && my_message="You confirm version: ${user_input} is right? (y/n)" && App_Green
+    input_2="not_set"   #reset input_2
     read user_input;
     case ${user_input} in
-      y) echo "Good, lets continue" > /dev/null 2>&1;;
+      1 | y) echo "Good, lets continue" > /dev/null 2>&1;;
       *) my_message="Cancelled" && App_Gray;;
     esac
   elif [[ "${input_2}" != "not_set" ]]; then
@@ -199,10 +203,11 @@ function version {
   App_Show_Version
 
   echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && App_Green
+  input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
-    pr) pr;;
-    t) tag;;
+    1 | pr) pr;;
+    2 | t) tag;;
     *) my_message="Cancelled" && App_Gray;;
   esac
 }
@@ -221,7 +226,8 @@ function tag {
   App_Show_Version
   App_Show_Release
 
-  echo && my_message="NEXT MOVE suggestion: 'e' (type /e /y /1) 9=cancel (or any key)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 'e' (y/n)" && App_Green
+  input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
     1 | y | e) edge;;
