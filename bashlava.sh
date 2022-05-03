@@ -194,7 +194,7 @@ function version {
   elif [[ "${input_2}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Condition_Attr_2_Must_Be_Provided" && App_Fatal
+    my_message="FATAL: Condition_Attr_2_Must_Be_Provided" && Print_Fatal
   fi
 
   Condition_Attr_2_Must_Be_Provided
@@ -292,7 +292,7 @@ function test {
   elif [[ $(uname) != "Darwin" ]]; then
     my_message="bashLaVa is not tested on other machine than Mac OS (Darmin)." && Print_Warning
   else
-    my_message="FATAL: Test / Check OS" && App_Fatal
+    my_message="FATAL: Test / Check OS" && Print_Fatal
   fi
 
   # PRINT OPTION 1
@@ -308,7 +308,7 @@ function test {
   #Print_Blue
   Print_Warning
   Print_Gray
-  #App_Fatal
+  #Print_Fatal
 
   # PRINT OPTION 3
   echo
@@ -336,7 +336,7 @@ function test_color {
   Print_Blue
   Print_Warning
   Print_Gray
-  App_Fatal
+  Print_Fatal
 }
 
 function help {
@@ -406,7 +406,7 @@ function App_short_url {
   read user_input;
   case ${user_input} in
     y | Y) sub_short_url;;
-    *) my_message="Operation cancelled" && App_Fatal;;
+    *) my_message="Operation cancelled" && Print_Fatal;;
   esac
 }
 
@@ -440,7 +440,7 @@ function App_Show_Version {
     echo "Good, a release is present" > /dev/null 2>&1
     _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && Condition_Vars_Must_Be_Not_Empty
   else
-    my_message="FATAL: App_Show_Version | release_latest " && App_Fatal
+    my_message="FATAL: App_Show_Version | release_latest " && Print_Fatal
   fi
 
   my_message="${release_latest} < RELEASE in https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && Print_Gray
@@ -524,7 +524,7 @@ function Print_Warning_Stop {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;33m${my_message}\e[0m 🚨" && exit 1
 }
-function App_Fatal {
+function Print_Fatal {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "   🚨 \e[1;31m${my_message}\e[0m 🚨" && exit 1
 }
@@ -572,7 +572,7 @@ function Condition_Attr_2_Must_Be_Provided {
   elif [[ "${input_2}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Condition_Attr_2_Must_Be_Provided" && App_Fatal
+    my_message="FATAL: Condition_Attr_2_Must_Be_Provided" && Print_Fatal
   fi
 }
 
@@ -584,7 +584,7 @@ function Condition_Attr_3_Must_Be_Provided {
   elif [[ "${input_3}" != "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Condition_Attr_3_Must_Be_Provided" && App_Fatal
+    my_message="FATAL: Condition_Attr_3_Must_Be_Provided" && Print_Fatal
   fi
 }
 
@@ -600,7 +600,7 @@ function Condition_Attr_2_Must_Be_Empty {
   elif [[ "${input_2}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Condition_Attr_2_Must_Be_Empty" && App_Fatal
+    my_message="FATAL: Condition_Attr_2_Must_Be_Empty" && Print_Fatal
   fi
 }
 
@@ -611,7 +611,7 @@ function Condition_Attr_3_Must_Be_Empty {
   elif [[ "${input_3}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Condition_Attr_3_Must_Be_Empty" && App_Fatal
+    my_message="FATAL: Condition_Attr_3_Must_Be_Empty" && Print_Fatal
   fi
 }
 function Condition_Attr_4_Must_Be_Empty {
@@ -621,7 +621,7 @@ function Condition_Attr_4_Must_Be_Empty {
   elif [[ "${input_4}" == "not_set" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Condition_Attr_4_Must_Be_Empty" && App_Fatal
+    my_message="FATAL: Condition_Attr_4_Must_Be_Empty" && Print_Fatal
   fi
 }
 
@@ -687,7 +687,7 @@ function App_Check_Which_File_Exist {
 ### Whern it happens, you want to know ASAP
   _file_is=".git" dir_path_is="${_path_bashlava}/${_file_is}" && Condition_Dir_Must_Be_Present
   if [[ "${_file_do_not_exist}" == "true" ]]; then
-    my_message=".git directory does not exit" && App_Fatal
+    my_message=".git directory does not exit" && Print_Fatal
   fi
 }
 
@@ -697,7 +697,7 @@ function Condition_File_Must_Be_Present {
   elif [[ ! -f "${_file_path_is}" ]]; then
     my_message="Warning: no file: ${_file_path_is}" && Print_Warning_Stop
   else
-    my_message="FATAL: Condition_File_Must_Be_Present | ${_file_path_is}" && App_Fatal
+    my_message="FATAL: Condition_File_Must_Be_Present | ${_file_path_is}" && Print_Fatal
   fi
 }
 
@@ -709,7 +709,7 @@ function Condition_File_Optionnally_Present {
     my_message="Warning: no file: ${_file_path_is}" && Print_Warning
     _file_do_not_exist="true"
   else
-    my_message="FATAL: Condition_File_Optionnally_Present | ${_file_path_is}" && App_Fatal
+    my_message="FATAL: Condition_File_Optionnally_Present | ${_file_path_is}" && Print_Fatal
   fi
 }
 
@@ -720,7 +720,7 @@ function Condition_Vars_Must_Be_Equal {
   elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
     my_message="Checkpoint failed '${_fct_is}' ( ${_compare_me} and ${_compare_you} )" && Print_Warning_Stop
   else
-    my_message="FATAL: Condition_Vars_Must_Be_Equal | ${_fct_is}" && App_Fatal
+    my_message="FATAL: Condition_Vars_Must_Be_Equal | ${_fct_is}" && Print_Fatal
   fi
 }
 # Think, IF vars are NOT equal, continue else fail the process
@@ -730,7 +730,7 @@ function Condition_Vars_Must_Be_Not_Equal {
   elif [[ "${_compare_me}" != "${_compare_you}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="FATAL: Condition_Vars_Must_Be_Not_Equal | ${_fct_is}" && App_Fatal
+    my_message="FATAL: Condition_Vars_Must_Be_Not_Equal | ${_fct_is}" && Print_Fatal
   fi
 }
 
@@ -742,7 +742,7 @@ function Condition_Vars_Must_Be_Not_Empty {
   elif [[ -z "${_is_it_empty}" ]]; then    #if empty
     my_message="Warning: variable '${_var_name}' is empty" && Print_Warning_Stop
   else
-    my_message="FATAL: Condition_Vars_Must_Be_Not_Empty | ${_var_name}" && App_Fatal
+    my_message="FATAL: Condition_Vars_Must_Be_Not_Empty | ${_var_name}" && Print_Fatal
   fi
 }
 
@@ -753,7 +753,7 @@ function Condition_Dir_Must_Be_Present {
   elif [[ ! -d "${dir_path_is}" ]]; then
     my_message="Warning: no directory: ${dir_path_is}" && Print_Warning_Stop
   else
-    my_message="FATAL: Condition_Dir_Must_Be_Present | ${dir_path_is}" && App_Fatal
+    my_message="FATAL: Condition_Dir_Must_Be_Present | ${dir_path_is}" && Print_Fatal
   fi
 }
 
@@ -789,7 +789,7 @@ function App_Reset_Custom_path {
   elif [ -f ${_path_user}/bashlava_path ]; then
       echo "Path is valid. Lets continue." > /dev/null 2>&1
   else
-    my_message="FATAL: App_Reset_Custom_path | ${dir_path_is}" && App_Fatal
+    my_message="FATAL: App_Reset_Custom_path | ${dir_path_is}" && Print_Fatal
   fi
 }
 
@@ -893,7 +893,7 @@ function main() {
   elif [[ ! -z "$2" ]]; then    #if not empty
     input_2=$2
   else
-    my_message="FATAL: <input_2> = ${input_2}" && App_Fatal
+    my_message="FATAL: <input_2> = ${input_2}" && Print_Fatal
   fi
 
   if [[ -z "$3" ]]; then    #if empty
@@ -901,7 +901,7 @@ function main() {
   elif [[ ! -z "$3" ]]; then    #if not empty
     input_3=$3
   else
-    my_message="FATAL: <input_3> = ${input_3}" && App_Fatal
+    my_message="FATAL: <input_3> = ${input_3}" && Print_Fatal
   fi
 
   if [[ -z "$4" ]]; then    #if empty
@@ -909,7 +909,7 @@ function main() {
   elif [[ ! -z "$4" ]]; then    #if not empty
     input_4=$4
   else
-    my_message="FATAL: <input_4> = ${input_4}" && App_Fatal
+    my_message="FATAL: <input_4> = ${input_4}" && Print_Fatal
   fi
 
 ### Load fct via .bashcheck.sh
@@ -954,11 +954,11 @@ if [[ -z "$1" ]]; then
     # Dont use the shortcut 't' here! Its used for fct 'tag'
     1) clear && test;;
     2 | h) clear && help;;
-    *) my_message="Invalid input" App_Fatal;; 
+    *) my_message="Invalid input" Print_Fatal;; 
   esac
 
 elif [[ ! -z "$1" ]]; then
   echo "Good, user did provide argument(s)." > /dev/null 2>&1
 else
-  my_message="FATAL: main (When no arg are provided)" && App_Fatal
+  my_message="FATAL: main (When no arg are provided)" && Print_Fatal
 fi
