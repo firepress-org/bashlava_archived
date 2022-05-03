@@ -31,7 +31,7 @@
 
 # Core_Reset_Custom_Path << App_Reset_Custom_path
 
-# rename App with capital letters like App_glow to App_Glow
+# rename App with capital letters like App_mdv to App_Glow
 # 
 
 # TODO
@@ -297,7 +297,7 @@ function test { # User_
 
   # PRINT OPTION 1
   echo
-  my_message="Check App_glow:" && Print_Blue
+  my_message="Check mdv:" && Print_Blue
   _doc_name="test.md" App_Show_Docs
 
   # PRINT OPTION 2
@@ -466,12 +466,16 @@ function App_Banner {
 }
 
 # TODO
-# this is not clean, but it works 'App_glow' / 'App_Show_Docs'
+# this is not clean, but it works 'mdv' / 'App_Show_Docs'
   # we can't provide an abosolute path to the file because the Docker container can't the absolute path
   # I also DONT want to provide two arguments when using glow
   # I might simply stop using a docker container for this
   # but as a priciiple, I like to call a docker container
-function App_glow {
+function mdv {
+
+  clear
+  Condition_Attr_2_Must_Be_Provided
+
   # markdown viewer (mdv)
   _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
   _var_name="input_2" _is_it_empty=$(echo ${input_2}) && Condition_Vars_Must_Be_Not_Empty
