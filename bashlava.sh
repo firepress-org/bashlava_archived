@@ -230,7 +230,7 @@ function squash { # User_
   Condition_Attr_2_Must_Be_Provided # how many steps
   Condition_Attr_3_Must_Be_Provided # message
 
-  if ! [[ $input_2 =~ ^[0-9]+$ ]] ; then
+  if ! [[ "${input_2}" =~ ^[0-9]+$ ]] ; then
     my_message="Oups, syntax error." && Print_Warning_Stop
   fi
 
@@ -409,7 +409,7 @@ function Show_Version {
   my_message="${app_version} < VERSION in Dockerfile" Print_Gray
 
 ### tag
-  if [[ -n $(git tag -l "$app_version") ]]; then
+  if [[ -n $(git tag -l "${app_version}") ]]; then
     echo "Good, a tag is present" > /dev/null 2>&1
     latest_tag="$(git describe --tags --abbrev=0)"
     _var_name="latest_tag" _is_it_empty="${latest_tag}" && Condition_Vars_Must_Be_Not_Empty
@@ -423,10 +423,10 @@ function Show_Version {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
 
-  if [[ -z "$release_latest" ]]; then
+  if [[ -z "${release_latest}" ]]; then
     release_latest="none "
     echo "Logic: new projet don't have any release. So we must expect that it can be empty" > /dev/null 2>&1
-  elif [[ -n "$release_latest" ]]; then
+  elif [[ -n "${release_latest}" ]]; then
     echo "Good, a release is present" > /dev/null 2>&1
     _var_name="release_latest" _is_it_empty="${release_latest}" && Condition_Vars_Must_Be_Not_Empty
   else
