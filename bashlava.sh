@@ -464,21 +464,10 @@ function Show_Release {
   # I also DONT want to provide two arguments when using glow
   # I might simply stop using a docker container for this
   # but as a priciiple, I like to call a docker container
+
+
 function mdv { # User_
-
-  clear
-  Condition_Attr_2_Must_Be_Provided
-
-  # markdown viewer (mdv)
-  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
-  _var_name="input_2" _is_it_empty=$(echo ${input_2}) && Condition_Vars_Must_Be_Not_Empty
-  my_message="Info: 'mdv' can only read markdown files at the same path level" Print_Green
-  sleep 0.5
-
-  _present_path_is=$(pwd)
-  _file_is="${input_2}" _file_path_is="${_present_path_is}/${input_2}" && Condition_File_Must_Be_Present
-
-  docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
+  Print_mdv
 }
 
 function App_Show_Docs {
@@ -492,6 +481,22 @@ function App_Show_Docs {
   cd ${_path_docs}
   docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 110 ${_doc_name}
   cd ${_present_path_is}
+}
+
+function Print_mdv {
+  clear
+  Condition_Attr_2_Must_Be_Provided
+
+  # markdown viewer (mdv)
+  _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
+  _var_name="input_2" _is_it_empty=$(echo ${input_2}) && Condition_Vars_Must_Be_Not_Empty
+  my_message="Info: 'mdv' can only read markdown files at the same path level" Print_Green
+  sleep 0.5
+
+  _present_path_is=$(pwd)
+  _file_is="${input_2}" _file_path_is="${_present_path_is}/${input_2}" && Condition_File_Must_Be_Present
+
+  docker run --rm -it -v $(pwd):/sandbox -w /sandbox ${docker_img_glow} glow -w 120 ${input_2}
 }
 
 function Print_Banner {
