@@ -5,6 +5,8 @@ function App_List_All_Fct { #Side_
   # it also helps me to see all functions at high level
   # useful to debug
 
+  # cat ${_path_bashlava}/bashlava.sh | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
+
   Core_Check_Which_File_Exist
   echo
 

@@ -29,7 +29,7 @@
 # TODO
 # rename color Print_Green << Print_Green
 
-# Core_Reset_Custom_Path << App_Reset_Custom_path
+# Core_Reset_Custom_Path << Core_Reset_Bashlava_Path
 
 # 
 
@@ -333,10 +333,6 @@ function help { # User_
   Condition_Attr_3_Must_Be_Empty
 
   _doc_name="help.md" Show_Docs
-
-  ### old code that could be useful in the future
-  ### list tag #util> within the code
-  # cat ${_path_user}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 }
 
 # TODO
@@ -346,6 +342,35 @@ function show { # User_
 
 function mdv { # User_
   Print_mdv
+}
+
+function gitio { # User_
+
+### CMD EXECUTION
+  function sub_short_url {
+  clear
+  curl -i https://git.io -F \
+    "url=https://github.com/${input_2}/${input_3}" \
+    -F "code=${input_3}" &&\
+
+### PREVIEW
+  echo && my_message="Let's open: https://git.io/${input_3}" && Print_Blue && sleep 2 &&\
+  open https://git.io/${input_3}
+  }
+
+  echo
+  my_message="URL ........ : https://git.io/${app_name}" && Print_Gray
+  my_message="will point to: https://github.com/${github_user}/${app_name}" && Print_Gray
+  #output example: https://git.io/bashlava
+
+### PROMPT CONFIRMATION
+  echo
+  my_message="Do you want to continue? (y/n)" && Print_Gray
+  read user_input;
+  case ${user_input} in
+    y | Y) sub_short_url;;
+    *) my_message="Operation cancelled" && Print_Fatal;;
+  esac
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -383,35 +408,6 @@ function Prompt_YesNo_ci {
 function Show_All { 
   Show_Version
   echo "WIP"
-}
-
-function gitio { # User_
-
-### CMD EXECUTION
-  function sub_short_url {
-  clear
-  curl -i https://git.io -F \
-    "url=https://github.com/${input_2}/${input_3}" \
-    -F "code=${input_3}" &&\
-
-### PREVIEW
-  echo && my_message="Let's open: https://git.io/${input_3}" && Print_Blue && sleep 2 &&\
-  open https://git.io/${input_3}
-  }
-
-  echo
-  my_message="URL ........ : https://git.io/${app_name}" && Print_Gray
-  my_message="will point to: https://github.com/${github_user}/${app_name}" && Print_Gray
-  #output example: https://git.io/bashlava
-
-### PROMPT CONFIRMATION
-  echo
-  my_message="Do you want to continue? (y/n)" && Print_Gray
-  read user_input;
-  case ${user_input} in
-    y | Y) sub_short_url;;
-    *) my_message="Operation cancelled" && Print_Fatal;;
-  esac
 }
 
 function Show_Version {
@@ -783,7 +779,7 @@ function Condition_Dir_Optionnally_Present {
   #
 #
 
-function App_Reset_Custom_path {
+function Core_Reset_Bashlava_Path {
 # In file ${_path_user}/bashlava_path_tmp, we set an absolute path like: '~/Users/myuser/Documents/github/firepress-org/bashlava'
 # bashlava_path is a file on disk (not a variable)
 # It finds and configures it automatically. This way we don't have to hard code it :)
@@ -799,7 +795,7 @@ function App_Reset_Custom_path {
   elif [ -f ${_path_user}/bashlava_path ]; then
       echo "Path is valid. Lets continue." > /dev/null 2>&1
   else
-    my_message="FATAL: App_Reset_Custom_path | ${dir_path_is}" && Print_Fatal
+    my_message="FATAL: Core_Reset_Bashlava_Path | ${dir_path_is}" && Print_Fatal
   fi
 }
 
@@ -810,7 +806,7 @@ function Core_Load_Vars_General {
   _path_user="/usr/local/bin"
 
 ### Reset if needed
-  App_Reset_Custom_path
+  Core_Reset_Bashlava_Path
 
 ### Set absolute path for the project root ./
   _path_bashlava="$(cat ${_path_user}/bashlava_path)"
