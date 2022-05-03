@@ -7,6 +7,11 @@ source-path=SCRIPTDIR
 enable=all
 
 # Disable some checks
-#
-# SC2250    require-variable-braces         optional
-disable=SC2250
+disable=SC1090
+disable=SC1091
+disable=SC2001
+disable=SC2002
+disable=SC2034
+disable=SC2086
+disable=SC2154
+disable=SC2312
