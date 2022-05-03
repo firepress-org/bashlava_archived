@@ -18,9 +18,6 @@ function v {
 function t { 
   tag
 }
-function mdv {
-  clear && Condition_Attr_2_Must_Be_Provided && App_glow
-}
 function om {
   git checkout ${default_branch}
 }
