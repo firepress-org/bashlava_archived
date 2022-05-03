@@ -10,34 +10,34 @@ function App_List_All_Fct {
 
   # code optimization 0o0o CASE per function's category
 
-  my_message="Condition" && App_Blue && echo
+  my_message="Condition" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Condition_" | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="Show" && App_Blue && echo
+  my_message="Show" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Show_" | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="Print" && App_Blue && echo
+  my_message="Print" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Print_" | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="Prompt" && App_Blue && echo
+  my_message="Prompt" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Prompt_" | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="App" && App_Blue && echo
+  my_message="App" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function App_" | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="Core" && App_Blue && echo
+  my_message="Core" && Print_Blue && echo
   my_message="$(cat ${_path_bashlava}/bashlava.sh | grep "function Core_" | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="sidecars" && App_Blue && echo
+  my_message="sidecars" && Print_Blue && echo
   my_message="$(cat ${_path_components}/sidecars.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="alias" && App_Blue && echo
+  my_message="alias" && Print_Blue && echo
   my_message="$(cat ${_path_components}/alias.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="example" && App_Blue && echo
+  my_message="example" && Print_Blue && echo
   my_message="$(cat ${_path_components}/example.sh | grep "function " | awk '{print $2}')" && Print_Gray && echo
 
-  my_message="See help standard basic functions" && App_Blue && echo
+  my_message="See help standard basic functions" && Print_Blue && echo
 
   # code optimization 0o0o / Add logic for private script
 }
