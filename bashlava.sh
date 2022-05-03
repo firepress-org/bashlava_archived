@@ -230,7 +230,7 @@ function tag { # User_
 
   gh release create && sleep 5
   Show_Version
-  App_Show_Release
+  Show_Release
 
   echo && my_message="NEXT MOVE suggestion: 'e' (y/n)" && Print_Green
   input_2="not_set"   #reset input_2
@@ -452,7 +452,7 @@ function Show_Version {
 # TODO
 # to refactor, too much duplication
 
-function App_Show_Release {
+function Show_Release {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
   _var_name="release_latest" _is_it_empty=$(echo ${release_latest}) && Condition_Vars_Must_Be_Not_Empty
