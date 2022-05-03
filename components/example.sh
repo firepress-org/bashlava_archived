@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# /components/example.sh should logically not be sourced
+
 # Now we use 'Condition_File_Must_Be_Present' instead of copy paste this fct
 function idempotent_file_exist {
   _file_is="somefile.sh"
