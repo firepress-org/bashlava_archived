@@ -27,7 +27,7 @@
 # dummy to create a dummy commit as test quickly the whole workflow
 
 # TODO
-# rename color Print_Green << App_Green
+# rename color Print_Green << Print_Green
 
 # Core_Reset_Custom_Path << App_Reset_Custom_path
 
@@ -90,7 +90,7 @@ function edge {
   App_Show_Version
   # UX fun
   my_message="Done! checkout edge from ${default_branch}" Print_Gray
-  echo && my_message="NEXT MOVE suggestion: code something and 'c' " App_Green
+  echo && my_message="NEXT MOVE suggestion: code something and 'c' " Print_Green
 }
 
 function commit {
@@ -100,7 +100,7 @@ function commit {
   git commit -m "${input_2}"
   git push
   # UX fun
-  echo && my_message="NEXT MOVE suggestion: 1) 'c' 2) 'pr' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 1) 'c' 2) 'pr' " Print_Green
 }
 
 function pr {
@@ -115,7 +115,7 @@ function pr {
   gh pr view --web
   Prompt_YesNo_ci
 
-  echo && my_message="NEXT MOVE suggestion: 1='ci' 2='mrg' 9=cancel (or any key)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='ci' 2='mrg' 9=cancel (or any key)" && Print_Green
   input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
@@ -137,7 +137,7 @@ function mrg {
   Prompt_YesNo_ci
   App_Show_Version
 
-  echo && my_message="NEXT MOVE suggestion: 1='ci' 2='sv' 3='v' 4='t' 9=cancel (or any key)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='ci' 2='sv' 3='v' 4='t' 9=cancel (or any key)" && Print_Green
   input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
@@ -164,7 +164,7 @@ function ci {
   # Follow status within the terminal
   gh run watch
 
-  echo && my_message="NEXT MOVE suggestion: 1='mrg' 9=cancel (y/n)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='mrg' 9=cancel (y/n)" && Print_Green
   input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
@@ -180,11 +180,11 @@ function version {
 
   if [[ "${input_2}" == "not_set" ]]; then
     # The user did not provide a version
-    echo && my_message="What is the version number (ex: 1.12.4)?" && App_Green
+    echo && my_message="What is the version number (ex: 1.12.4)?" && Print_Green
     read user_input;
     input_2="${user_input}"
     #
-    echo && my_message="You confirm version: ${user_input} is right? (y/n)" && App_Green
+    echo && my_message="You confirm version: ${user_input} is right? (y/n)" && Print_Green
     # warning: dont reset input_2
     read user_input;
     case ${user_input} in
@@ -208,7 +208,7 @@ function version {
   git push && echo
   App_Show_Version
 
-  echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 1='pr' 2='t' 9=cancel (or any key)" && Print_Green
   input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
@@ -232,7 +232,7 @@ function tag {
   App_Show_Version
   App_Show_Release
 
-  echo && my_message="NEXT MOVE suggestion: 'e' (y/n)" && App_Green
+  echo && my_message="NEXT MOVE suggestion: 'e' (y/n)" && Print_Green
   input_2="not_set"   #reset input_2
   read user_input;
   case ${user_input} in
@@ -259,7 +259,7 @@ function squash {
   git push
   log
   # UX fun
-  echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " App_Green
+  echo && my_message="NEXT MOVE suggestion: 'c' - 'pr' " Print_Green
 }
 
 function test {
@@ -304,7 +304,7 @@ function test {
   # 'test_color' it bypassed as it does an 'exit 0'
   my_message="Check colors options:" && App_Blue && echo
   my_message="bashlava test"
-  App_Green
+  Print_Green
   #App_Blue
   App_Warning
   Print_Gray
@@ -332,7 +332,7 @@ function test {
 
 function test_color {
   my_message="bashlava test"
-  App_Green
+  Print_Green
   App_Blue
   App_Warning
   Print_Gray
@@ -367,7 +367,7 @@ function Prompt_YesNo_ci {
   read user_input;
   case ${user_input} in
     y | Y) ci;;
-    *) my_message="Abord 'ci' status" && App_Green;;
+    *) my_message="Abord 'ci' status" && Print_Green;;
   esac
 }
 
@@ -377,7 +377,7 @@ function Show_ {
   read user_input;
   case ${user_input} in
     y | Y) echo "wip";;
-    *) my_message="Abord" && App_Green;;
+    *) my_message="Abord" && Print_Green;;
   esac
 }
 
@@ -473,7 +473,7 @@ function App_glow {
   # markdown viewer (mdv)
   _var_name="docker_img_glow" _is_it_empty=$(echo ${docker_img_glow}) && Condition_Vars_Must_Be_Not_Empty
   _var_name="input_2" _is_it_empty=$(echo ${input_2}) && Condition_Vars_Must_Be_Not_Empty
-  my_message="Info: 'mdv' can only read markdown files at the same path level" App_Green
+  my_message="Info: 'mdv' can only read markdown files at the same path level" Print_Green
   sleep 0.5
 
   _present_path_is=$(pwd)
@@ -504,7 +504,7 @@ function Print_Gray {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "\e[1;37m${my_message}\e[0m"
 }
-function App_Green {
+function Print_Green {
   _var_name="my_message" _is_it_empty=$(echo ${my_message}) && Condition_Vars_Must_Be_Not_Empty
   echo -e "✨ \e[1;32m${my_message}\e[0m"
 }

@@ -51,14 +51,14 @@ function case_a {
   my_message="1 - Blue" && App_Blue
   echo "2 - Red"
   my_message="3 - Yellow" && App_Warning
-  my_message="4 - Green" && App_Green
+  my_message="4 - Green" && Print_Green
   echo "5 - Orange"
   read user_input;
   case ${user_input} in
     1) my_message="Blue is a primary color." && App_Blue;;
     2) echo "Red is a primary color.";;
     3) my_message="Yellow is a primary color." && App_Yellow;;
-    4) my_message="Green is a secondary color." && App_Green;;
+    4) my_message="Green is a secondary color." && Print_Green;;
     5) echo "Orange is a secondary color.";;
     *) echo "This color is not available. Please choose a different one.";; 
   esac
